@@ -1,0 +1,36 @@
+name: Build Unsigned IPA
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Select latest Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Build Archive
+        run: |
+          xcodebuild -scheme "Rclone" \
+            -destination "generic/platform=iOS" \
+            -configuration Release \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            archive -archivePath build/Rclone.xcarchive
+
+      - name: Package into IPA
+        run: |
+          mkdir -p Payload
+          cp -r build/Rclone.xcarchive/Products/Applications/*.app Payload/
+          zip -r Rclone.ipa Payload/
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Rclone-GUI-IPA
+          path: Rclone.ipa
