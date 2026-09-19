@@ -9,6 +9,8 @@ import AppIntents
 import SwiftUI
 import WidgetKit
 
+#if compiler(>=6.0)
+@available(iOS 18.0, *)
 struct RclonePhotoSyncActivityControl: ControlWidget {
     static let kind: String = "com.rougetet.rclone-gui.RclonePhotoSyncActivity"
 
@@ -30,6 +32,7 @@ struct RclonePhotoSyncActivityControl: ControlWidget {
     }
 }
 
+@available(iOS 18.0, *)
 extension RclonePhotoSyncActivityControl {
     struct Value {
         var isRunning: Bool
@@ -48,6 +51,7 @@ extension RclonePhotoSyncActivityControl {
     }
 }
 
+@available(iOS 18.0, *)
 struct TimerConfiguration: ControlConfigurationIntent {
     static let title: LocalizedStringResource = "Timer Name Configuration"
 
@@ -55,6 +59,7 @@ struct TimerConfiguration: ControlConfigurationIntent {
     var timerName: String
 }
 
+@available(iOS 18.0, *)
 struct StartTimerIntent: SetValueIntent {
     static let title: LocalizedStringResource = "Start a timer"
 
@@ -75,3 +80,4 @@ struct StartTimerIntent: SetValueIntent {
         return .result()
     }
 }
+#endif
