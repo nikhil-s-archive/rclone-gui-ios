@@ -2098,7 +2098,7 @@ public final class TransferQueue {
                 let interval: Duration
                 if !hadWork {
                     interval = .seconds(3)
-                } else if let maxBytes = await self?.maxRunningTransferBytes(), maxBytes >= 100_000_000 {
+                } else if let maxBytes = self?.maxRunningTransferBytes(), maxBytes >= 100_000_000 {
                     interval = .seconds(2)
                 } else {
                     interval = .milliseconds(800)

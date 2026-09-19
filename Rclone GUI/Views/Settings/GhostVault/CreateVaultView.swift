@@ -125,7 +125,7 @@ struct CreateVaultView: View {
                 }
             }
 
-            if let remote = selectedRemote {
+            if selectedRemote != nil {
                 Section {
                     Button {
                         showFolderPicker = true

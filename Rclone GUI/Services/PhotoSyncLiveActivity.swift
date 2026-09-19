@@ -158,7 +158,6 @@ final class PhotoSyncLiveActivity {
     /// ou un cold-start. À appeler une fois au lancement de l'app avant
     /// `resumeIfNeeded`. Idempotent.
     static func endOrphanActivities() async {
-        guard #available(iOS 16.2, *) else { return }
         for activity in Activity<PhotoSyncActivityAttributes>.activities {
             await activity.end(
                 nil,

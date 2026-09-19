@@ -447,7 +447,7 @@ struct HandoffReceiveView: View {
             self.preview = envelope
             if let localRaw = try? await ConfigStore.shared.load() {
                 let plan = await HandoffReceiveService.shared.buildMergePlan(
-                    local: localRaw ?? Data(),
+                    local: localRaw,
                     incoming: Data() // can't read sealed content without passphrase yet
                 )
                 self.mergePlan = plan
@@ -473,7 +473,7 @@ struct HandoffReceiveView: View {
             )
             if let localRaw = try? await ConfigStore.shared.load() {
                 let plan = await HandoffReceiveService.shared.buildMergePlan(
-                    local: localRaw ?? Data(),
+                    local: localRaw,
                     incoming: opened.rcloneConf
                 )
                 self.mergePlan = plan
