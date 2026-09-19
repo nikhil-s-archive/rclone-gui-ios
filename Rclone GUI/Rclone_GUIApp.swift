@@ -41,12 +41,15 @@ struct Rclone_GUIApp: App {
         // constraints and non-optional fields that CloudKit rejects. Without
         // .none here, SwiftData detects the entitlement and tries to mirror
         // every entity through CloudKit, crashing at container init.
+        let groupContainer: ModelConfiguration.GroupContainer = AppGroup.isAppGroupProvisioned
+            ? .identifier(AppGroup.identifier)
+            : .none
         let modelConfiguration = ModelConfiguration(
             "RcloneGUI",
             schema: schema,
             isStoredInMemoryOnly: false,
             allowsSave: true,
-            groupContainer: .identifier(AppGroup.identifier),
+            groupContainer: groupContainer,
             cloudKitDatabase: .none
         )
 
@@ -64,6 +67,19 @@ struct Rclone_GUIApp: App {
             do {
                 return try ModelContainer(for: schema, configurations: [modelConfiguration])
             } catch {
+                if groupContainer != .none {
+                    let fallbackConfig = ModelConfiguration(
+                        "RcloneGUI",
+                        schema: schema,
+                        isStoredInMemoryOnly: false,
+                        allowsSave: true,
+                        groupContainer: .none,
+                        cloudKitDatabase: .none
+                    )
+                    if let container = try? ModelContainer(for: schema, configurations: [fallbackConfig]) {
+                        return container
+                    }
+                }
                 fatalError("Could not create ModelContainer: \(error)")
             }
         }

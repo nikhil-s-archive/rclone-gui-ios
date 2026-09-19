@@ -38,6 +38,7 @@ jobs:
 
       - name: Build Archive
         run: |
+          xcodebuild -resolvePackageDependencies -scheme "Rclone GUI"
           xcodebuild -scheme "Rclone GUI" \
             -destination "generic/platform=iOS" \
             -configuration Release \
@@ -50,7 +51,8 @@ jobs:
         run: |
           mkdir -p Payload
           cp -r "build/Rclone.xcarchive/Products/Applications/"*.app Payload/
-          zip -r "Rclone-GUI.ipa" Payload/
+          find Payload -name "*.app" -exec codesign --force --deep --sign - {} + || true
+          zip -r -y "Rclone-GUI.ipa" Payload/
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
