@@ -64,10 +64,10 @@ struct MainTabView: View {
 
         var title: LocalizedStringKey {
             switch self {
-            case .home: return "Accueil"
-            case .files: return "Fichiers"
-            case .transfers: return "Transferts"
-            case .settings: return "Réglages"
+            case .home: return "Home"
+            case .files: return "Files"
+            case .transfers: return "Transfers"
+            case .settings: return "Settings"
             }
         }
 
@@ -240,7 +240,7 @@ private struct DemoWizardCatalog: View {
 
     var body: some View {
         NameAndBackendView(state: state, onNext: {})
-            .navigationTitle("Nouveau remote")
+            .navigationTitle("New remote")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif

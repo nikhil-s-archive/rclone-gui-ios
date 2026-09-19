@@ -27,9 +27,9 @@ struct TrashView: View {
         Group {
             if entries.isEmpty {
                 ContentUnavailableView(
-                    "Corbeille vide",
+                    "Trash is empty",
                     systemImage: "trash",
-                    description: Text("Les fichiers supprimés apparaîtront ici. Ils sont restaurables pendant 30 jours.")
+                    description: Text("Deleted files will appear here. They can be restored for 30 days.")
                 )
             } else {
                 List {
@@ -46,12 +46,12 @@ struct TrashView: View {
                                     Button(role: .destructive) {
                                         pendingPermanentDelete = entry
                                     } label: {
-                                        Label("Supprimer", systemImage: "trash.slash")
+                                        Label("Delete", systemImage: "trash.slash")
                                     }
                                     Button {
                                         pendingRestore = entry
                                     } label: {
-                                        Label("Restaurer", systemImage: "arrow.uturn.backward")
+                                        Label("Restore", systemImage: "arrow.uturn.backward")
                                     }
                                     .tint(.blue)
                                 }
@@ -59,12 +59,12 @@ struct TrashView: View {
                                     Button {
                                         pendingRestore = entry
                                     } label: {
-                                        Label("Restaurer à l'emplacement d'origine", systemImage: "arrow.uturn.backward")
+                                        Label("Restore to original location", systemImage: "arrow.uturn.backward")
                                     }
                                     Button(role: .destructive) {
                                         pendingPermanentDelete = entry
                                     } label: {
-                                        Label("Supprimer définitivement", systemImage: "trash.slash")
+                                        Label("Delete permanently", systemImage: "trash.slash")
                                     }
                                 }
                         }
@@ -74,63 +74,63 @@ struct TrashView: View {
                 }
             }
         }
-        .navigationTitle("Corbeille")
+        .navigationTitle("Trash")
         .toolbar {
             if !entries.isEmpty {
                 ToolbarItem(placement: .primaryAction) {
                     Button(role: .destructive) {
                         showingEmptyConfirm = true
                     } label: {
-                        Label("Vider", systemImage: "trash.slash")
+                        Label("Empty", systemImage: "trash.slash")
                     }
                 }
             }
         }
         .confirmationDialog(
-            "Restaurer cet élément ?",
+            "Restore this item?",
             isPresented: Binding(
                 get: { pendingRestore != nil },
                 set: { if !$0 { pendingRestore = nil } }
             ),
             titleVisibility: .visible
         ) {
-            Button("Restaurer") {
+            Button("Restore") {
                 if let entry = pendingRestore { Task { await restore(entry) } }
                 pendingRestore = nil
             }
-            Button("Annuler", role: .cancel) { pendingRestore = nil }
+            Button("Cancel", role: .cancel) { pendingRestore = nil }
         } message: {
             if let entry = pendingRestore {
                 Text("« \(entry.originalName) » sera replacé dans \(entry.originalRemote):\(entry.originalParentPath).")
             }
         }
         .confirmationDialog(
-            "Supprimer définitivement ?",
+            "Delete permanently?",
             isPresented: Binding(
                 get: { pendingPermanentDelete != nil },
                 set: { if !$0 { pendingPermanentDelete = nil } }
             ),
             titleVisibility: .visible
         ) {
-            Button("Supprimer définitivement", role: .destructive) {
+            Button("Delete permanently", role: .destructive) {
                 if let entry = pendingPermanentDelete { Task { await permanentlyDelete(entry) } }
                 pendingPermanentDelete = nil
             }
-            Button("Annuler", role: .cancel) { pendingPermanentDelete = nil }
+            Button("Cancel", role: .cancel) { pendingPermanentDelete = nil }
         } message: {
             if let entry = pendingPermanentDelete {
                 Text("« \(entry.originalName) » sera supprimé du remote sans possibilité de restauration.")
             }
         }
         .confirmationDialog(
-            "Vider la corbeille ?",
+            "Empty the trash?",
             isPresented: $showingEmptyConfirm,
             titleVisibility: .visible
         ) {
-            Button("Tout supprimer définitivement", role: .destructive) {
+            Button("Delete all permanently", role: .destructive) {
                 Task { await emptyAll() }
             }
-            Button("Annuler", role: .cancel) {}
+            Button("Cancel", role: .cancel) {}
         } message: {
             Text("Les \(entries.count) élément\(entries.count > 1 ? "s seront supprimés" : " sera supprimé") sans possibilité de restauration.")
         }
@@ -186,7 +186,7 @@ private extension TrashEntry {
     /// Original parent folder path. Empty string means the item lived at remote root.
     var originalParentPath: String {
         let parent = (originalPath as NSString).deletingLastPathComponent
-        return parent.isEmpty ? "racine" : parent
+        return parent.isEmpty ? "root" : parent
     }
 }
 
@@ -198,20 +198,20 @@ private struct TrashHeaderCard: View {
 
     var body: some View {
         AppHeroCard(
-            title: count == 1 ? "1 élément" : "\(count) éléments",
-            subtitle: "Restaurables pendant 30 jours avant purge automatique.",
+            title: count == 1 ? "1 item" : "\(count) éléments",
+            subtitle: "Recoverable for 30 days before automatic purge.",
             systemImage: "trash",
             tint: .red
         ) {
             HStack(spacing: 10) {
                 AppMetricPill(value: formattedBytes, label: "total", systemImage: "externaldrive", tint: .red)
-                AppMetricPill(value: "30 j", label: "rétention", systemImage: "calendar.badge.clock", tint: .orange)
+                AppMetricPill(value: "30 j", label: "retention", systemImage: "calendar.badge.clock", tint: .orange)
             }
         }
     }
 
     private var formattedBytes: String {
-        guard totalBytes > 0 else { return String(localized: "taille inconnue") }
+        guard totalBytes > 0 else { return String(localized: "unknown size") }
         return ByteCountFormatter.string(fromByteCount: totalBytes, countStyle: .file)
     }
 }
@@ -251,17 +251,17 @@ private struct TrashRow: View {
 
     private var originPath: String {
         let parent = (entry.originalPath as NSString).deletingLastPathComponent
-        let scope = parent.isEmpty ? String(localized: "racine") : parent
+        let scope = parent.isEmpty ? String(localized: "root") : parent
         return "\(entry.originalRemote):\(scope)"
     }
 
     private var retentionLine: String {
         let remaining = entry.expiresAt.timeIntervalSince(.now)
-        if remaining <= 0 { return String(localized: "Expire à la prochaine purge") }
+        if remaining <= 0 { return String(localized: "Expires at the next purge") }
         let days = Int(remaining / 86_400)
         switch days {
-        case 0: return String(localized: "Expire aujourd'hui")
-        case 1: return String(localized: "Expire demain")
+        case 0: return String(localized: "Expires today")
+        case 1: return String(localized: "Expires tomorrow")
         default: return String(localized: "Expire dans \(days) jours")
         }
     }

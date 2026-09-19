@@ -23,7 +23,7 @@ import Foundation
 #if os(iOS)
 @available(iOS 17.0, *)
 struct PausePhotoSyncIntent: LiveActivityIntent {
-    static let title: LocalizedStringResource = "Mettre en pause la synchro Photos"
+    static let title: LocalizedStringResource = "Pause Photo sync"
     static var isDiscoverable: Bool { false }
 
     func perform() async throws -> some IntentResult {
@@ -34,7 +34,7 @@ struct PausePhotoSyncIntent: LiveActivityIntent {
 
 @available(iOS 17.0, *)
 struct ResumePhotoSyncIntent: LiveActivityIntent {
-    static let title: LocalizedStringResource = "Reprendre la synchro Photos"
+    static let title: LocalizedStringResource = "Resume Photo sync"
     static var isDiscoverable: Bool { false }
 
     func perform() async throws -> some IntentResult {

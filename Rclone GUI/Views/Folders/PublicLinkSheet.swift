@@ -39,31 +39,31 @@ struct PublicLinkSheet: View {
         NavigationStack {
             Form {
                 if let customURL {
-                    linkSection(title: "Lien CDN personnalisé", url: customURL)
+                    linkSection(title: "Custom CDN link", url: customURL)
                 }
 
                 Section {
                     urlTextField
-                    TextField("Préfixe de chemin à supprimer (facultatif)", text: $pathPrefixToRemove)
+                    TextField("Path prefix to remove (optional)", text: $pathPrefixToRemove)
                         .autocorrectionDisabled(true)
 
                     HStack {
-                        Button("Enregistrer") { saveCustomDomain() }
+                        Button("Save") { saveCustomDomain() }
                             .buttonStyle(.borderedProminent)
                         if !customBaseURL.isEmpty {
-                            Button("Effacer", role: .destructive) {
+                            Button("Erase", role: .destructive) {
                                 customBaseURL = ""
                                 pathPrefixToRemove = ""
                                 _ = RemotePublicLinkSettingsStore.setCustomBaseURL("", for: remote)
                                 _ = RemotePublicLinkSettingsStore.setPathPrefixToRemove("", for: remote)
-                                confirmationMessage = String(localized: "Domaine CDN supprimé.")
+                                confirmationMessage = String(localized: "CDN domain deleted.")
                             }
                         }
                     }
                 } header: {
                     Text("Domaine CDN de \(remote)")
                 } footer: {
-                    Text("Le domaine doit pointer vers la racine publique de ce remote ou de ce bucket. L’app ajoute automatiquement le chemin du fichier ; elle ne modifie pas les permissions du stockage. Si le chemin commence par un préfixe de bucket, saisis-le dans le champ facultatif pour le retirer de l’URL CDN.")
+                    Text("The domain must point to the public root of this remote or bucket. The app automatically appends the file path; it does not alter storage permissions. If the path starts with a bucket prefix, enter it in the optional field to remove it from the CDN URL.")
                 }
 
                 Section {
@@ -72,7 +72,7 @@ struct PublicLinkSheet: View {
                     } else if supportsNativeLink == nil {
                         HStack {
                             ProgressView()
-                            Text("Vérification de la compatibilité…")
+                            Text("Checking compatibility…")
                         }
                     } else if supportsNativeLink == true {
                         Button {
@@ -80,8 +80,8 @@ struct PublicLinkSheet: View {
                         } label: {
                             Label {
                                 Text(isGenerating
-                                     ? String(localized: "Génération…")
-                                     : String(localized: "Générer via rclone"))
+                                     ? String(localized: "Generating…")
+                                     : String(localized: "Generate via rclone"))
                             } icon: {
                                 Image(systemName: "link.badge.plus")
                             }
@@ -89,15 +89,15 @@ struct PublicLinkSheet: View {
                         .disabled(isGenerating)
                     } else {
                         Label(
-                            "Ce backend ne signale pas la création de liens publics. Configure un domaine CDN ci-dessus.",
+                            "This backend does not report public link creation support. Configure a CDN domain above.",
                             systemImage: "info.circle"
                         )
                         .foregroundStyle(.secondary)
                     }
                 } header: {
-                    Text("Lien public rclone")
+                    Text("Rclone public link")
                 } footer: {
-                    Text("Selon le fournisseur, générer ce lien peut rendre le fichier accessible à toute personne qui possède l’URL.")
+                    Text("Depending on the provider, generating this link may make the file accessible to anyone with the URL.")
                 }
 
                 if let errorMessage {
@@ -114,10 +114,10 @@ struct PublicLinkSheet: View {
                     }
                 }
             }
-            .navigationTitle("Lien public")
+            .navigationTitle("Public link")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Terminé") { dismiss() }
+                    Button("Completed") { dismiss() }
                 }
             }
         }
@@ -157,9 +157,9 @@ struct PublicLinkSheet: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 Button {
-                    copy(url.absoluteString, confirmation: String(localized: "Lien copié."))
+                    copy(url.absoluteString, confirmation: String(localized: "Link copied."))
                 } label: {
-                    Label("Copier l’URL", systemImage: "doc.on.doc")
+                    Label("Copy URL", systemImage: "doc.on.doc")
                 }
 
                 Button {
@@ -169,10 +169,10 @@ struct PublicLinkSheet: View {
                             name: entry.name,
                             isDirectory: entry.isDirectory
                         ),
-                        confirmation: String(localized: "Markdown copié.")
+                        confirmation: String(localized: "Markdown copied.")
                     )
                 } label: {
-                    Label("Copier en Markdown", systemImage: "text.badge.checkmark")
+                    Label("Copy as Markdown", systemImage: "text.badge.checkmark")
                 }
 
                 Button {
@@ -182,16 +182,16 @@ struct PublicLinkSheet: View {
                             name: entry.name,
                             isDirectory: entry.isDirectory
                         ),
-                        confirmation: String(localized: "HTML copié.")
+                        confirmation: String(localized: "HTML copied.")
                     )
                 } label: {
-                    Label("Copier en HTML", systemImage: "chevron.left.forwardslash.chevron.right")
+                    Label("Copy as HTML", systemImage: "chevron.left.forwardslash.chevron.right")
                 }
             }
             .buttonStyle(.bordered)
 
             ShareLink(item: url) {
-                Label("Partager le lien", systemImage: "square.and.arrow.up")
+                Label("Share link", systemImage: "square.and.arrow.up")
             }
         }
     }
@@ -200,7 +200,7 @@ struct PublicLinkSheet: View {
         errorMessage = nil
         confirmationMessage = nil
         guard let stored = RemotePublicLinkSettingsStore.setCustomBaseURL(customBaseURL, for: remote) else {
-            errorMessage = String(localized: "Saisis un domaine HTTP(S) valide, sans identifiants.")
+            errorMessage = String(localized: "Enter a valid HTTP(S) domain, without credentials.")
             return
         }
         customBaseURL = stored
@@ -209,8 +209,8 @@ struct PublicLinkSheet: View {
             for: remote
         )
         confirmationMessage = stored.isEmpty
-            ? String(localized: "Domaine CDN supprimé.")
-            : String(localized: "Domaine CDN enregistré.")
+            ? String(localized: "CDN domain deleted.")
+            : String(localized: "CDN domain saved.")
     }
 
     @MainActor
@@ -258,24 +258,24 @@ struct RemotePublicLinkSettingsView: View {
                     TextField("https://img.example.com", text: $customBaseURL)
                         .textContentType(.URL)
                         .autocorrectionDisabled(true)
-                    TextField("Préfixe de chemin à supprimer (facultatif)", text: $pathPrefixToRemove)
+                    TextField("Path prefix to remove (optional)", text: $pathPrefixToRemove)
                         .autocorrectionDisabled(true)
-                    Button("Enregistrer") { save() }
+                    Button("Save") { save() }
                         .buttonStyle(.borderedProminent)
                 } header: {
-                    Text("Domaine CDN personnalisé")
+                    Text("Custom CDN domain")
                 } footer: {
                     Text("Ce domaine est enregistré uniquement sur cet appareil pour le remote « \(remote) ». Il doit déjà servir publiquement la racine du bucket. Pour Qiniu Kodo ou un autre backend qui renvoie le bucket dans le chemin, saisis ici le préfixe à retirer, par exemple `aab`.")
                 }
 
-                Section("Lien natif rclone") {
+                Section("Native rclone link") {
                     if supportsNativeLink == nil {
                         ProgressView()
                     } else {
                         Label {
                             Text(supportsNativeLink == true
-                                 ? String(localized: "Ce backend prend en charge les liens publics.")
-                                 : String(localized: "Ce backend ne signale pas la prise en charge des liens publics."))
+                                 ? String(localized: "This backend supports public links.")
+                                 : String(localized: "This backend does not report support for public links."))
                         } icon: {
                             Image(systemName: supportsNativeLink == true ? "checkmark.circle.fill" : "info.circle")
                         }
@@ -297,7 +297,7 @@ struct RemotePublicLinkSettingsView: View {
             .navigationTitle("Liens publics · \(remote)")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Terminé") { dismiss() }
+                    Button("Completed") { dismiss() }
                 }
             }
         }
@@ -310,7 +310,7 @@ struct RemotePublicLinkSettingsView: View {
 
     private func save() {
         guard let stored = RemotePublicLinkSettingsStore.setCustomBaseURL(customBaseURL, for: remote) else {
-            errorMessage = String(localized: "Saisis un domaine HTTP(S) valide, sans identifiants.")
+            errorMessage = String(localized: "Enter a valid HTTP(S) domain, without credentials.")
             return
         }
         customBaseURL = stored

@@ -27,15 +27,15 @@ struct RemoteLensSheet: View {
         NavigationStack {
             Group {
                 if isLoading {
-                    ProgressView("Analyse de l'aperçu…")
+                    ProgressView("Analyzing preview…")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if let preview {
                     content(preview)
                 } else {
                     ContentUnavailableView(
-                        "Aperçu indisponible",
+                        "Preview unavailable",
                         systemImage: "eye.slash",
-                        description: Text("Impossible de lire un aperçu de ce fichier.")
+                        description: Text("Unable to preview this file.")
                     )
                 }
             }
@@ -97,21 +97,21 @@ struct RemoteLensSheet: View {
     }
 
     private func imageMetadataSection(_ m: RemoteImageMetadata) -> some View {
-        Section("Informations image") {
+        Section("Image Information") {
             if let w = m.pixelWidth, let h = m.pixelHeight {
                 row("Dimensions", "\(w) × \(h) px")
             }
             if let make = m.cameraMake, let model = m.cameraModel {
-                row("Appareil", "\(make) \(model)")
+                row("Device", "\(make) \(model)")
             } else if let model = m.cameraModel {
-                row("Appareil", model)
+                row("Device", model)
             }
-            if let lens = m.lensModel { row("Objectif", lens) }
-            if let date = m.captureDate { row("Prise le", Self.dateFormatter.string(from: date)) }
-            if let exp = m.exposure { row("Exposition", exp) }
-            if let f = m.fNumber { row("Ouverture", f) }
-            if let iso = m.iso { row("Sensibilité", iso) }
-            if let focal = m.focalLength { row("Focale", focal) }
+            if let lens = m.lensModel { row("Lens", lens) }
+            if let date = m.captureDate { row("Taken on", Self.dateFormatter.string(from: date)) }
+            if let exp = m.exposure { row("Exposure", exp) }
+            if let f = m.fNumber { row("Opening", f) }
+            if let iso = m.iso { row("Sensitivity", iso) }
+            if let focal = m.focalLength { row("Focal Length", focal) }
             if let lat = m.latitude, let lon = m.longitude {
                 row("Position", RemoteLensPlan.formatCoordinate(lat: lat, lon: lon))
             }
@@ -119,12 +119,12 @@ struct RemoteLensSheet: View {
     }
 
     private func pdfMetadataSection(_ m: RemotePDFMetadata) -> some View {
-        Section("Informations PDF") {
+        Section("PDF Information") {
             if let count = m.pageCount {
                 row("Pages", "\(count)")
             }
-            if let title = m.title { row("Titre", title) }
-            if let author = m.author { row("Auteur", author) }
+            if let title = m.title { row("Title", title) }
+            if let author = m.author { row("Author", author) }
         }
     }
 

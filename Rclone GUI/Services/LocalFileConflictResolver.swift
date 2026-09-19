@@ -17,8 +17,8 @@ public enum LocalConflictPolicy: String, CaseIterable, Identifiable, Sendable {
     public var label: String {
         switch self {
         case .keepBoth: return "Garder les deux"
-        case .replace: return "Remplacer"
-        case .skip: return "Ignorer"
+        case .replace: return "Replace"
+        case .skip: return "Skip"
         }
     }
 }

@@ -107,7 +107,7 @@ struct ImageGalleryView: View {
             if let shareURL { GalleryShareSheet(items: [shareURL]) }
         }
         #endif
-        .alert("Partage impossible", isPresented: Binding(
+        .alert("Share failed", isPresented: Binding(
             get: { shareError != nil },
             set: { if !$0 { shareError = nil } }
         )) {
@@ -191,7 +191,7 @@ struct ImageGalleryView: View {
             .background(.ultraThinMaterial, in: Circle())
         }
         .disabled(current == nil || isPreparingShare)
-        .accessibilityLabel("Partager ou enregistrer")
+        .accessibilityLabel("Share or save")
     }
 
     @ViewBuilder
@@ -338,7 +338,7 @@ private struct ZoomableRemoteImage: View {
             Image(systemName: "photo.badge.exclamationmark")
                 .font(.largeTitle)
                 .foregroundStyle(.white.opacity(0.7))
-            Text("Image illisible")
+            Text("Unreadable image")
                 .font(.system(size: 14))
                 .foregroundStyle(.white.opacity(0.7))
         }

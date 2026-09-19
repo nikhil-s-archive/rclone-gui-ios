@@ -82,7 +82,7 @@ public actor ConfigStore {
     /// Throws `RcloneError.engineNotAvailable` when no conf has been imported.
     public func writeDecryptedToTempFile() async throws -> URL {
         guard let plaintext = try await load() else {
-            throw RcloneError.engineNotAvailable(String(localized: "Aucune configuration rclone importée"))
+            throw RcloneError.engineNotAvailable(String(localized: "No rclone configuration imported"))
         }
         // GARDE CRITIQUE : un rclone.conf chiffré par rclone (RCLONE_ENCRYPT_V0)
         // ne doit JAMAIS atteindre librclone. Sans mot de passe disponible,
@@ -163,7 +163,7 @@ public actor ConfigStore {
     /// so ShareLink can keep a stable URL for the duration of the share sheet.
     public func exportPlaintextCopy() async throws -> URL {
         guard let plaintext = try await load() else {
-            throw RcloneError.engineNotAvailable(String(localized: "Aucune configuration rclone à exporter"))
+            throw RcloneError.engineNotAvailable(String(localized: "No rclone configuration to export"))
         }
         let directory = FileManager.default.temporaryDirectory
             .appending(path: "rclone-gui-export-\(UUID().uuidString)", directoryHint: .isDirectory)

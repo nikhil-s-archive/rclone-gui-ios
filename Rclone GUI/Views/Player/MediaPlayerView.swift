@@ -442,7 +442,7 @@ struct MediaPlayerHost: View {
                 RGCryptSeal(size: 88)
 
                 VStack(spacing: 6) {
-                    Text("Préparation de la lecture")
+                    Text("Preparing playback")
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundStyle(.white)
                     Text(entry.name)
@@ -484,7 +484,7 @@ struct MediaPlayerHost: View {
                 Image(systemName: "exclamationmark.triangle")
                     .font(.largeTitle)
                     .foregroundStyle(.red)
-                Text("Lecture impossible")
+                Text("Cannot play")
                     .font(.system(size: 17, weight: .semibold))
                     .foregroundStyle(.white)
                 Text(message)
@@ -492,7 +492,7 @@ struct MediaPlayerHost: View {
                     .foregroundStyle(.white.opacity(0.7))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 28)
-                Button("Fermer") { dismiss() }
+                Button("Close") { dismiss() }
                     .buttonStyle(.borderedProminent)
                     .tint(RG.accent)
                     .padding(.top, 4)

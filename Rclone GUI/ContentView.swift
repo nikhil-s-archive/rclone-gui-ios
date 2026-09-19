@@ -11,7 +11,7 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = true
     @Environment(\.scenePhase) private var scenePhase
     @State private var showOnboarding = false
     @State private var showReviewPrompt = false
@@ -30,18 +30,18 @@ struct ContentView: View {
         SubscriptionGate {
             MainTabView()
         }
-            .alert("Un avis sur l'App Store ?", isPresented: $showReviewPrompt) {
-                Button("Mettre des étoiles") {
+            .alert("A review on the App Store?", isPresented: $showReviewPrompt) {
+                Button("Leave a rating") {
                     ReviewPromptService.shared.requestReview()
                 }
-                Button("Plus tard", role: .cancel) {
+                Button("Later", role: .cancel) {
                     ReviewPromptService.shared.remindLater()
                 }
-                Button("Ne plus demander", role: .destructive) {
+                Button("Don’t ask again", role: .destructive) {
                     ReviewPromptService.shared.dismissPermanently()
                 }
             } message: {
-                Text("Je suis un jeune développeur et ton avis m'aide énormément à améliorer Rclone GUI. Si l'app t'est utile, tu peux laisser quelques étoiles sur l'App Store.")
+                Text("I’m a young developer and your feedback helps me improve Rclone GUI enormously. If the app is useful to you, you can leave a few stars on the App Store.")
             }
             .sheet(isPresented: $showOnboarding) {
                 OnboardingView(isPresented: Binding(
@@ -86,7 +86,7 @@ struct ContentView: View {
                 }
             }
             .alert(
-                "Impossible d'ouvrir ce fichier",
+                "Unable to open this file",
                 isPresented: Binding(
                     get: { handoffOpenError != nil },
                     set: { if !$0 { handoffOpenError = nil } }

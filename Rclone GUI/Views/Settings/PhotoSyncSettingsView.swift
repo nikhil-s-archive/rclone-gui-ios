@@ -39,12 +39,12 @@ struct PhotoSyncSettingsView: View {
 
     private var metricPills: [AppMetricPillGrid.Item] {
         var items: [AppMetricPillGrid.Item] = [
-            .init(value: "\(stats.pending)", label: "attente", systemImage: "clock", tint: .orange),
-            .init(value: "\(stats.active)", label: "actifs", systemImage: "bolt.fill", tint: .blue),
-            .init(value: "\(stats.completed)", label: "terminés", systemImage: "checkmark.circle", tint: .green),
+            .init(value: "\(stats.pending)", label: "Pending", systemImage: "clock", tint: .orange),
+            .init(value: "\(stats.active)", label: "active", systemImage: "bolt.fill", tint: .blue),
+            .init(value: "\(stats.completed)", label: "completed", systemImage: "checkmark.circle", tint: .green),
         ]
         if stats.skipped > 0 {
-            items.append(.init(value: "\(stats.skipped)", label: "ignorées", systemImage: "minus.circle", tint: .gray))
+            items.append(.init(value: "\(stats.skipped)", label: "skipped", systemImage: "minus.circle", tint: .gray))
         }
         return items
     }
@@ -53,8 +53,8 @@ struct PhotoSyncSettingsView: View {
         Form {
             Section {
                 AppHeroCard(
-                    title: "Synchro Photos",
-                    subtitle: "Backup opportuniste de ta photothèque vers un remote rclone.",
+                    title: "Photo sync",
+                    subtitle: "Opportunistic backup of your photo library to an rclone remote.",
                     systemImage: "photo.stack",
                     tint: RG.photoSync.accent
                 ) {
@@ -70,9 +70,9 @@ struct PhotoSyncSettingsView: View {
             }
 
             Section {
-                Toggle("Activer la synchro Photos", isOn: $enabled)
+                Toggle("Enable Photo sync", isOn: $enabled)
                 Picker("Remote", selection: $selectedRemote) {
-                    Text("Choisir…").tag("")
+                    Text("Choose…").tag("")
                     if !selectedRemote.isEmpty && !remotes.contains(selectedRemote) {
                         Text("\(selectedRemote) (configuré)").tag(selectedRemote)
                     }
@@ -80,22 +80,22 @@ struct PhotoSyncSettingsView: View {
                         Text(remote).tag(remote)
                     }
                 }
-                TextField("Dossier distant", text: $folder)
+                TextField("Remote folder", text: $folder)
                     .autocorrectionDisabled(true)
                     #if os(iOS)
                     .rgNoAutocap()
                     #endif
             } footer: {
-                Text("Backup de ta photothèque vers rclone uniquement. Les originaux HEIC/MOV sont conservés, aucune suppression locale automatique.")
+                Text("Backs up your photo library to rclone only. HEIC/MOV originals are kept; nothing is deleted locally.")
             }
 
             Section {
-                Toggle("Exiger la charge", isOn: $requiresPower)
-                Toggle("Autoriser le cellulaire", isOn: $allowsCellular)
+                Toggle("Require charging", isOn: $requiresPower)
+                Toggle("Allow cellular", isOn: $allowsCellular)
             } header: {
-                Text("Politique")
+                Text("Policy")
             } footer: {
-                Text("Par défaut, les gros uploads attendent Wi-Fi + charge. iOS décide quand les tâches arrière-plan peuvent reprendre.")
+                Text("By default, large uploads wait for Wi-Fi + charging. iOS decides when background tasks can resume.")
             }
 
             #if os(iOS) || os(macOS)
@@ -104,9 +104,9 @@ struct PhotoSyncSettingsView: View {
                     PhotoSyncAlbumPicker()
                 } label: {
                     HStack {
-                        Text("Albums à sauvegarder")
+                        Text("Albums to back up")
                         Spacer()
-                        Text(selectedAlbumCount == 0 ? "Tous" : "\(selectedAlbumCount)")
+                        Text(selectedAlbumCount == 0 ? "All" : "\(selectedAlbumCount)")
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -114,29 +114,29 @@ struct PhotoSyncSettingsView: View {
                     PhotoSyncFiltersView()
                 } label: {
                     HStack {
-                        Text("Filtres média")
+                        Text("Media filters")
                         Spacer()
-                        Text(activeFilterCount == 0 ? "Aucun" : "\(activeFilterCount)")
+                        Text(activeFilterCount == 0 ? "None" : "\(activeFilterCount)")
                             .foregroundStyle(.secondary)
                     }
                 }
                 NavigationLink {
                     PhotoSyncStatsView()
                 } label: {
-                    Label("Statistiques détaillées", systemImage: "chart.line.uptrend.xyaxis")
+                    Label("Detailed statistics", systemImage: "chart.line.uptrend.xyaxis")
                 }
-                Toggle("Notifications après sync", isOn: $notificationsEnabled)
+                Toggle("Notifications after sync", isOn: $notificationsEnabled)
                     .onChange(of: notificationsEnabled) { _, newValue in
                         if newValue { Task { await PhotoSyncService.shared.requestNotificationAuthorization() } }
                     }
-                Toggle("Synchro auto à l'import", isOn: $autoSyncOnImport)
+                Toggle("Auto sync on import", isOn: $autoSyncOnImport)
                     .onChange(of: autoSyncOnImport) { _, newValue in
                         PhotoSyncService.shared.autoSyncOnImport = newValue
                     }
             } header: {
-                Text("Filtres et notifications")
+                Text("Filters and notifications")
             } footer: {
-                Text("Sans album sélectionné, toutes les photos visibles sont sauvegardées. Une notification locale signalera la fin de chaque cycle de sync si vous l'autorisez.")
+                Text("With no album selected, all visible photos are backed up. A local notification will signal the end of each sync cycle if you allow it.")
             }
             #endif
 
@@ -151,9 +151,9 @@ struct PhotoSyncSettingsView: View {
                             .foregroundStyle(.orange)
                     }
                 } header: {
-                    Text("Synchro en pause")
+                    Text("Sync paused")
                 } footer: {
-                    Text("Le pipeline reprend automatiquement dès que la condition est levée — vous n'avez rien à faire.")
+                    Text("The pipeline resumes automatically as soon as the condition clears — you don’t have to do anything.")
                 }
             }
             #endif
@@ -166,15 +166,15 @@ struct PhotoSyncSettingsView: View {
                     if isSyncing {
                         HStack(spacing: 8) {
                             ProgressView()
-                            Text("Synchronisation…")
+                            Text("Syncing…")
                         }
                     } else {
-                        Label("Synchroniser maintenant", systemImage: "arrow.triangle.2.circlepath")
+                        Label("Sync now", systemImage: "arrow.triangle.2.circlepath")
                     }
                 }
                 .disabled(selectedRemote.isEmpty || isSyncing || stats.pausedByUser)
 
-                Button("Enregistrer la configuration") {
+                Button("Save configuration") {
                     save()
                 }
                 .disabled(selectedRemote.isEmpty && enabled)
@@ -189,9 +189,9 @@ struct PhotoSyncSettingsView: View {
                     Task { await togglePause() }
                 } label: {
                     if stats.pausedByUser {
-                        Label("Reprendre la synchro", systemImage: "play.fill")
+                        Label("Resume sync", systemImage: "play.fill")
                     } else {
-                        Label("Mettre en pause", systemImage: "pause.fill")
+                        Label("Pause", systemImage: "pause.fill")
                     }
                 }
                 .disabled(selectedRemote.isEmpty)
@@ -223,7 +223,7 @@ struct PhotoSyncSettingsView: View {
                     Button(role: .destructive) {
                         Task { await clearFailed() }
                     } label: {
-                        Label("Vider les échecs", systemImage: "trash")
+                        Label("Clear failures", systemImage: "trash")
                     }
                 }
 
@@ -242,7 +242,7 @@ struct PhotoSyncSettingsView: View {
                     if let vp = verifyProgress, vp.isRunning {
                         Label("Vérification : \(vp.checked) / \(vp.totalToCheck)", systemImage: "checkmark.shield")
                     } else {
-                        Label("Vérifier l'intégrité sur le remote", systemImage: "checkmark.shield")
+                        Label("Verify integrity on the remote", systemImage: "checkmark.shield")
                     }
                 }
                 .disabled(selectedRemote.isEmpty || verifyProgress?.isRunning == true)
@@ -274,10 +274,10 @@ struct PhotoSyncSettingsView: View {
                     )
                 }
             } header: {
-                Text("Contrôles")
+                Text("Controls")
             } footer: {
                 if stats.pausedByUser {
-                    Text("La synchro est en pause. Aucun nouveau transfert ne sera lancé jusqu'à la reprise manuelle.")
+                    Text("Sync is paused. No new transfer will start until you resume manually.")
                 } else if stats.failed > 0 {
                     Text("\(stats.failed) photo(s) en échec. Réessayer remet à zéro le compteur de tentatives.")
                 } else if stats.skipped > 0 {
@@ -289,7 +289,7 @@ struct PhotoSyncSettingsView: View {
                 Section {
                     Label(authorizationTitle, systemImage: authorizationIcon)
                         .foregroundStyle(authorizationTint)
-                    Button("Modifier l'accès aux Photos") {
+                    Button("Change Photos access") {
                         openPhotoSettings()
                     }
                 } footer: {
@@ -298,17 +298,17 @@ struct PhotoSyncSettingsView: View {
             }
 
             Section {
-                LabeledContent("Photos visibles", value: "\(stats.visible)")
-                LabeledContent("Indexés", value: "\(stats.indexed)")
-                LabeledContent("En attente", value: "\(stats.pending)")
-                LabeledContent("En cours/en file", value: "\(stats.active)")
-                LabeledContent("Terminés", value: "\(stats.completed)")
-                LabeledContent("Échecs", value: "\(stats.failed)")
+                LabeledContent("Visible photos", value: "\(stats.visible)")
+                LabeledContent("Indexed", value: "\(stats.indexed)")
+                LabeledContent("Pending", value: "\(stats.pending)")
+                LabeledContent("In progress/queued", value: "\(stats.active)")
+                LabeledContent("Completed", value: "\(stats.completed)")
+                LabeledContent("Failures", value: "\(stats.failed)")
                 if stats.skipped > 0 {
-                    LabeledContent("Ignorées", value: "\(stats.skipped)")
+                    LabeledContent("Skipped", value: "\(stats.skipped)")
                 }
             } header: {
-                Text("État")
+                Text("Status")
             }
 
             if !recentAssets.isEmpty {
@@ -336,11 +336,11 @@ struct PhotoSyncSettingsView: View {
                         .padding(.vertical, 4)
                     }
                 } header: {
-                    Text("Historique récent")
+                    Text("Recent history")
                 }
             }
         }
-        .navigationTitle("Synchro Photos")
+        .navigationTitle("Photo sync")
         #if os(iOS)
         .rgInlineNavTitle()
         #endif
@@ -576,7 +576,7 @@ struct PhotoSyncSettingsView: View {
             if stats.totalBytes > 0 {
                 HStack(spacing: 6) {
                     if stats.pausedByUser {
-                        Label("En pause", systemImage: "pause.fill")
+                        Label("Paused", systemImage: "pause.fill")
                             .font(.caption2.weight(.medium))
                             .foregroundStyle(.orange)
                     } else if stats.averageBytesPerSecond > 1 {
@@ -611,20 +611,20 @@ private func reloadRecentAssets() {
     private var authorizationTitle: String {
         switch stats.authorization {
         case .limited:
-            return String(localized: "Accès Photos limité")
+            return String(localized: "Limited Photos access")
         case .denied, .restricted:
-            return String(localized: "Accès Photos indisponible")
+            return String(localized: "Photos access unavailable")
         case .authorized, .notDetermined, .unknown:
-            return String(localized: "Accès Photos")
+            return String(localized: "Photos access")
         }
     }
 
     private var authorizationFooter: String {
         switch stats.authorization {
         case .limited:
-            return String(localized: "iOS ne donne accès qu’à la sélection actuelle. Les autres photos ne peuvent pas être indexées ni synchronisées.")
+            return String(localized: "iOS only grants access to the current selection. Other photos can’t be indexed or synced.")
         case .denied, .restricted:
-            return String(localized: "Autorise l’accès Photos dans Réglages pour synchroniser la photothèque.")
+            return String(localized: "Allow Photos access in Settings to sync your library.")
         case .authorized, .notDetermined, .unknown:
             return ""
         }
@@ -651,12 +651,12 @@ private func reloadRecentAssets() {
 
     private func statusLabel(_ status: PhotoSyncStatus) -> String {
         switch status {
-        case .pending: return String(localized: "Attente")
+        case .pending: return String(localized: "Waiting")
         case .exporting: return String(localized: "Export")
-        case .enqueued: return String(localized: "En file")
-        case .completed: return String(localized: "Terminé")
-        case .failed: return String(localized: "Échec")
-        case .skipped: return String(localized: "Ignoré")
+        case .enqueued: return String(localized: "Queued")
+        case .completed: return String(localized: "Completed")
+        case .failed: return String(localized: "Failed")
+        case .skipped: return String(localized: "Skipped")
         }
     }
 

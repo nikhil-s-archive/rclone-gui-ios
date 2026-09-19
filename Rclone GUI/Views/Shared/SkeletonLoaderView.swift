@@ -3,7 +3,7 @@
 //  Rclone GUI — Views/Shared
 //
 //  Shimmer-animated placeholder rows used while waiting for a list payload.
-//  Replaces the bland `ProgressView("Chargement…")` spinner in FolderView,
+//  Replaces the bland `ProgressView("Loading…")` spinner in FolderView,
 //  TrashView and TransfersView with the kind of skeleton rows users expect
 //  from a premium iOS file manager.
 //
@@ -48,8 +48,8 @@ public struct SkeletonLoaderView: View {
             }
         }
         .accessibilityElement()
-        .accessibilityLabel("Chargement en cours")
-        .accessibilityHint("La liste se met à jour dans un instant.")
+        .accessibilityLabel("Loading")
+        .accessibilityHint("The list will update in a moment.")
     }
 
     @ViewBuilder

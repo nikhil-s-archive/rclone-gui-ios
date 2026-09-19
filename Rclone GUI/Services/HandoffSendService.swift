@@ -26,9 +26,9 @@ public enum HandoffSendServiceError: Error, LocalizedError, Sendable {
     public var errorDescription: String? {
         switch self {
         case .noConfigImported:
-            return String(localized: "Aucune configuration à envoyer. Importe un rclone.conf d'abord.")
+            return String(localized: "No configuration to send. Import a rclone.conf first.")
         case .notAuthorized:
-            return String(localized: "Authentification biométrique requise pour préparer le Handoff.")
+            return String(localized: "Biometric authentication required to prepare Handoff.")
         }
     }
 }

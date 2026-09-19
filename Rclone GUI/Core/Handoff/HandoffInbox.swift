@@ -27,7 +27,7 @@ public enum HandoffInboxError: Error, LocalizedError, Sendable {
         case .unreadable(let why):
             return String(localized: "Lecture du fichier impossible : \(why).")
         case .noPayloadFound:
-            return String(localized: "Ce fichier ne contient pas de payload Handoff (HND1:) valide.")
+            return String(localized: "This file does not contain a valid Handoff payload (HND1:).")
         }
     }
 }

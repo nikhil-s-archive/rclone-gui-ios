@@ -19,7 +19,7 @@ struct HandoffLandingView: View {
             actionsSection
             explainerSection
         }
-        .navigationTitle("Handoff P2P")
+        .navigationTitle("P2P Handoff")
         #if os(iOS)
         .rgInlineNavTitle()
         #endif
@@ -28,21 +28,21 @@ struct HandoffLandingView: View {
     private var heroSection: some View {
         Section {
             AppHeroCard(
-                title: "Handoff P2P",
-                subtitle: "Transfère une config chiffrée entre appareils via QR ou AirDrop. Sans serveur.",
+                title: "P2P Handoff",
+                subtitle: "Transfers an encrypted config between devices via QR or AirDrop. Serverless.",
                 systemImage: "iphone.and.arrow.forward",
                 tint: .purple
             ) {
                 HStack(spacing: 10) {
                     AppMetricPill(
                         value: "E2E",
-                        label: "chiffré",
+                        label: "encrypted",
                         systemImage: "lock.fill",
                         tint: .green
                     )
                     AppMetricPill(
                         value: "0",
-                        label: "serveur",
+                        label: "server",
                         systemImage: "xmark.icloud.fill",
                         tint: .indigo
                     )
@@ -60,8 +60,8 @@ struct HandoffLandingView: View {
             } label: {
                 HandoffNavigationRow(
                     icon: "arrow.up.doc.fill",
-                    title: "Envoyer ma config",
-                    subtitle: "Vers un autre iPhone, Mac ou iPad",
+                    title: "Send my config",
+                    subtitle: "To another iPhone, Mac, or iPad",
                     tint: .purple,
                     showsChevron: false
                 )
@@ -72,14 +72,14 @@ struct HandoffLandingView: View {
             } label: {
                 HandoffNavigationRow(
                     icon: "arrow.down.doc.fill",
-                    title: "Recevoir une config",
-                    subtitle: "Depuis un QR, AirDrop ou un fichier",
+                    title: "Receive a config",
+                    subtitle: "From a QR code, AirDrop, or a file",
                     tint: .blue,
                     showsChevron: false
                 )
             }
         } header: {
-            Text("Choisis une direction")
+            Text("Choose a direction")
         }
     }
 
@@ -89,31 +89,31 @@ struct HandoffLandingView: View {
                 row(
                     systemImage: "lock.shield.fill",
                     tint: .green,
-                    title: "Chiffrement de bout en bout",
-                    body: "Ton rclone.conf est chiffré (ChaCha20-Poly1305) avec une clé dérivée d'une passphrase de 6 mots avant de quitter l'appareil. Personne ne peut le lire sans la passphrase."
+                    title: "End-to-end encryption",
+                    body: "Your rclone.conf is encrypted (ChaCha20-Poly1305) with a key derived from a 6-word passphrase before leaving the device. No one can read it without the passphrase."
                 )
                 row(
                     systemImage: "person.fill.questionmark",
                     tint: .purple,
-                    title: "Aucun serveur",
-                    body: "Pas de backend, pas de compte, pas de cloud. Le blob voyage directement d'un appareil à l'autre via QR (visuel), AirDrop (Bluetooth/Wi-Fi local) ou fichier."
+                    title: "No server",
+                    body: "No backend, no account, no cloud. The blob travels directly from device to device via QR (visual), AirDrop (local Bluetooth/Wi-Fi), or file."
                 )
                 row(
                     systemImage: "key.horizontal.fill",
                     tint: .orange,
-                    title: "Passphrase hors-canal",
-                    body: "Les 6 mots de la passphrase ne sont jamais intégrés au QR ou au fichier. Tu les lis sur l'écran de l'envoyeur et tu les tapes à la main sur l'appareil receveur."
+                    title: "Out-of-band passphrase",
+                    body: "The 6 words of the passphrase are never embedded in the QR or file. Read them on the sender's screen and enter them manually on the receiving device."
                 )
                 row(
                     systemImage: "eye.slash.fill",
                     tint: .indigo,
-                    title: "Passphrase à usage unique",
-                    body: "Chaque Handoff génère une passphrase fraîche. Si tu refais un Handoff plus tard, ce sera 6 nouveaux mots — la passphrase précédente ne ressert plus."
+                    title: "Single-use passphrase",
+                    body: "Each Handoff generates a fresh passphrase. If you perform another Handoff later, it will be 6 new words — previous passphrases cannot be reused."
                 )
             }
             .padding(.vertical, 4)
         } header: {
-            Text("Comment ça marche")
+            Text("How it works")
         }
     }
 

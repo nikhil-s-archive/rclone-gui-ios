@@ -57,7 +57,7 @@ public actor RcloneStreamingService {
             // sans envelopper le transport de download.
             GlassEngineMonitor.record(
                 host: url.host,
-                purpose: String(localized: "Pont rclone local (streaming/téléchargement)")
+                purpose: String(localized: "Local rclone bridge (streaming/download)")
             )
             return StreamingSession(id: id, url: url, isLiveStream: true)
         } catch {

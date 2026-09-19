@@ -9,6 +9,7 @@ import SwiftUI
 import StoreKit
 
 struct SettingsView: View {
+    @AppStorage("appLanguage") private var appLanguage: String = "en"
     @State private var showAddRemote = false
     @State private var showImport = false
     @State private var showExportShare = false
@@ -23,9 +24,6 @@ struct SettingsView: View {
                     .listRowBackground(Color.clear)
             }
 
-            Section("Abonnement") {
-                SubscriptionStatusRow()
-            }
 
             Section("Configuration") {
                 Button {
@@ -33,8 +31,8 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "externaldrive.badge.plus",
-                        title: "Ajouter un remote",
-                        subtitle: "Créer une entrée rclone manuellement",
+                        title: "Add a remote",
+                        subtitle: "Create an rclone entry manually",
                         tint: .blue,
                         showsChevron: false
                     )
@@ -46,8 +44,8 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "slider.horizontal.3",
-                        title: "Gérer les remotes",
-                        subtitle: "Modifier les paramètres ou réautoriser un token",
+                        title: "Manage remotes",
+                        subtitle: "Change settings or re-authorize a token",
                         tint: .indigo
                     )
                 }
@@ -57,8 +55,8 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "square.and.arrow.down",
-                        title: "Importer un rclone.conf",
-                        subtitle: "Depuis Fichiers, iCloud ou AirDrop",
+                        title: "Import an rclone.conf",
+                        subtitle: "From Files, iCloud or AirDrop",
                         tint: .blue,
                         showsChevron: false
                     )
@@ -70,8 +68,8 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "square.and.arrow.up",
-                        title: "Exporter rclone.conf",
-                        subtitle: "Partager ta configuration déchiffrée",
+                        title: "Export rclone.conf",
+                        subtitle: "Share your decrypted configuration",
                         tint: .orange,
                         showsChevron: false
                     )
@@ -83,8 +81,8 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "lock.shield",
-                        title: "Sécurité & biométrie",
-                        subtitle: "Verrouillage, Keychain et effacement local",
+                        title: "Security & biometrics",
+                        subtitle: "Lock, Keychain and local wipe",
                         tint: .green
                     )
                 }
@@ -94,8 +92,8 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "wand.and.stars",
-                        title: "Flows & automatisations",
-                        subtitle: "Raccourcis et actions Siri, 100 % locaux",
+                        title: "Flows & automations",
+                        subtitle: "Shortcuts and Siri actions, 100% on-device",
                         tint: .purple
                     )
                 }
@@ -105,8 +103,8 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "play.rectangle.on.rectangle",
-                        title: "Lecture",
-                        subtitle: "Audio en fond, PiP automatique, vitesse",
+                        title: "Playback",
+                        subtitle: "Background audio, automatic PiP, speed",
                         tint: .pink
                     )
                 }
@@ -117,7 +115,7 @@ struct SettingsView: View {
                     SettingsNavigationRow(
                         icon: "lock.shield.fill",
                         title: "Ghost Vault",
-                        subtitle: "Sauvegarde chiffrée dans un de tes remotes, scellée par biométrie",
+                        subtitle: "Encrypted backup in one of your remotes, sealed with biometrics",
                         tint: .indigo
                     )
                 }
@@ -127,22 +125,22 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "iphone.and.arrow.forward",
-                        title: "Handoff P2P",
-                        subtitle: "Transfère une config chiffrée entre appareils via QR ou AirDrop",
+                        title: "P2P Handoff",
+                        subtitle: "Transfer an encrypted config between devices via QR or AirDrop",
                         tint: .purple
                     )
                 }
 
             }
 
-            Section("Stockage") {
+            Section("Storage") {
                 NavigationLink {
                     CacheSettingsView()
                 } label: {
                     SettingsNavigationRow(
                         icon: "tray.full",
-                        title: "Cache média",
-                        subtitle: "Taille limite et purge des fichiers temporaires",
+                        title: "Media cache",
+                        subtitle: "Size limit and purge of temporary files",
                         tint: .orange
                     )
                 }
@@ -152,8 +150,8 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "rectangle.grid.3x2",
-                        title: "Vignettes",
-                        subtitle: "Galerie : politique de génération et cache",
+                        title: "Thumbnails",
+                        subtitle: "Gallery: generation policy and cache",
                         tint: .teal
                     )
                 }
@@ -163,8 +161,8 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "icloud.slash",
-                        title: "Sauvegarde iCloud",
-                        subtitle: "Exclure les données de l'app de la sauvegarde iCloud",
+                        title: "iCloud Backup",
+                        subtitle: "Exclude the app's data from iCloud backup",
                         tint: .blue
                     )
                 }
@@ -174,8 +172,8 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "trash",
-                        title: "Corbeille",
-                        subtitle: "Restaurer ou purger les fichiers supprimés (30 jours)",
+                        title: "Trash",
+                        subtitle: "Restore or purge deleted files (30 days)",
                         tint: .red
                     )
                 }
@@ -186,7 +184,7 @@ struct SettingsView: View {
                     SettingsNavigationRow(
                         icon: "speedometer",
                         title: "Performance",
-                        subtitle: "Limite de bande passante et pause globale des transferts",
+                        subtitle: "Bandwidth limit and global transfer pause",
                         tint: .indigo
                     )
                 }
@@ -196,21 +194,29 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "photo.stack",
-                        title: "Synchro Photos",
-                        subtitle: "Backup opportuniste de la photothèque vers un remote",
+                        title: "Photo sync",
+                        subtitle: "Opportunistic backup of the photo library to a remote",
                         tint: .pink
                     )
                 }
             }
 
-            Section("Diagnostic") {
+            Section("Language") {
+                Picker("App Language", selection: $appLanguage) {
+                    Text("English").tag("en")
+                    Text("Français").tag("fr")
+                    Text("System default").tag("system")
+                }
+            }
+
+            Section("Diagnostics") {
                 NavigationLink {
                     LogsView()
                 } label: {
                     SettingsNavigationRow(
                         icon: "doc.text.magnifyingglass",
                         title: "Logs",
-                        subtitle: "Événements rclone et erreurs récentes",
+                        subtitle: "Recent rclone events and errors",
                         tint: .indigo
                     )
                 }
@@ -219,8 +225,8 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "lock.shield",
-                        title: "Transparence",
-                        subtitle: "Glass Engine — prouver le « 0 appel maison »",
+                        title: "Transparency",
+                        subtitle: "Glass Engine — proving “zero phone-home”",
                         tint: .green
                     )
                 }
@@ -229,8 +235,8 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "info.circle",
-                        title: "À propos",
-                        subtitle: "Version, licences et détails de l’app",
+                        title: "About",
+                        subtitle: "Version, licenses and app details",
                         tint: .teal
                     )
                 }
@@ -239,8 +245,8 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "clock.arrow.circlepath",
-                        title: "Historique des versions",
-                        subtitle: "Les nouveautés de chaque mise à jour",
+                        title: "Version history",
+                        subtitle: "What’s new in each update",
                         tint: .orange
                     )
                 }
@@ -249,8 +255,8 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "sparkles",
-                        title: "Feuille de route",
-                        subtitle: "Les fonctionnalités à venir",
+                        title: "Roadmap",
+                        subtitle: "Upcoming features",
                         tint: .purple
                     )
                 }
@@ -262,8 +268,8 @@ struct SettingsView: View {
                 } label: {
                     SettingsNavigationRow(
                         icon: "envelope.fill",
-                        title: "Contacter le développeur",
-                        subtitle: "Bug, idée ou question — par e-mail",
+                        title: "Contact the developer",
+                        subtitle: "Bug, idea or question — by email",
                         tint: .blue
                     )
                 }
@@ -273,13 +279,13 @@ struct SettingsView: View {
             Section {
                 DebugTrialResetRow()
             } header: {
-                Text("Développeur (DEBUG)")
+                Text("Developer (DEBUG)")
             } footer: {
-                Text("Efface l'ancre d'essai (Keychain + iCloud) pour rejouer les 7 jours. Absent du build App Store.")
+                Text("Clears the trial anchor (Keychain + iCloud) to replay the 7 days. Excluded from App Store builds.")
             }
             #endif
         }
-        .navigationTitle("Réglages")
+        .navigationTitle("Settings")
         .sheet(isPresented: $showAddRemote) {
             AddRemoteWizard(onSaved: {
                 showAddRemote = false
@@ -294,14 +300,14 @@ struct SettingsView: View {
         .sheet(isPresented: $showExportShare) {
             if let exportURL {
                 ShareLink(item: exportURL) {
-                    Label("Partager rclone.conf", systemImage: "square.and.arrow.up")
+                    Label("Share rclone.conf", systemImage: "square.and.arrow.up")
                         .padding()
                 }
             }
         }
         #endif
         .alert(
-            "Export impossible",
+            "Unable to export",
             isPresented: Binding(
                 get: { exportError != nil },
                 set: { if !$0 { exportError = nil } }
@@ -311,6 +317,13 @@ struct SettingsView: View {
             Button("OK", role: .cancel) { exportError = nil }
         } message: { message in
             Text(message)
+        }
+        .onChange(of: appLanguage) { _, newLang in
+            if newLang == "system" {
+                UserDefaults.standard.removeObject(forKey: "AppleLanguages")
+            } else {
+                UserDefaults.standard.set([newLang], forKey: "AppleLanguages")
+            }
         }
     }
 
@@ -361,15 +374,15 @@ private struct SettingsHeaderCard: View {
         // generic label when iCloud isn't reachable. We don't ship a
         // user store, so this stays a UI-only signal.
         #if os(macOS)
-        return String(localized: "Mon Mac")
+        return String(localized: "My Mac")
         #else
-        return String(localized: "Mon iPhone")
+        return String(localized: "My iPhone")
         #endif
     }
 
     private var subtitle: String {
         if !hasConfig {
-            return String(localized: "Aucun rclone.conf — importer pour démarrer")
+            return String(localized: "No rclone.conf — import to get started")
         }
         let suffix = remoteCount == 1 ? "remote" : "remotes"
         return String(localized: "rclone.conf · \(remoteCount) \(suffix) · iCloud sync")
@@ -429,7 +442,7 @@ private struct SubscriptionStatusRow: View {
                             openURL(url)
                         }
                     } label: {
-                        Text("Gérer mon abonnement")
+                        Text("Manage my subscription")
                             .font(.system(size: 14, weight: .semibold))
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 9)
@@ -438,7 +451,7 @@ private struct SubscriptionStatusRow: View {
                     }
                     .buttonStyle(.plain)
                 } else if hasLifetimeAccess {
-                    Label("Achat à vie · accès permanent", systemImage: "checkmark.seal.fill")
+                    Label("Lifetime Purchase · permanent access", systemImage: "checkmark.seal.fill")
                         .font(.system(size: 14, weight: .semibold))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 9)
@@ -448,7 +461,7 @@ private struct SubscriptionStatusRow: View {
                     Button {
                         showOffers = true
                     } label: {
-                        Text("Voir les offres")
+                        Text("View Plans")
                             .font(.system(size: 14, weight: .semibold))
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 9)
@@ -466,7 +479,7 @@ private struct SubscriptionStatusRow: View {
                             ProgressView()
                                 .progressViewStyle(.circular)
                         }
-                        Text("Restaurer")
+                        Text("Restore")
                             .font(.system(size: 14, weight: .semibold))
                     }
                     .frame(maxWidth: .infinity)
@@ -486,13 +499,13 @@ private struct SubscriptionStatusRow: View {
 
     private var statusTitle: String {
         if hasLifetimeAccess {
-            return String(localized: "Achat à vie actif")
+            return String(localized: "Lifetime Purchase active")
         }
         switch subs.snapshot.entitlement {
-        case .trial:   return String(localized: "Essai gratuit en cours")
-        case .active:  return String(localized: "Abonnement actif")
-        case .expired: return String(localized: "Abonnement expiré")
-        case .none:    return String(localized: "Aucun abonnement")
+        case .trial:   return String(localized: "Free trial in progress")
+        case .active:  return String(localized: "Subscription active")
+        case .expired: return String(localized: "Subscription expired")
+        case .none:    return String(localized: "No subscription")
         }
     }
 
@@ -502,7 +515,7 @@ private struct SubscriptionStatusRow: View {
         formatter.timeStyle = .none
 
         if hasLifetimeAccess {
-            return String(localized: "Accès permanent · aucun renouvellement")
+            return String(localized: "Permanent access · no renewal")
         }
 
         switch subs.snapshot.entitlement {
@@ -522,16 +535,16 @@ private struct SubscriptionStatusRow: View {
             }
             return plan
         case .expired:
-            return String(localized: "Souscris à nouveau pour réutiliser l'app")
+            return String(localized: "Subscribe again to use the app")
         case .none:
-            return String(localized: "Souscris pour débloquer l'app")
+            return String(localized: "Subscribe to unlock the app")
         }
     }
 
     private func planLabel(for productID: String?) -> String {
         switch productID {
         case SubscriptionProductID.lifetime:
-            return String(localized: "À vie")
+            return String(localized: "Lifetime")
         case SubscriptionProductID.monthly:
             // Le prix réel vient de StoreKit (varie par storefront) ; on ne le
             // code pas dans la clé de traduction pour éviter de tout retraduire
@@ -583,10 +596,10 @@ private struct DebugTrialResetRow: View {
                             .foregroundStyle(.white)
                     }
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Réinitialiser l'essai")
+                    Text("Reset trial")
                         .font(.body.weight(.medium))
                         .foregroundStyle(.primary)
-                    Text(didReset ? "Essai à 7 jours · fermeture…" : "Repart à 7 jours puis ferme l'app")
+                    Text(didReset ? "Essai à 7 jours · fermeture…" : "Restarts the 7 days then quits the app")
                         .font(.caption)
                         .foregroundStyle(didReset ? Color.green : Color.secondary)
                         .lineLimit(2)

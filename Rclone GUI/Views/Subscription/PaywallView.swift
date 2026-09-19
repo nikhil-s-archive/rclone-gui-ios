@@ -55,7 +55,7 @@ struct PaywallView: View {
                                 .symbolRenderingMode(.hierarchical)
                         }
                         .buttonStyle(.plain)
-                        .accessibilityLabel(Text("Fermer"))
+                        .accessibilityLabel(Text("Close"))
                     }
                     .padding(.top, 14)
                     .padding(.horizontal, 16)
@@ -90,7 +90,7 @@ struct PaywallView: View {
         .task {
             await subs.loadProducts()
         }
-        .alert("Achat", isPresented: errorBinding) {
+        .alert("Purchase", isPresented: errorBinding) {
             Button("OK", role: .cancel) { subs.lastErrorMessage = nil }
         } message: {
             Text(subs.lastErrorMessage ?? "")
@@ -119,7 +119,7 @@ struct PaywallView: View {
         VStack(spacing: 18) {
             RGCryptSeal(size: 110)
             VStack(spacing: 6) {
-                Text("Débloque toute l'app")
+                Text("Unlock the entire app")
                     .font(.system(size: 28, weight: .bold))
                     .multilineTextAlignment(.center)
                 Text(heroSubtitle)
@@ -151,26 +151,26 @@ struct PaywallView: View {
             featureRow(
                 icon: "cloud.fill",
                 tint: .blue,
-                title: "Tous tes remotes, partout",
+                title: "All your remotes, everywhere",
                 subtitle: "80+ backends — S3, R2, Drive, Dropbox, SFTP, B2…"
             )
             featureRow(
                 icon: "lock.fill",
                 tint: RG.accent,
-                title: "Crypt rclone illimité",
-                subtitle: "AES-256, déchiffrement à la volée, clés sur ton appareil"
+                title: "Unlimited rclone crypt",
+                subtitle: "AES-256, on-the-fly decryption, keys on your device"
             )
             featureRow(
                 icon: "photo.on.rectangle.angled",
                 tint: RG.photoSync.accent,
-                title: "PhotoSync sans limite",
-                subtitle: "Backup automatique de toute ta photothèque"
+                title: "Unlimited PhotoSync",
+                subtitle: "Automatic backup of your whole photo library"
             )
             featureRow(
                 icon: "folder.fill",
                 tint: .orange,
-                title: "Intégration Fichiers complète",
-                subtitle: "Chaque remote disponible dans l'app Fichiers iOS"
+                title: "Full Files integration",
+                subtitle: "Every remote available in the iOS Files app"
             )
         }
     }
@@ -225,7 +225,7 @@ struct PaywallView: View {
                 return trial.uppercased()
             }
             if product.id == SubscriptionProductID.lifetime {
-                return String(localized: "Meilleure offre").uppercased()
+                return String(localized: "Best value").uppercased()
             }
             if product.id == SubscriptionProductID.yearly { return yearlySavingsBadge }
             return nil
@@ -283,18 +283,18 @@ struct PaywallView: View {
 
     private func defaultName(for product: Product) -> String {
         switch product.id {
-        case SubscriptionProductID.monthly:  return String(localized: "Mensuel")
-        case SubscriptionProductID.yearly:   return String(localized: "Annuel")
-        case SubscriptionProductID.lifetime: return String(localized: "À vie")
+        case SubscriptionProductID.monthly:  return String(localized: "Monthly")
+        case SubscriptionProductID.yearly:   return String(localized: "Yearly")
+        case SubscriptionProductID.lifetime: return String(localized: "Lifetime")
         default: return product.displayName.isEmpty ? product.id : product.displayName
         }
     }
 
     private func periodSubtitle(for product: Product) -> String {
         switch product.id {
-        case SubscriptionProductID.monthly:  return String(localized: "Renouvellement chaque mois")
-        case SubscriptionProductID.yearly:   return String(localized: "Renouvellement chaque année")
-        case SubscriptionProductID.lifetime: return String(localized: "Paiement unique · accès permanent")
+        case SubscriptionProductID.monthly:  return String(localized: "Renews every month")
+        case SubscriptionProductID.yearly:   return String(localized: "Renews every year")
+        case SubscriptionProductID.lifetime: return String(localized: "One-time purchase · permanent access")
         default: return ""
         }
     }
@@ -341,27 +341,27 @@ struct PaywallView: View {
             .buttonStyle(.plain)
             .disabled(subs.isPurchasing || subs.products.isEmpty)
             .confirmationDialog(
-                "Ton abonnement Apple restera actif",
+                "Your Apple subscription will remain active",
                 isPresented: $showLifetimeSubscriptionWarning,
                 titleVisibility: .visible
             ) {
-                Button("Continuer vers l'achat à vie") {
+                Button("Continue to Lifetime Purchase") {
                     Task { await purchaseSelected(remindAboutExistingSubscription: true) }
                 }
-                Button("Gérer l'abonnement Apple") {
+                Button("Manage Apple Subscription") {
                     openURL("https://apps.apple.com/account/subscriptions")
                 }
-                Button("Annuler", role: .cancel) {}
+                Button("Cancel", role: .cancel) {}
             } message: {
-                Text("L'achat à vie ne résilie pas ton abonnement mensuel ou annuel. Apple continuera à le renouveler tant que tu ne l'auras pas annulé séparément.")
+                Text("Lifetime Purchase does not cancel your monthly or annual subscription. Apple will continue to renew it until you cancel it separately.")
             }
-            .alert("Achat à vie activé", isPresented: $showLifetimeSubscriptionReminder) {
-                Button("Gérer l'abonnement Apple") {
+            .alert("Lifetime Purchase activated", isPresented: $showLifetimeSubscriptionReminder) {
+                Button("Manage Apple Subscription") {
                     openURL("https://apps.apple.com/account/subscriptions")
                 }
                 Button("Compris", role: .cancel) {}
             } message: {
-                Text("Ton accès permanent est actif. Ton abonnement Apple existant n'est pas annulé automatiquement : annule-le séparément pour éviter son prochain renouvellement.")
+                Text("Your permanent access is active. Your existing Apple subscription is not cancelled automatically: cancel it separately to prevent its next renewal.")
             }
 
             Button {
@@ -372,7 +372,7 @@ struct PaywallView: View {
                         ProgressView()
                             .progressViewStyle(.circular)
                     }
-                    Text("Restaurer un achat")
+                    Text("Restore a purchase")
                         .font(.system(size: 15, weight: .medium))
                 }
                 .foregroundStyle(RG.accent)
@@ -399,7 +399,7 @@ struct PaywallView: View {
             openURL("https://apps.apple.com/redeem?ctx=offercodes&id=\(Self.appStoreID)")
             #endif
         } label: {
-            Text("J'ai un code")
+            Text("I have a code")
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity)
@@ -416,18 +416,18 @@ struct PaywallView: View {
     }
 
     private var primaryCTALabel: String {
-        // L'achat à vie n'est pas un abonnement : CTA dédié, jamais "S'abonner"
+        // L'achat à vie n'est pas un abonnement : CTA dédié, jamais "Subscribe"
         // ni "essai gratuit" (pas d'intro offer sur un non-consommable).
         if SubscriptionProductID.isLifetime(selectedProductID) {
-            return String(localized: "Débloquer à vie")
+            return String(localized: "Unlock forever")
         }
-        // Le libelle "Commencer l'essai gratuit" n'est valide que si Apple a
+        // Le libelle "Start free trial" n'est valide que si Apple a
         // confirme un intro offer ET l'eligibilite de l'utilisateur. Sinon
-        // on tombe sur "S'abonner" pour ne pas promettre un trial inexistant.
+        // on tombe sur "Subscribe" pour ne pas promettre un trial inexistant.
         if subs.isTrialAvailable(for: selectedProductID) {
-            return String(localized: "Commencer l'essai gratuit")
+            return String(localized: "Start free trial")
         }
-        return String(localized: "S'abonner")
+        return String(localized: "Subscribe")
     }
 
     private func startSelectedPurchase() {
@@ -460,9 +460,9 @@ struct PaywallView: View {
     /// information trompeuse.
     private var legalDisclaimer: LocalizedStringKey {
         if SubscriptionProductID.isLifetime(selectedProductID) {
-            return "Paiement unique, sans abonnement. Accès permanent sur tous les appareils liés au même identifiant Apple."
+            return "One-time purchase, no subscription. Permanent access on all devices signed in to the same Apple Account."
         }
-        return "L'abonnement se renouvelle automatiquement. Annule à tout moment dans Réglages → Identifiant Apple → Abonnements, au moins 24 h avant la fin de la période en cours."
+        return "The subscription renews automatically. Cancel any time in Settings → Apple ID → Subscriptions, at least 24 hours before the end of the current period."
     }
 
     private var legalFooter: some View {
@@ -473,12 +473,12 @@ struct PaywallView: View {
                 .multilineTextAlignment(.center)
 
             HStack(spacing: 6) {
-                Button("Conditions d'utilisation") {
+                Button("Terms of Use") {
                     openURL("https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")
                 }
                 .font(.system(size: 11))
                 Text("·").foregroundStyle(.secondary).font(.system(size: 11))
-                Button("Politique de confidentialité") {
+                Button("Privacy Policy") {
                     openURL("https://vitalysrdt.github.io/rclone-gui-ios/privacy.html")
                 }
                 .font(.system(size: 11))
@@ -516,9 +516,9 @@ struct PaywallView: View {
                     .symbolRenderingMode(.hierarchical)
                     .foregroundStyle(RG.accent)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Budget serré ?")
+                    Text("On a tight budget?")
                         .font(.system(size: 15, weight: .semibold))
-                    Text("Étudiant·e, emploi précaire, chômage… pas de quoi soutenir le développeur en ce moment ? Demande une réduction selon tes moyens, sans justificatif.")
+                    Text("Student, precarious job, unemployed… can't afford to support the developer right now? Ask for a discount based on what you can afford — no proof required.")
                         .font(.system(size: 13))
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -532,7 +532,7 @@ struct PaywallView: View {
                 HStack(spacing: 8) {
                     Image(systemName: "envelope.fill")
                         .font(.system(size: 14, weight: .semibold))
-                    Text("Demander une réduction selon mes moyens")
+                    Text("Request a discount based on your means")
                         .font(.system(size: 14, weight: .semibold))
                 }
                 .frame(maxWidth: .infinity)
@@ -542,13 +542,13 @@ struct PaywallView: View {
             }
             .buttonStyle(.plain)
 
-            Text("Cette app est faite par un développeur passionné qui n'a pas non plus les moyens. Elle est libre : tu peux la compiler gratuitement depuis le code source. Tes abonnements aident à faire naître de nouvelles apps et à rendre la technologie accessible au plus grand nombre. Merci 🙏")
+            Text("This app is made by a passionate developer who isn't wealthy either. It's open source: you can build it for free from the source code. Your subscriptions help bring new apps to life and make technology accessible to everyone. Thank you 🙏")
                 .font(.system(size: 11))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
 
-            Button("Voir le code source (libre)") {
+            Button("View the source code (open source)") {
                 openURL("https://github.com/VitalysRDT/rclone-gui-ios")
             }
             .font(.system(size: 11, weight: .medium))
@@ -568,7 +568,7 @@ struct PaywallView: View {
         var components = URLComponents()
         components.scheme = "mailto"
         components.path = "vitalys@rougetet.com"
-        let subject = String(localized: "Rclone GUI — Demande de réduction (selon mes moyens)")
+        let subject = String(localized: "Rclone GUI — Discount request (based on my means)")
         let body = String(localized: """
         Bonjour,
 

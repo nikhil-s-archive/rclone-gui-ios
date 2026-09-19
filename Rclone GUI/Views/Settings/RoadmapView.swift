@@ -26,30 +26,30 @@ struct RoadmapView: View {
     var body: some View {
         List {
             Section {
-                Text("Ce qui arrive dans Rclone GUI. Tout reste privacy-first, open source et sans serveur.")
+                Text("What's coming to Rclone GUI. Everything stays privacy-first, open source and serverless.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
             }
 
-            horizon(label: "Court terme", window: "07–09 / 2026", tint: .green, items: [
-                Item(name: "Transferts Pro", date: "07/2026"),
+            horizon(label: "Short term", window: "07–09 / 2026", tint: .green, items: [
+                Item(name: "Pro Transfers", date: "07/2026"),
                 Item(name: "Flows", date: "07/2026"),
                 Item(name: "Ghost Vault", date: "08/2026"),
-                Item(name: "Handoff P2P", date: "08/2026"),
+                Item(name: "P2P Handoff", date: "08/2026"),
                 Item(name: "Glass Engine", date: "09/2026"),
             ])
-            horizon(label: "Moyen terme", window: "10–12 / 2026", tint: .blue, items: [
+            horizon(label: "Mid term", window: "10–12 / 2026", tint: .blue, items: [
                 Item(name: "Remote Lens", date: "10/2026", done: true),
                 Item(name: "Sealed Share", date: "10/2026"),
-                Item(name: "Recherche sémantique on-device", date: "11/2026"),
-                Item(name: "Règles de sync", date: "11/2026"),
-                Item(name: "Mode Voyage", date: "12/2026"),
+                Item(name: "On-device semantic search", date: "11/2026"),
+                Item(name: "Sync rules", date: "11/2026"),
+                Item(name: "Travel Mode", date: "12/2026"),
             ])
-            horizon(label: "Long terme", window: "2027", tint: .purple, items: [
+            horizon(label: "Long term", window: "2027", tint: .purple, items: [
                 Item(name: "ChronoDrive", date: "Q1 2027"),
                 Item(name: "Ghost Sync", date: "Q1 2027"),
                 Item(name: "Quantum Vault", date: "Q2 2027"),
-                Item(name: "Héritage numérique", date: "Q2 2027"),
+                Item(name: "Digital legacy", date: "Q2 2027"),
                 Item(name: "CipherSpace", date: "Q3 2027"),
             ])
 
@@ -57,13 +57,13 @@ struct RoadmapView: View {
                 Button {
                     openURL(fullURL)
                 } label: {
-                    Label("Voir la feuille de route complète", systemImage: "safari")
+                    Label("See the full roadmap", systemImage: "safari")
                 }
             } footer: {
-                Text("Dates cibles, susceptibles d'évoluer.")
+                Text("Target dates, subject to change.")
             }
         }
-        .navigationTitle("Feuille de route")
+        .navigationTitle("Roadmap")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
@@ -83,7 +83,7 @@ struct RoadmapView: View {
                         .font(.callout)
                         .foregroundStyle(it.done ? .secondary : .primary)
                     Spacer(minLength: 8)
-                    Text(it.done ? String(localized: "Livré") : it.date)
+                    Text(it.done ? String(localized: "Delivered") : it.date)
                         .font(.caption.weight(.semibold))
                         .monospacedDigit()
                         .foregroundStyle(it.done ? .green : .secondary)

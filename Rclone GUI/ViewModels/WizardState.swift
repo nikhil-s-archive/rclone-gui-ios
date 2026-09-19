@@ -98,7 +98,7 @@ final class WizardState {
     var configurationWasApplied: Bool = false
 
     /// Set to `true` once `config/create` has actually written the
-    /// remote section to rclone.conf — used so that "Annuler" later
+    /// remote section to rclone.conf — used so that "Cancel" later
     /// can clean up via `config/delete`.
     var remoteWasPreCreated: Bool = false
 

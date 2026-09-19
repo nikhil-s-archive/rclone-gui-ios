@@ -59,9 +59,9 @@ struct FilePicker: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("Sélecteur de fichier indisponible sur Mac")
+            Text("File picker unavailable on Mac")
                 .font(.headline)
-            Text("Sur macOS, colle le payload ou choisis Restaurer un vault pour un .rclonebackup distant.")
+            Text("On macOS, paste the payload or choose Restore a vault for a remote .rclonebackup.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

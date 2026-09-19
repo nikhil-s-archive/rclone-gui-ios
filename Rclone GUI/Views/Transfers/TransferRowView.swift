@@ -137,17 +137,17 @@ struct TransferRowView: View {
     private var statusBadge: some View {
         switch transfer.status {
         case .running:
-            AppStatusBadge(title: String(localized: "En cours"), systemImage: "bolt.fill", tint: kindColor)
+            AppStatusBadge(title: String(localized: "In progress"), systemImage: "bolt.fill", tint: kindColor)
         case .enqueued:
-            AppStatusBadge(title: String(localized: "En file"), systemImage: "tray.and.arrow.up.fill", tint: transfer.sourceKind == .photoLibrary ? .pink : .indigo)
+            AppStatusBadge(title: String(localized: "Queued"), systemImage: "tray.and.arrow.up.fill", tint: transfer.sourceKind == .photoLibrary ? .pink : .indigo)
         case .pending:
-            AppStatusBadge(title: String(localized: "Attente"), systemImage: "hourglass", tint: .gray)
+            AppStatusBadge(title: String(localized: "Waiting"), systemImage: "hourglass", tint: .gray)
         case .paused:
             AppStatusBadge(title: String(localized: "Pause"), systemImage: "pause.fill", tint: .orange)
         case .completed:
-            AppStatusBadge(title: String(localized: "Terminé"), systemImage: "checkmark", tint: .green)
+            AppStatusBadge(title: String(localized: "Completed"), systemImage: "checkmark", tint: .green)
         case .failed:
-            AppStatusBadge(title: String(localized: "Échec"), systemImage: "exclamationmark", tint: .red)
+            AppStatusBadge(title: String(localized: "Failed"), systemImage: "exclamationmark", tint: .red)
         }
     }
 
@@ -267,7 +267,7 @@ struct TransferRowView: View {
         let completed = max(0, min(transfer.fileCount, totalFileCompleted))
         let total = transfer.fileCount
         if total == 1 {
-            return String(localized: "1 fichier")
+            return String(localized: "1 file")
         }
         return String(localized: "\(completed)/\(total) fichiers")
     }
@@ -291,7 +291,7 @@ struct TransferRowView: View {
         guard transfer.status == .running,
               let name = transfer.currentFilename, !name.isEmpty else { return nil }
         let basename = (name as NSString).lastPathComponent
-        return String(localized: "En cours : ") + basename
+        return String(localized: "In progress: ") + basename
     }
 
     private var progressValue: Double {
@@ -339,11 +339,11 @@ struct TransferRowView: View {
         case .remote:
             return String(localized: "remote")
         case .localFile:
-            return String(localized: "fichier local")
+            return String(localized: "local file")
         case .localFolder:
-            return String(localized: "dossier local")
+            return String(localized: "local folder")
         case .photoLibrary:
-            return String(localized: "photothèque")
+            return String(localized: "photo library")
         case .fileProvider:
             return "Files"
         }

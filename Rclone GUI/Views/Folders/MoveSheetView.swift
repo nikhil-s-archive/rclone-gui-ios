@@ -45,7 +45,7 @@ struct MoveSheetView: View {
             Form {
                 Section("Source") {
                     LabeledContent("Remote", value: sourceRemote)
-                    LabeledContent("Chemin") {
+                    LabeledContent("Path") {
                         Text(entry.pathInRemote.isEmpty ? "/" : entry.pathInRemote)
                             .foregroundStyle(.secondary)
                             .lineLimit(2)
@@ -60,9 +60,9 @@ struct MoveSheetView: View {
                         }
                     }
                     let pathField = TextField(
-                        "Chemin de destination",
+                        "Destination path",
                         text: $dstPath,
-                        prompt: Text("chemin/dans/le/remote/fichier.ext"),
+                        prompt: Text("path/in/the/remote/file.ext"),
                         axis: .vertical
                     )
                     .labelsHidden()
@@ -84,26 +84,26 @@ struct MoveSheetView: View {
 
                 if dstRemote == sourceRemote && dstPath == entry.pathInRemote {
                     Section {
-                        Label("La destination est identique à la source.",
+                        Label("The destination is the same as the source.",
                               systemImage: "info.circle")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                 }
             }
-            .navigationTitle("Déplacer")
+            .navigationTitle("Move")
             #if os(iOS)
             .rgInlineNavTitle()
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Annuler") { isPresented = false }
+                    Button("Cancel") { isPresented = false }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         Task { await performMove() }
                     } label: {
-                        if isWorking { ProgressView() } else { Text("Déplacer") }
+                        if isWorking { ProgressView() } else { Text("Move") }
                     }
                     .disabled(!isFormValid || isWorking)
                 }
@@ -180,10 +180,10 @@ struct RemoteBatchTransferSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Opération") {
+                Section("Operation") {
                     Picker("Action", selection: $kind) {
-                        Text("Copier").tag(TransferKind.copy)
-                        Text("Déplacer").tag(TransferKind.move)
+                        Text("Copy").tag(TransferKind.copy)
+                        Text("Move").tag(TransferKind.move)
                         Text("Sync").tag(TransferKind.sync)
                     }
                     .pickerStyle(.segmented)
@@ -191,13 +191,13 @@ struct RemoteBatchTransferSheet: View {
 
                 Section("Source") {
                     LabeledContent("Remote", value: sourceRemote)
-                    LabeledContent("Dossier") {
+                    LabeledContent("Folder") {
                         Text(sourcePath.isEmpty ? "/" : sourcePath)
                             .foregroundStyle(.secondary)
                             .lineLimit(2)
                             .truncationMode(.middle)
                     }
-                    LabeledContent("Sélection", value: "\(entries.count) élément\(entries.count > 1 ? "s" : "")")
+                    LabeledContent("Selection", value: "\(entries.count) élément\(entries.count > 1 ? "s" : "")")
                 }
 
                 Section {
@@ -207,7 +207,7 @@ struct RemoteBatchTransferSheet: View {
                         }
                     }
 
-                    let field = TextField("Dossier cible", text: $dstFolder, prompt: Text("dossier/cible"), axis: .vertical)
+                    let field = TextField("Target folder", text: $dstFolder, prompt: Text("target/folder"), axis: .vertical)
                         .labelsHidden()
                         .autocorrectionDisabled(true)
                         .lineLimit(1...3)
@@ -220,20 +220,20 @@ struct RemoteBatchTransferSheet: View {
                 } header: {
                     Text("Destination")
                 } footer: {
-                    Text("Chaque élément garde son nom et sera placé dans le dossier cible.")
+                    Text("Each item keeps its name and will be placed in the target folder.")
                 }
 
                 if kind == .sync {
                     Section {
                         Label(
-                            "Sync miroir les dossiers sélectionnés : les fichiers présents uniquement dans le dossier cible peuvent être supprimés par rclone.",
+                            "Mirror-syncs the selected folders: files present only in the target folder may be deleted by rclone.",
                             systemImage: "exclamationmark.triangle"
                         )
                         .foregroundStyle(.orange)
                     }
                 }
 
-                Section("Éléments") {
+                Section("Items") {
                     ForEach(entries.prefix(12)) { entry in
                         Label(entry.name, systemImage: entry.isDirectory ? "folder" : "doc")
                             .lineLimit(1)
@@ -257,13 +257,13 @@ struct RemoteBatchTransferSheet: View {
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Annuler") { isPresented = false }
+                    Button("Cancel") { isPresented = false }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         Task { await enqueue() }
                     } label: {
-                        if isWorking { ProgressView() } else { Text("Ajouter") }
+                        if isWorking { ProgressView() } else { Text("Add") }
                     }
                     .disabled(!isFormValid || isWorking)
                 }
@@ -280,10 +280,10 @@ struct RemoteBatchTransferSheet: View {
 
     private var operationTitle: String {
         switch kind {
-        case .copy: return String(localized: "Copier")
-        case .move: return String(localized: "Déplacer")
-        case .sync: return String(localized: "Synchroniser")
-        default: return String(localized: "Transférer")
+        case .copy: return String(localized: "Copy")
+        case .move: return String(localized: "Move")
+        case .sync: return String(localized: "Sync")
+        default: return String(localized: "Transfer")
         }
     }
 

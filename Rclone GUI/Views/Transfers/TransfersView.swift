@@ -50,8 +50,8 @@ struct TransfersView: View {
             if transfers.isEmpty && !shouldShowPhotoSyncCard {
                 VStack {
                     AppEmptyStateView(
-                        title: "Aucun transfert",
-                        message: "Lance un téléchargement, un upload ou active PhotoSync depuis les réglages.",
+                        title: "No transfers",
+                        message: "Start a download, an upload, or enable PhotoSync from settings.",
                         systemImage: "arrow.up.arrow.down",
                         tint: .indigo
                     )
@@ -62,37 +62,37 @@ struct TransfersView: View {
                 transfersList
             }
         }
-        .navigationTitle("Transferts")
+        .navigationTitle("Transfers")
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 Button {
                     Task { await toggleGlobalPause() }
                 } label: {
                     Label(
-                        globalPauseShowsResume ? "Reprendre" : "Pause",
+                        globalPauseShowsResume ? "Resume" : "Pause",
                         systemImage: globalPauseShowsResume ? "play.fill" : "pause.fill"
                     )
                 }
                 .disabled(!hasActivePausable && !hasPausedResumable)
-                .accessibilityLabel(globalPauseShowsResume ? "Reprendre tous les transferts" : "Mettre tous les transferts en pause")
+                .accessibilityLabel(globalPauseShowsResume ? "Resume all transfers" : "Pause all transfers")
             }
             ToolbarItem(placement: .primaryAction) {
                 Menu {
                     Button {
                         Task { await exportTransferLogs() }
                     } label: {
-                        Label("Exporter les logs de transfert", systemImage: "square.and.arrow.up")
+                        Label("Export transfer logs", systemImage: "square.and.arrow.up")
                     }
                     Button(role: .destructive) {
                         clearCompleted()
                     } label: {
-                        Label("Effacer les transferts terminés", systemImage: "trash")
+                        Label("Clear completed transfers", systemImage: "trash")
                     }
                     .disabled(!hasTerminalTransfers)
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
-                .accessibilityLabel("Plus d'actions de transferts")
+                .accessibilityLabel("More transfer actions")
             }
             #if os(iOS)
             // Mode édition : permet de réordonner la file « En attente » par
@@ -108,7 +108,7 @@ struct TransfersView: View {
         .sheet(isPresented: $showLogShare) {
             if let url = logExportURL {
                 ShareLink(item: url) {
-                    Label("Partager le fichier de logs", systemImage: "square.and.arrow.up")
+                    Label("Share log file", systemImage: "square.and.arrow.up")
                         .padding()
                 }
             }
@@ -182,30 +182,30 @@ struct TransfersView: View {
             if globalPauseShowsResume {
                 let bytesPerSecond = Int64(bandwidthLimitMBps * 1024 * 1024)
                 try await TransferQueue.shared.resumeAllTransfers(bytesPerSecond: bytesPerSecond)
-                toast = AppToast(title: String(localized: "Transferts repris"), severity: .success)
+                toast = AppToast(title: String(localized: "Transfers resumed"), severity: .success)
             } else {
                 try await TransferQueue.shared.pauseAllTransfers()
-                toast = AppToast(title: String(localized: "Tous les transferts sont en pause"), severity: .info)
+                toast = AppToast(title: String(localized: "All transfers are paused"), severity: .info)
             }
             hapticTrigger &+= 1
         } catch {
-            toast = AppToast(title: String(localized: "Échec"), message: error.localizedDescription, severity: .error)
+            toast = AppToast(title: String(localized: "Failed"), message: error.localizedDescription, severity: .error)
         }
     }
 
     private func pauseTransfer(_ transfer: Transfer) async {
         await TransferQueue.shared.pause(transfer)
-        toast = AppToast(title: String(localized: "Transfert en pause"), severity: .info)
+        toast = AppToast(title: String(localized: "Transfer paused"), severity: .info)
         hapticTrigger &+= 1
     }
 
     private func resumeTransfer(_ transfer: Transfer) async {
         do {
             try await TransferQueue.shared.resume(transfer)
-            toast = AppToast(title: String(localized: "Transfert repris"), severity: .success)
+            toast = AppToast(title: String(localized: "Transfer resumed"), severity: .success)
             hapticTrigger &+= 1
         } catch {
-            toast = AppToast(title: String(localized: "Reprise impossible"), message: error.localizedDescription, severity: .error)
+            toast = AppToast(title: String(localized: "Unable to resume"), message: error.localizedDescription, severity: .error)
         }
     }
 
@@ -222,7 +222,7 @@ struct TransfersView: View {
                     TransferQueue.shared.prioritize(transfer)
                     hapticTrigger &+= 1
                 } label: {
-                    Label("Prioriser", systemImage: "arrow.up.to.line")
+                    Label("Prioritize", systemImage: "arrow.up.to.line")
                 }
             }
             if transfer.kind != .delete {
@@ -235,35 +235,35 @@ struct TransfersView: View {
             Button(role: .destructive) {
                 Task { await TransferQueue.shared.cancel(transfer) }
             } label: {
-                Label("Annuler", systemImage: "xmark.circle")
+                Label("Cancel", systemImage: "xmark.circle")
             }
         case .paused:
             Button {
                 Task { await resumeTransfer(transfer) }
             } label: {
-                Label("Reprendre", systemImage: "play.fill")
+                Label("Resume", systemImage: "play.fill")
             }
             Button(role: .destructive) {
                 deleteTransfer(transfer)
             } label: {
-                Label("Supprimer", systemImage: "trash")
+                Label("Delete", systemImage: "trash")
             }
         case .failed:
             Button {
                 Task { await retry(transfer) }
             } label: {
-                Label("Réessayer", systemImage: "arrow.clockwise")
+                Label("Retry", systemImage: "arrow.clockwise")
             }
             Button(role: .destructive) {
                 deleteTransfer(transfer)
             } label: {
-                Label("Supprimer", systemImage: "trash")
+                Label("Delete", systemImage: "trash")
             }
         case .completed:
             Button(role: .destructive) {
                 deleteTransfer(transfer)
             } label: {
-                Label("Supprimer", systemImage: "trash")
+                Label("Delete", systemImage: "trash")
             }
         }
     }
@@ -279,7 +279,7 @@ struct TransfersView: View {
             logExportURL = url
             showLogShare = true
         } catch {
-            toast = AppToast(title: String(localized: "Export échoué"), message: error.localizedDescription, severity: .error)
+            toast = AppToast(title: String(localized: "Export failed"), message: error.localizedDescription, severity: .error)
         }
     }
 
@@ -295,7 +295,7 @@ struct TransfersView: View {
                     Button(role: .destructive) {
                         Task { await TransferQueue.shared.cancel(transfer) }
                     } label: {
-                        Label("Annuler", systemImage: "xmark.circle")
+                        Label("Cancel", systemImage: "xmark.circle")
                     }
                     if transfer.kind != .delete {
                         Button {
@@ -310,7 +310,7 @@ struct TransfersView: View {
                         modelContext.delete(transfer)
                         try? modelContext.save()
                     } label: {
-                        Label("Supprimer", systemImage: "trash")
+                        Label("Delete", systemImage: "trash")
                     }
                 }
             }
@@ -319,14 +319,14 @@ struct TransfersView: View {
                     Button {
                         Task { await resumeTransfer(transfer) }
                     } label: {
-                        Label("Reprendre", systemImage: "play.fill")
+                        Label("Resume", systemImage: "play.fill")
                     }
                     .tint(.green)
                 } else if transfer.status == .failed {
                     Button {
                         Task { await retry(transfer) }
                     } label: {
-                        Label("Réessayer", systemImage: "arrow.clockwise")
+                        Label("Retry", systemImage: "arrow.clockwise")
                     }
                     .tint(.blue)
                 }
@@ -387,10 +387,10 @@ struct TransfersView: View {
     private func retry(_ transfer: Transfer) async {
         do {
             try await TransferQueue.shared.retry(transfer)
-            toast = AppToast(title: String(localized: "Retry lancé"), severity: .success)
+            toast = AppToast(title: String(localized: "Retry started"), severity: .success)
             hapticTrigger &+= 1
         } catch {
-            toast = AppToast(title: String(localized: "Échec retry"), message: error.localizedDescription, severity: .error)
+            toast = AppToast(title: String(localized: "Retry failed"), message: error.localizedDescription, severity: .error)
         }
     }
 
@@ -401,10 +401,10 @@ struct TransfersView: View {
 
         if summary.pausedByUser {
             await PhotoSyncService.shared.resumePhotoSync()
-            toast = AppToast(title: String(localized: "Synchro Photos reprise"), severity: .success)
+            toast = AppToast(title: String(localized: "Photo sync resumed"), severity: .success)
         } else {
             await PhotoSyncService.shared.pausePhotoSync()
-            toast = AppToast(title: String(localized: "Synchro Photos en pause"), severity: .info)
+            toast = AppToast(title: String(localized: "Photo sync paused"), severity: .info)
         }
         hapticTrigger &+= 1
         await refreshPhotoSyncState()
@@ -422,7 +422,7 @@ struct TransfersView: View {
             )
         } else {
             toast = AppToast(
-                title: "Aucun échec PhotoSync à réessayer",
+                title: "No PhotoSync failures to retry",
                 severity: .info
             )
         }
@@ -492,7 +492,7 @@ struct TransfersView: View {
             }
 
             Section {
-                Picker("Filtre", selection: $filter) {
+                Picker("Filter", selection: $filter) {
                     ForEach(TransferFilter.allCases) { filter in
                         Text(filter.label).tag(filter)
                     }
@@ -635,7 +635,7 @@ private struct PhotoSyncActivityCard: View {
                 metricsGrid
                 transferringFilesList
                 if summary?.isLimitedAccess == true {
-                    Label("Accès Photos limité: seule la sélection autorisée est synchronisée.", systemImage: "photo.badge.exclamationmark")
+                    Label("Limited Photos access: only the allowed selection is synced.", systemImage: "photo.badge.exclamationmark")
                         .font(.caption.weight(.medium))
                         .foregroundStyle(.orange)
                 }
@@ -649,12 +649,12 @@ private struct PhotoSyncActivityCard: View {
             return String(localized: "Pipeline batché vers \(remote):\(folder)")
         }
         if isEnabled {
-            return String(localized: "Destination rclone à finaliser avant le prochain batch.")
+            return String(localized: "rclone destination to finalize before the next batch.")
         }
         if summary?.hasTrackedPhotoSyncWork == true {
-            return String(localized: "Historique PhotoSync conservé, synchro actuellement inactive.")
+            return String(localized: "PhotoSync history kept, sync currently inactive.")
         }
-        return String(localized: "Sauvegarde agrégée de la photothèque via rclone copy.")
+        return String(localized: "Aggregated photo library backup via rclone copy.")
     }
 
     private var statusLine: some View {
@@ -712,7 +712,7 @@ private struct PhotoSyncActivityCard: View {
         } else {
             HStack(spacing: 10) {
                 ProgressView()
-                Text("Chargement de l'état PhotoSync…")
+                Text("Loading PhotoSync status…")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -726,10 +726,10 @@ private struct PhotoSyncActivityCard: View {
         // card vit dans une row de la List et se re-rend chaque seconde
         // pendant une sync (cf. AppMetricPillGrid).
         AppMetricPillGrid(items: [
-            .init(value: "\(summary?.pendingCount ?? 0)", label: "attente", systemImage: "clock", tint: .orange),
-            .init(value: "\(summary?.activeCount ?? 0)", label: "actifs", systemImage: "bolt.fill", tint: .blue),
-            .init(value: "\(summary?.completedCount ?? 0)", label: "terminés", systemImage: "checkmark.circle", tint: .green),
-            .init(value: "\(summary?.failedCount ?? 0)", label: "échecs", systemImage: "exclamationmark.triangle", tint: .red),
+            .init(value: "\(summary?.pendingCount ?? 0)", label: "Pending", systemImage: "clock", tint: .orange),
+            .init(value: "\(summary?.activeCount ?? 0)", label: "active", systemImage: "bolt.fill", tint: .blue),
+            .init(value: "\(summary?.completedCount ?? 0)", label: "completed", systemImage: "checkmark.circle", tint: .green),
+            .init(value: "\(summary?.failedCount ?? 0)", label: "failures", systemImage: "exclamationmark.triangle", tint: .red),
         ])
         .animation(.spring(duration: 0.35, bounce: 0.18), value: summary?.completedCount)
         .animation(.spring(duration: 0.35, bounce: 0.18), value: summary?.failedCount)
@@ -745,7 +745,7 @@ private struct PhotoSyncActivityCard: View {
         if let files = liveProgress?.transferringFiles, !files.isEmpty {
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
-                    Label("Transferts en cours", systemImage: "arrow.up.doc.fill")
+                    Label("Transfers in progress", systemImage: "arrow.up.doc.fill")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
                     Spacer()
@@ -777,7 +777,7 @@ private struct PhotoSyncActivityCard: View {
             }
             .buttonStyle(.plain)
             .disabled(!hasConfiguredDestination || summary == nil || isActionInProgress)
-            .accessibilityLabel(summary?.pausedByUser == true ? "Reprendre PhotoSync" : "Mettre PhotoSync en pause")
+            .accessibilityLabel(summary?.pausedByUser == true ? "Resume PhotoSync" : "Pause PhotoSync")
 
             Button(role: .destructive, action: onCancel) {
                 actionIcon("xmark.circle.fill", tint: .red)
@@ -791,7 +791,7 @@ private struct PhotoSyncActivityCard: View {
             }
             .buttonStyle(.plain)
             .disabled((summary?.failedCount ?? 0) == 0 || summary?.pausedByUser == true || !hasConfiguredDestination || isActionInProgress)
-            .accessibilityLabel("Réessayer les échecs PhotoSync")
+            .accessibilityLabel("Retry PhotoSync failures")
 
             Spacer(minLength: 0)
 
@@ -801,7 +801,7 @@ private struct PhotoSyncActivityCard: View {
                 actionIcon("chart.line.uptrend.xyaxis", tint: .primary)
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("Ouvrir les statistiques PhotoSync")
+            .accessibilityLabel("Open PhotoSync statistics")
 
             NavigationLink {
                 PhotoSyncSettingsView()
@@ -809,7 +809,7 @@ private struct PhotoSyncActivityCard: View {
                 actionIcon("gearshape", tint: .primary)
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("Ouvrir la configuration PhotoSync")
+            .accessibilityLabel("Open PhotoSync configuration")
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.top, 2)
@@ -834,16 +834,16 @@ private struct PhotoSyncActivityCard: View {
     }
 
     private var statusTitle: String {
-        guard let summary else { return String(localized: "Chargement") }
-        if !isEnabled { return String(localized: "Inactif") }
+        guard let summary else { return String(localized: "Loading") }
+        if !isEnabled { return String(localized: "Inactive") }
         if summary.pausedByUser { return String(localized: "Pause") }
         if isRunning, liveProgress != nil { return "rclone copy" }
-        if isRunning { return String(localized: "Préparation") }
-        if summary.activeCount > 0 { return String(localized: "En cours") }
-        if summary.pendingCount > 0 { return String(localized: "En attente") }
-        if summary.failedCount > 0 { return String(localized: "À vérifier") }
-        if summary.completedCount > 0 { return String(localized: "À jour") }
-        return String(localized: "Prêt")
+        if isRunning { return String(localized: "Preparing") }
+        if summary.activeCount > 0 { return String(localized: "In progress") }
+        if summary.pendingCount > 0 { return String(localized: "Pending") }
+        if summary.failedCount > 0 { return String(localized: "To verify") }
+        if summary.completedCount > 0 { return String(localized: "Up to date") }
+        return String(localized: "Ready")
     }
 
     private var statusIcon: String {
@@ -874,10 +874,10 @@ private struct PhotoSyncActivityCard: View {
     }
 
     private var progressLabel: String {
-        guard let summary else { return String(localized: "Chargement") }
+        guard let summary else { return String(localized: "Loading") }
         if summary.effectiveTotal == 0 {
-            if isRunning { return String(localized: "Préparation du prochain batch rclone") }
-            return isEnabled ? String(localized: "Aucun élément en attente") : String(localized: "PhotoSync désactivé")
+            if isRunning { return String(localized: "Preparing the next rclone batch") }
+            return isEnabled ? String(localized: "No items pending") : String(localized: "PhotoSync disabled")
         }
         return summary.displayLabel
     }
@@ -914,10 +914,10 @@ private enum TransferFilter: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .all: return String(localized: "Tous")
-        case .active: return String(localized: "Actifs")
-        case .completed: return String(localized: "Terminés")
-        case .failed: return String(localized: "Échecs")
+        case .all: return String(localized: "All")
+        case .active: return String(localized: "Active")
+        case .completed: return String(localized: "Completed")
+        case .failed: return String(localized: "Failures")
         }
     }
 }
@@ -950,11 +950,11 @@ private struct TransferGroup {
         // ancienneté) pour que le rang #n et le glisser-déposer soient cohérents.
         pending.sort { ($0.queueOrder, $0.startedAt) < ($1.queueOrder, $1.startedAt) }
         var groups: [TransferGroup] = []
-        if !running.isEmpty { groups.append(.init(title: String(localized: "En cours"), items: running, role: .running)) }
-        if !paused.isEmpty { groups.append(.init(title: String(localized: "En pause"), items: paused, role: .paused)) }
-        if !pending.isEmpty { groups.append(.init(title: String(localized: "En attente"), items: pending, role: .pending)) }
-        if !completed.isEmpty { groups.append(.init(title: String(localized: "Terminés"), items: completed, role: .completed)) }
-        if !failed.isEmpty { groups.append(.init(title: String(localized: "Échec"), items: failed, role: .failed)) }
+        if !running.isEmpty { groups.append(.init(title: String(localized: "In progress"), items: running, role: .running)) }
+        if !paused.isEmpty { groups.append(.init(title: String(localized: "Paused"), items: paused, role: .paused)) }
+        if !pending.isEmpty { groups.append(.init(title: String(localized: "Pending"), items: pending, role: .pending)) }
+        if !completed.isEmpty { groups.append(.init(title: String(localized: "Completed"), items: completed, role: .completed)) }
+        if !failed.isEmpty { groups.append(.init(title: String(localized: "Failed"), items: failed, role: .failed)) }
         return groups
     }
 }
@@ -1015,8 +1015,8 @@ private struct TransferOverviewCard: View {
 
     private var headlineText: String {
         let n = activeCount
-        if n == 0 { return String(localized: "Transferts fichiers/rclone") }
-        return n == 1 ? String(localized: "1 transfert individuel en cours") : String(localized: "\(n) transferts individuels en cours")
+        if n == 0 { return String(localized: "File / rclone transfers") }
+        return n == 1 ? String(localized: "1 individual transfer in progress") : String(localized: "\(n) transferts individuels en cours")
     }
 
     private var byteText: String {
@@ -1077,13 +1077,13 @@ private struct FilterEmptyRow: View {
     private var emptyMessage: String {
         switch filter {
         case .all:
-            return String(localized: "Aucun transfert")
+            return String(localized: "No transfers")
         case .active:
-            return String(localized: "Aucun transfert actif")
+            return String(localized: "No active transfers")
         case .completed:
-            return String(localized: "Aucun transfert terminé")
+            return String(localized: "No completed transfers")
         case .failed:
-            return String(localized: "Aucun transfert échoué")
+            return String(localized: "No failed transfers")
         }
     }
 }

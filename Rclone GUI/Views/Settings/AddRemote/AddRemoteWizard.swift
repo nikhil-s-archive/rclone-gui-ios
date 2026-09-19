@@ -39,19 +39,19 @@ struct AddRemoteWizard: View {
             Group {
                 if editingRemoteName != nil, let editingError {
                     VStack(spacing: 12) {
-                        Label("Impossible de charger le remote", systemImage: "exclamationmark.triangle.fill")
+                        Label("Couldn’t load the remote", systemImage: "exclamationmark.triangle.fill")
                             .font(.headline)
                             .foregroundStyle(.red)
                         Text(editingError)
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
-                        Button("Fermer") { dismiss() }
+                        Button("Close") { dismiss() }
                             .buttonStyle(.borderedProminent)
                     }
                     .padding()
                 } else if editingRemoteName != nil, !state.isEditing {
-                    ProgressView("Chargement du remote…")
+                    ProgressView("Loading remote…")
                 } else {
                     currentStepView
                 }
@@ -71,12 +71,12 @@ struct AddRemoteWizard: View {
                             Button {
                                 state.goBack()
                             } label: {
-                                Label("Retour", systemImage: "chevron.backward")
+                                Label("Back", systemImage: "chevron.backward")
                             }
                         }
                     }
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("Annuler") { handleCancel() }
+                        Button("Cancel") { handleCancel() }
                     }
                 }
         }
@@ -115,12 +115,12 @@ struct AddRemoteWizard: View {
             return String(localized: "Modifier \(editingRemoteName)")
         }
         switch state.step {
-        case .nameAndBackend: return String(localized: "Nouveau remote")
+        case .nameAndBackend: return String(localized: "New remote")
         case .formFields:     return state.selectedBackend?.displayName ?? String(localized: "Configuration")
-        case .cryptConfig:    return String(localized: "Coffre chiffré")
-        case .oauth:          return String(localized: "Authentification")
-        case .recapAndTest:   return String(localized: "Récapitulatif")
-        case .interactiveCLI: return String(localized: "Mode interactif (CLI)")
+        case .cryptConfig:    return String(localized: "Encrypted vault")
+        case .oauth:          return String(localized: "Authentication")
+        case .recapAndTest:   return String(localized: "Summary")
+        case .interactiveCLI: return String(localized: "Interactive mode (CLI)")
         }
     }
 

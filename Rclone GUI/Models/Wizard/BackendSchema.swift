@@ -46,7 +46,7 @@ struct BackendSchema: Identifiable, Hashable, Sendable {
     }
 
     /// Convenience: required form fields visible for the current
-    /// provider value (used to drive the "Suivant" button enable state).
+    /// provider value (used to drive the "Next" button enable state).
     func requiredVisibleFields(for selectedProvider: String?) -> [FieldSpec] {
         formFields.filter { spec in
             spec.required && spec.isVisible(for: selectedProvider)

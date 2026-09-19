@@ -14,9 +14,12 @@ import SwiftUI
 
 struct FlowsView: View {
     @Environment(\.openURL) private var openURL
+    @AppStorage("appLanguage") private var appLanguage: String = "en"
 
     private var useFrench: Bool {
-        Locale.current.language.languageCode?.identifier == "fr"
+        if appLanguage == "fr" { return true }
+        if appLanguage == "en" { return false }
+        return Locale.current.language.languageCode?.identifier == "fr"
     }
 
     private struct Flow: Identifiable {
@@ -32,27 +35,27 @@ struct FlowsView: View {
     private var flows: [Flow] {
         [
             Flow(icon: "photo.on.rectangle.angled", tint: .pink,
-                 titleFR: "Sauvegarder mes photos", titleEN: "Back up my photos",
+                 titleFR: "Back up my photos", titleEN: "Back up my photos",
                  descFR: "Lance PhotoSync. Parfait en automatisation : chaque nuit, sur secteur et en Wi-Fi.",
                  descEN: "Runs PhotoSync. Great as an automation: every night, while charging and on Wi-Fi."),
             Flow(icon: "arrow.triangle.2.circlepath", tint: .purple,
-                 titleFR: "Sauvegarder un dossier", titleEN: "Back up a folder",
+                 titleFR: "Back up a folder", titleEN: "Back up a folder",
                  descFR: "Synchronise un dossier d'un remote vers un autre (sauvegarde rclone).",
                  descEN: "Syncs a folder from one remote to another (rclone backup)."),
             Flow(icon: "pause.circle.fill", tint: .orange,
-                 titleFR: "Mettre les transferts en pause", titleEN: "Pause transfers",
+                 titleFR: "Pause transfers", titleEN: "Pause transfers",
                  descFR: "Suspend tous les transferts — utile pour économiser données ou batterie.",
                  descEN: "Pauses all transfers — handy to save data or battery."),
             Flow(icon: "play.circle.fill", tint: .green,
-                 titleFR: "Reprendre les transferts", titleEN: "Resume transfers",
+                 titleFR: "Resume transfers", titleEN: "Resume transfers",
                  descFR: "Relance tous les transferts mis en pause.",
                  descEN: "Resumes all paused transfers."),
             Flow(icon: "externaldrive.fill", tint: .blue,
-                 titleFR: "Ouvrir un remote", titleEN: "Open a remote",
+                 titleFR: "Open a remote", titleEN: "Open a remote",
                  descFR: "Ouvre directement un remote dans l'app.",
                  descEN: "Opens a remote directly in the app."),
             Flow(icon: "arrow.up.doc", tint: .indigo,
-                 titleFR: "Téléverser un fichier", titleEN: "Upload a file",
+                 titleFR: "Upload a file", titleEN: "Upload a file",
                  descFR: "Envoie un fichier vers un remote depuis Raccourcis ou la feuille de partage.",
                  descEN: "Sends a file to a remote from Shortcuts or the Share sheet."),
         ]

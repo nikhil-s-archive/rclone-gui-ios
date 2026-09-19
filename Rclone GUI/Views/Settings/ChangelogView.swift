@@ -12,8 +12,12 @@
 import SwiftUI
 
 struct ChangelogView: View {
+    @AppStorage("appLanguage") private var appLanguage: String = "en"
+
     private var useFrench: Bool {
-        Locale.current.language.languageCode?.identifier == "fr"
+        if appLanguage == "fr" { return true }
+        if appLanguage == "en" { return false }
+        return Locale.current.language.languageCode?.identifier == "fr"
     }
 
     private var currentVersion: String {
@@ -40,7 +44,7 @@ struct ChangelogView: View {
                 }
             }
         }
-        .navigationTitle(useFrench ? "Historique des versions" : "Version history")
+        .navigationTitle(useFrench ? "Version history" : "Version history")
         #if os(iOS)
         .rgInlineNavTitle()
         #endif
@@ -341,9 +345,12 @@ struct ChangelogView: View {
 /// `NavigationStack` avec un bouton de fermeture.
 struct WhatsNewSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("appLanguage") private var appLanguage: String = "en"
 
     private var useFrench: Bool {
-        Locale.current.language.languageCode?.identifier == "fr"
+        if appLanguage == "fr" { return true }
+        if appLanguage == "en" { return false }
+        return Locale.current.language.languageCode?.identifier == "fr"
     }
 
     var body: some View {
@@ -351,7 +358,7 @@ struct WhatsNewSheet: View {
             ChangelogView()
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
-                        Button(useFrench ? "Continuer" : "Continue") { dismiss() }
+                        Button(useFrench ? "Continue" : "Continue") { dismiss() }
                     }
                 }
         }

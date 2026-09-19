@@ -45,7 +45,7 @@ struct EntryActionsMenu: View {
                         previewTarget = entry
                     }
                 } label: {
-                    Label(Self.isMediaFile(entry.name) ? "Lire dans l'app" : "Ouvrir dans l'app",
+                    Label(Self.isMediaFile(entry.name) ? "Play in app" : "Open in the app",
                           systemImage: Self.isMediaFile(entry.name) ? "play.circle" : "doc.viewfinder")
                 }
 
@@ -55,14 +55,14 @@ struct EntryActionsMenu: View {
                     Button {
                         lensTarget = entry
                     } label: {
-                        Label("Aperçu", systemImage: "eye")
+                        Label("Preview", systemImage: "eye")
                     }
                 }
 
                 Button {
                     externalOpenTarget = entry
                 } label: {
-                    Label("Ouvrir dans une autre app", systemImage: "square.and.arrow.up")
+                    Label("Open in another app", systemImage: "square.and.arrow.up")
                 }
                 Divider()
             }
@@ -70,26 +70,26 @@ struct EntryActionsMenu: View {
             Button {
                 downloadTarget = entry
             } label: {
-                Label(entry.isDirectory ? "Télécharger le dossier" : "Télécharger",
+                Label(entry.isDirectory ? "Download folder" : "Download",
                       systemImage: "arrow.down.circle")
             }
 
             Button {
                 publicLinkTarget = entry
             } label: {
-                Label("Créer ou copier un lien public", systemImage: "link.badge.plus")
+                Label("Create or copy a public link", systemImage: "link.badge.plus")
             }
 
             Button {
                 renameTarget = entry
             } label: {
-                Label("Renommer", systemImage: "pencil")
+                Label("Rename", systemImage: "pencil")
             }
 
             Button {
                 moveTarget = entry
             } label: {
-                Label("Déplacer", systemImage: "arrow.left.arrow.right")
+                Label("Move", systemImage: "arrow.left.arrow.right")
             }
 
             Divider()
@@ -97,13 +97,13 @@ struct EntryActionsMenu: View {
             Button {
                 FilesClipboard.shared.stage(entries: [entry], remote: remote, operation: .cut)
             } label: {
-                Label("Couper", systemImage: "scissors")
+                Label("Cut", systemImage: "scissors")
             }
 
             Button {
                 FilesClipboard.shared.stage(entries: [entry], remote: remote, operation: .copy)
             } label: {
-                Label("Copier", systemImage: "doc.on.doc")
+                Label("Copy", systemImage: "doc.on.doc")
             }
 
             Button {
@@ -114,7 +114,7 @@ struct EntryActionsMenu: View {
                 NSPasteboard.general.setString(entry.pathInRemote, forType: .string)
                 #endif
             } label: {
-                Label("Copier le chemin (texte)", systemImage: "text.quote")
+                Label("Copy path (text)", systemImage: "text.quote")
             }
 
             Divider()
@@ -122,7 +122,7 @@ struct EntryActionsMenu: View {
             Button(role: .destructive) {
                 deleteTarget = entry
             } label: {
-                Label("Supprimer", systemImage: "trash")
+                Label("Delete", systemImage: "trash")
             }
         }
     }
@@ -216,8 +216,8 @@ struct RenameSheetView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Nouveau nom") {
-                    let field = TextField("Nom de fichier", text: $newName)
+                Section("New name") {
+                    let field = TextField("File name", text: $newName)
                         .autocorrectionDisabled(true)
                     #if os(iOS)
                     field.rgNoAutocap()
@@ -232,19 +232,19 @@ struct RenameSheetView: View {
                     }
                 }
             }
-            .navigationTitle("Renommer")
+            .navigationTitle("Rename")
             #if os(iOS)
             .rgInlineNavTitle()
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Annuler") { isPresented = false }
+                    Button("Cancel") { isPresented = false }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         Task { await rename() }
                     } label: {
-                        if isWorking { ProgressView() } else { Text("Renommer") }
+                        if isWorking { ProgressView() } else { Text("Rename") }
                     }
                     .disabled(newName.isEmpty || newName == entry.name || isWorking)
                 }

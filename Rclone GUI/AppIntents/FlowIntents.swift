@@ -22,9 +22,9 @@ import Foundation
 
 @available(iOS 17.0, *)
 public struct RunPhotoSyncIntent: AppIntent {
-    public static let title: LocalizedStringResource = "Sauvegarder mes photos"
+    public static let title: LocalizedStringResource = "Back up my photos"
     public static let description = IntentDescription(
-        "Lance une sauvegarde de la photothèque via PhotoSync. Idéal pour une automatisation (ex. tous les soirs, sur secteur)."
+        "Runs a photo library backup via PhotoSync. Ideal for automation (e.g. every night, connected to power)."
     )
 
     public init() {}
@@ -45,21 +45,21 @@ public struct RunPhotoSyncIntent: AppIntent {
 
 @available(iOS 17.0, *)
 public struct BackupFolderIntent: AppIntent {
-    public static let title: LocalizedStringResource = "Sauvegarder un dossier"
+    public static let title: LocalizedStringResource = "Back up a folder"
     public static let description = IntentDescription(
-        "Synchronise un dossier d'un remote vers un autre (sauvegarde rclone). Le dossier de destination est mis à jour pour refléter la source."
+        "Synchronizes a folder from one remote to another (rclone backup). The destination folder is updated to match the source."
     )
 
-    @Parameter(title: "Remote source")
+    @Parameter(title: "Source remote")
     public var sourceRemote: String
 
-    @Parameter(title: "Dossier source", default: "")
+    @Parameter(title: "Source folder", default: "")
     public var sourcePath: String
 
-    @Parameter(title: "Remote destination")
+    @Parameter(title: "Destination remote")
     public var destinationRemote: String
 
-    @Parameter(title: "Dossier destination", default: "")
+    @Parameter(title: "Destination folder", default: "")
     public var destinationPath: String
 
     public init() {}
@@ -93,9 +93,9 @@ public struct BackupFolderIntent: AppIntent {
 
 @available(iOS 17.0, *)
 public struct PauseTransfersIntent: AppIntent {
-    public static let title: LocalizedStringResource = "Mettre les transferts en pause"
+    public static let title: LocalizedStringResource = "Pause transfers"
     public static let description = IntentDescription(
-        "Met en pause tous les transferts en cours (utile pour économiser les données ou la batterie)."
+        "Pauses all ongoing transfers (useful to save cellular data or battery)."
     )
 
     public init() {}
@@ -103,15 +103,15 @@ public struct PauseTransfersIntent: AppIntent {
     @MainActor
     public func perform() async throws -> some IntentResult & ProvidesDialog {
         try await TransferQueue.shared.pauseAllTransfers()
-        return .result(dialog: "Transferts mis en pause.")
+        return .result(dialog: "Transfers paused.")
     }
 }
 
 @available(iOS 17.0, *)
 public struct ResumeTransfersIntent: AppIntent {
-    public static let title: LocalizedStringResource = "Reprendre les transferts"
+    public static let title: LocalizedStringResource = "Resume transfers"
     public static let description = IntentDescription(
-        "Reprend tous les transferts mis en pause."
+        "Resumes all paused transfers."
     )
 
     public init() {}
@@ -121,6 +121,6 @@ public struct ResumeTransfersIntent: AppIntent {
         let mbps = UserDefaults.standard.double(forKey: "transfer.bandwidthLimitMBps")
         let bytesPerSecond = Int64(mbps * 1024 * 1024)
         try await TransferQueue.shared.resumeAllTransfers(bytesPerSecond: bytesPerSecond)
-        return .result(dialog: "Transferts repris.")
+        return .result(dialog: "Transfers resumed.")
     }
 }

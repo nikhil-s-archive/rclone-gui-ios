@@ -131,9 +131,9 @@ public nonisolated enum GhostVaultError: Error, LocalizedError, Sendable {
         case .unsupportedCipher(let name):
             return String(localized: "Chiffrement non supporté : \(name).")
         case .decryptionFailed:
-            return String(localized: "Impossible de déchiffrer ce vault. La passphrase est probablement incorrecte.")
+            return String(localized: "Unable to decrypt this vault. The passphrase is likely incorrect.")
         case .decryptionMismatch:
-            return String(localized: "Le vault a été altéré ou la passphrase est incorrecte.")
+            return String(localized: "The vault was tampered with or the passphrase is incorrect.")
         case .payloadCorrupt(let why):
             return String(localized: "Payload Ghost Vault corrompu : \(why)")
         }

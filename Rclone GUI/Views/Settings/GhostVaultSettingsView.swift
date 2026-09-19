@@ -54,13 +54,13 @@ struct GhostVaultSettingsView: View {
         Section {
             AppHeroCard(
                 title: "Ghost Vault",
-                subtitle: "Sauvegarde chiffrée de ta config dans un de tes remotes, scellée par biométrie.",
+                subtitle: "Encrypted backup of your config in one of your remotes, sealed with biometrics.",
                 systemImage: "lock.shield.fill",
                 tint: .indigo
             ) {
                 HStack(spacing: 10) {
-                    AppMetricPill(value: "\(manifest.count)", label: "vaults connus", systemImage: "lock.fill", tint: .indigo)
-                    AppMetricPill(value: "E2E", label: "chiffré client", systemImage: "key.fill", tint: .green)
+                    AppMetricPill(value: "\(manifest.count)", label: "known vaults", systemImage: "lock.fill", tint: .indigo)
+                    AppMetricPill(value: "E2E", label: "client-side encrypted", systemImage: "key.fill", tint: .green)
                 }
             }
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
@@ -75,8 +75,8 @@ struct GhostVaultSettingsView: View {
             } label: {
                 GhostVaultNavigationRow(
                     icon: "plus.rectangle.on.folder.fill",
-                    title: "Créer un vault",
-                    subtitle: "Chiffre et uploade ta config dans un remote",
+                    title: "Create a vault",
+                    subtitle: "Encrypt and upload your config to a remote",
                     tint: .indigo,
                     showsChevron: false
                 )
@@ -89,8 +89,8 @@ struct GhostVaultSettingsView: View {
             } label: {
                 GhostVaultNavigationRow(
                     icon: "arrow.down.doc.fill",
-                    title: "Restaurer un vault",
-                    subtitle: "Depuis un remote que tu possèdes",
+                    title: "Restore a vault",
+                    subtitle: "From a remote you own",
                     tint: .teal,
                     showsChevron: false
                 )
@@ -107,10 +107,10 @@ struct GhostVaultSettingsView: View {
             if loading {
                 HStack {
                     ProgressView()
-                    Text("Chargement…").foregroundStyle(.secondary)
+                    Text("Loading…").foregroundStyle(.secondary)
                 }
             } else if manifest.isEmpty {
-                Text("Aucun vault connu sur cet appareil.")
+                Text("No known vaults on this device.")
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(manifest) { descriptor in
@@ -127,9 +127,9 @@ struct GhostVaultSettingsView: View {
                 }
             }
         } header: {
-            Text("Vaults connus")
+            Text("Known vaults")
         } footer: {
-            Text("Ces vaults ont été créés ou restaurés sur cet appareil. Pour en trouver d'autres sur tes remotes, utilise « Restaurer » → « Scanner un remote ».")
+            Text("These vaults were created or restored on this device. To find more on your remotes, use “Restore” → “Scan a remote”.")
         }
     }
 
@@ -147,7 +147,7 @@ struct GhostVaultSettingsView: View {
             }
             .padding(.vertical, 4)
         } header: {
-            Text("Comment ça marche")
+            Text("How it works")
         }
     }
 
@@ -181,7 +181,7 @@ struct GhostVaultSettingsView: View {
             try await GhostVaultService.shared.delete(descriptor: descriptor)
             toast = AppToast(title: "Vault supprimé", severity: .success)
         } catch {
-            toast = AppToast(title: "Erreur", message: error.localizedDescription, severity: .error)
+            toast = AppToast(title: "Error", message: error.localizedDescription, severity: .error)
         }
     }
 }
@@ -227,11 +227,11 @@ private struct VaultRow: View {
                     .font(.caption2).foregroundStyle(.secondary)
             }
             HStack(spacing: 10) {
-                Button("Restaurer", action: onRestore)
+                Button("Restore", action: onRestore)
                     .buttonStyle(.bordered)
                     .controlSize(.small)
                 Button(role: .destructive, action: onDelete) {
-                    Label("Supprimer", systemImage: "trash")
+                    Label("Delete", systemImage: "trash")
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.small)

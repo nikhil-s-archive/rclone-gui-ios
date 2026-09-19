@@ -425,7 +425,7 @@ struct AppToastBanner: View {
                     .background(.tertiary.opacity(0.25), in: Circle())
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("Fermer le toast")
+            .accessibilityLabel("Dismiss toast")
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)

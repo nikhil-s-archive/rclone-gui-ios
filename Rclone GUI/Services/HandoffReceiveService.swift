@@ -33,9 +33,9 @@ public enum HandoffReceiveServiceError: Error, LocalizedError, Sendable {
         case .badPassphrase(let why):
             return String(localized: "Impossible de déchiffrer : \(why).")
         case .emptyPassphrase:
-            return String(localized: "Saisis les 6 mots de la passphrase.")
+            return String(localized: "Enter the 6 passphrase words.")
         case .notAuthorized:
-            return String(localized: "Authentification biométrique requise.")
+            return String(localized: "Biometric authentication required.")
         case .writeFailed(let why):
             return String(localized: "Écriture impossible : \(why).")
         }
@@ -49,9 +49,9 @@ public enum HandoffImportStrategy: String, CaseIterable, Sendable {
 
     public var localizedTitle: String {
         switch self {
-        case .replace: return String(localized: "Remplacer")
-        case .merge:   return String(localized: "Fusionner")
-        case .cancel:  return String(localized: "Annuler")
+        case .replace: return String(localized: "Replace")
+        case .merge:   return String(localized: "Merge")
+        case .cancel:  return String(localized: "Cancel")
         }
     }
 }

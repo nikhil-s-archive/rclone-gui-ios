@@ -44,13 +44,13 @@ public final class OAuthBrokerService: NSObject {
         var errorDescription: String? {
             switch self {
             case .canceled:
-                return String(localized: "Authentification annulée.")
+                return String(localized: "Authentication cancelled.")
             case .strategyNotConfigured(let detail):
                 return String(localized: "Stratégie OAuth non configurée : \(detail)")
             case .missingCallbackParam(let key):
                 return String(localized: "Paramètre OAuth manquant : \(key)")
             case .stateMismatch:
-                return String(localized: "Le code OAuth reçu ne correspond pas à la requête.")
+                return String(localized: "The received OAuth code doesn’t match the request.")
             case .tokenExchangeFailed(let status, let body):
                 return String(localized: "Échange de token échoué (HTTP \(status)) : \(body)")
             case .decodingFailed(let detail):
@@ -258,7 +258,7 @@ public final class OAuthBrokerService: NSObject {
         // fournisseur (son tokenURL), aucun intermédiaire « maison ».
         GlassEngineMonitor.record(
             host: tokenURL.host,
-            purpose: String(localized: "Échange de token OAuth")
+            purpose: String(localized: "OAuth token exchange")
         )
 
         let (data, response) = try await URLSession.shared.data(for: request)

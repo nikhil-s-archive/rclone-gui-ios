@@ -233,7 +233,7 @@ struct EntryRowView: View {
 
     private var fileKindLabel: String {
         let ext = (entry.name as NSString).pathExtension.uppercased()
-        return ext.isEmpty ? String(localized: "Fichier") : ext
+        return ext.isEmpty ? String(localized: "File") : ext
     }
 
     private func formatBytes(_ bytes: Int64) -> String {

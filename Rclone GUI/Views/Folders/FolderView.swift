@@ -121,8 +121,8 @@ struct FolderView: View {
         public var id: String { rawValue }
         var label: String {
             switch self {
-            case .name: return String(localized: "Nom")
-            case .size: return String(localized: "Taille")
+            case .name: return String(localized: "Name")
+            case .size: return String(localized: "Size")
             case .date: return String(localized: "Date")
             case .type: return String(localized: "Type")
             }
@@ -209,7 +209,7 @@ struct FolderView: View {
             .toolbar {
                 ToolbarItem(placement: .navigation) {
                     if !displayedEntries.isEmpty {
-                        Button(selectionMode ? "OK" : "Sélectionner") {
+                        Button(selectionMode ? "OK" : "Select") {
                             selectionMode.toggle()
                             if !selectionMode { selectedEntryIDs.removeAll() }
                             hapticImpactTrigger &+= 1
@@ -218,20 +218,20 @@ struct FolderView: View {
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Menu {
-                        Picker("Affichage", selection: $viewModeRaw) {
-                            Label("Liste", systemImage: "list.bullet").tag("list")
-                            Label("Grille", systemImage: "square.grid.2x2").tag("grid")
+                        Picker("Display", selection: $viewModeRaw) {
+                            Label("List", systemImage: "list.bullet").tag("list")
+                            Label("Grid", systemImage: "square.grid.2x2").tag("grid")
                         }
                         if viewMode == .grid {
                             Divider()
                             Toggle(isOn: $gridMediaOnly) {
-                                Label("Médias uniquement", systemImage: "photo.on.rectangle.angled")
+                                Label("Media only", systemImage: "photo.on.rectangle.angled")
                             }
                         }
                     } label: {
                         Image(systemName: viewMode == .grid ? "square.grid.2x2" : "list.bullet")
                     }
-                    .accessibilityLabel("Mode d'affichage")
+                    .accessibilityLabel("Display mode")
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button {
@@ -239,7 +239,7 @@ struct FolderView: View {
                     } label: {
                         Image(systemName: currentFolderIsPinned ? "pin.fill" : "pin")
                     }
-                    .accessibilityLabel(currentFolderIsPinned ? "Retirer ce dossier des favoris" : "Épingler ce dossier")
+                    .accessibilityLabel(currentFolderIsPinned ? "Remove this folder from favorites" : "Pin this folder")
                 }
                 ToolbarItem(placement: .primaryAction) {
                     actionsMenu
@@ -404,17 +404,17 @@ struct FolderView: View {
                 titleVisibility: .visible,
                 presenting: deleteTarget
             ) { target in
-                Button("Mettre à la corbeille") {
+                Button("Move to trash") {
                     Task { await performDelete(target, permanent: false) }
                 }
-                Button("Supprimer définitivement", role: .destructive) {
+                Button("Delete permanently", role: .destructive) {
                     Task { await performDelete(target, permanent: true) }
                 }
-                Button("Annuler", role: .cancel) { deleteTarget = nil }
+                Button("Cancel", role: .cancel) { deleteTarget = nil }
             } message: { target in
                 Text(target.isDirectory
-                     ? "Le dossier et tout son contenu peuvent être restaurés depuis la corbeille pendant 30 jours, ou supprimés définitivement."
-                     : "Le fichier peut être restauré depuis la corbeille pendant 30 jours, ou supprimé définitivement.")
+                     ? "The folder and all its contents can be restored from the trash for 30 days, or deleted permanently."
+                     : "The file can be restored from the trash for 30 days, or deleted permanently.")
             }
             .alert("Info", isPresented: Binding(
                 get: { transientMessage != nil },
@@ -438,11 +438,11 @@ struct FolderView: View {
                 ),
                 titleVisibility: .visible
             ) {
-                Button("Remplacer", role: .destructive) {
+                Button("Replace", role: .destructive) {
                     pasteConflictNames = nil
                     Task { await pasteFromClipboard(force: true) }
                 }
-                Button("Annuler", role: .cancel) { pasteConflictNames = nil }
+                Button("Cancel", role: .cancel) { pasteConflictNames = nil }
             } message: {
                 Text(pasteConflictMessage)
             }
@@ -516,11 +516,11 @@ struct FolderView: View {
 
         case .failed(let msg):
             ContentUnavailableView {
-                Label("Erreur", systemImage: "exclamationmark.triangle")
+                Label("Error", systemImage: "exclamationmark.triangle")
             } description: {
                 Text(msg)
             } actions: {
-                Button("Réessayer") {
+                Button("Retry") {
                     Task { await load() }
                 }
                 .buttonStyle(.borderedProminent)
@@ -528,9 +528,9 @@ struct FolderView: View {
 
         case .loaded where entries.isEmpty:
             ContentUnavailableView(
-                "Dossier vide",
+                "Empty folder",
                 systemImage: "folder",
-                description: Text("Aucun fichier ni sous-dossier trouvé.")
+                description: Text("No files or subfolders found.")
             )
 
         case .loaded where displayedEntries.isEmpty:
@@ -583,9 +583,9 @@ struct FolderView: View {
     private var gridContent: some View {
         if gridRows.isEmpty {
             ContentUnavailableView(
-                "Aucun média",
+                "No media",
                 systemImage: "photo.on.rectangle.angled",
-                description: Text("Ce dossier ne contient pas d'images ni de vidéos.")
+                description: Text("This folder has no images or videos.")
             )
         } else {
             ScrollView {
@@ -646,7 +646,7 @@ struct FolderView: View {
 
         rowViewBase(row: row, entry: entry, activeTransfer: activeTransfer)
             .opacity(isCutStaged ? 0.45 : 1)
-            .accessibilityHint(isCutStaged ? "Coupé, en attente de collage dans un autre dossier" : "")
+            .accessibilityHint(isCutStaged ? "Cut, waiting to be pasted into another folder" : "")
     }
 
     @ViewBuilder
@@ -665,7 +665,7 @@ struct FolderView: View {
                     Button {
                         Task { await togglePin(entry) }
                     } label: {
-                        Label("Épingler", systemImage: "pin")
+                        Label("Pin", systemImage: "pin")
                     }
                     Divider()
                     EntryActionsMenu(
@@ -799,28 +799,28 @@ struct FolderView: View {
             Button {
                 downloadSelected()
             } label: {
-                Label("Télécharger", systemImage: "arrow.down.circle")
+                Label("Download", systemImage: "arrow.down.circle")
             }
             .disabled(selectedEntryIDs.isEmpty)
 
             Button {
                 stageSelected(.copy)
             } label: {
-                Label("Copier", systemImage: "doc.on.doc")
+                Label("Copy", systemImage: "doc.on.doc")
             }
             .disabled(selectedEntryIDs.isEmpty)
 
             Button {
                 remoteTransferRequest = RemoteBatchTransferRequest(kind: .move, entries: selectedEntries)
             } label: {
-                Label("Déplacer", systemImage: "arrow.left.arrow.right")
+                Label("Move", systemImage: "arrow.left.arrow.right")
             }
             .disabled(selectedEntryIDs.isEmpty)
 
             Button(role: .destructive) {
                 Task { await deleteSelected(permanent: false) }
             } label: {
-                Label("Corbeille", systemImage: "trash")
+                Label("Trash", systemImage: "trash")
             }
             .disabled(selectedEntryIDs.isEmpty)
         }
@@ -844,17 +844,17 @@ struct FolderView: View {
 
     private var sortMenu: some View {
         Menu {
-            Picker("Trier par", selection: $sortMode) {
+            Picker("Sort by", selection: $sortMode) {
                 ForEach(SortMode.allCases) { mode in
                     Text(mode.label).tag(mode)
                 }
             }
             Divider()
-            Toggle("Ordre décroissant", isOn: $sortDescending)
+            Toggle("Descending order", isOn: $sortDescending)
         } label: {
-            Label("Trier", systemImage: sortDescending ? "arrow.down.circle" : "arrow.up.circle")
+            Label("Sort", systemImage: sortDescending ? "arrow.down.circle" : "arrow.up.circle")
         }
-        .accessibilityLabel("Options de tri")
+        .accessibilityLabel("Sort options")
     }
 
     private var actionsMenu: some View {
@@ -864,7 +864,7 @@ struct FolderView: View {
                     pendingDownloadEntries = selectedEntries
                     showingDestinationPicker = !pendingDownloadEntries.isEmpty
                 } label: {
-                    Label("Télécharger la sélection", systemImage: "arrow.down.circle")
+                    Label("Download selection", systemImage: "arrow.down.circle")
                 }
                 .disabled(selectedEntryIDs.isEmpty)
 
@@ -875,7 +875,7 @@ struct FolderView: View {
                     selectionMode = false
                     hapticImpactTrigger &+= 1
                 } label: {
-                    Label("Couper la sélection", systemImage: "scissors")
+                    Label("Cut selection", systemImage: "scissors")
                 }
                 .disabled(selectedEntryIDs.isEmpty)
 
@@ -886,21 +886,21 @@ struct FolderView: View {
                     selectionMode = false
                     hapticImpactTrigger &+= 1
                 } label: {
-                    Label("Copier la sélection", systemImage: "doc.on.doc")
+                    Label("Copy selection", systemImage: "doc.on.doc")
                 }
                 .disabled(selectedEntryIDs.isEmpty)
 
                 Button {
                     Task { await deleteSelected(permanent: false) }
                 } label: {
-                    Label("Mettre la sélection à la corbeille", systemImage: "trash")
+                    Label("Move selection to trash", systemImage: "trash")
                 }
                 .disabled(selectedEntryIDs.isEmpty)
 
                 Button(role: .destructive) {
                     Task { await deleteSelected(permanent: true) }
                 } label: {
-                    Label("Supprimer définitivement la sélection", systemImage: "trash.slash")
+                    Label("Delete selection permanently", systemImage: "trash.slash")
                 }
                 .disabled(selectedEntryIDs.isEmpty)
 
@@ -909,21 +909,21 @@ struct FolderView: View {
                 Button {
                     remoteTransferRequest = RemoteBatchTransferRequest(kind: .copy, entries: selectedEntries)
                 } label: {
-                    Label("Copier vers… (autre dossier)", systemImage: "square.and.arrow.up.on.square")
+                    Label("Copy to… (another folder)", systemImage: "square.and.arrow.up.on.square")
                 }
                 .disabled(selectedEntryIDs.isEmpty)
 
                 Button {
                     remoteTransferRequest = RemoteBatchTransferRequest(kind: .move, entries: selectedEntries)
                 } label: {
-                    Label("Déplacer vers…", systemImage: "arrow.left.arrow.right")
+                    Label("Move to…", systemImage: "arrow.left.arrow.right")
                 }
                 .disabled(selectedEntryIDs.isEmpty)
 
                 Button {
                     remoteTransferRequest = RemoteBatchTransferRequest(kind: .sync, entries: selectedEntries)
                 } label: {
-                    Label("Synchroniser vers…", systemImage: "arrow.triangle.2.circlepath")
+                    Label("Sync to…", systemImage: "arrow.triangle.2.circlepath")
                 }
                 .disabled(selectedEntryIDs.isEmpty)
 
@@ -941,19 +941,19 @@ struct FolderView: View {
                 newFolderName = ""
                 showingNewFolderAlert = true
             } label: {
-                Label("Nouveau dossier", systemImage: "folder.badge.plus")
+                Label("New folder", systemImage: "folder.badge.plus")
             }
 
             Button {
                 showingFileImporter = true
             } label: {
-                Label("Uploader fichiers ou dossiers", systemImage: "arrow.up.doc")
+                Label("Upload files or folders", systemImage: "arrow.up.doc")
             }
 
             Button {
                 showingPhotoPicker = true
             } label: {
-                Label("Uploader depuis Photos", systemImage: "photo.on.rectangle")
+                Label("Upload from Photos", systemImage: "photo.on.rectangle")
             }
 
             Divider()
@@ -961,7 +961,7 @@ struct FolderView: View {
         } label: {
             Label("Actions", systemImage: "ellipsis.circle")
         }
-        .accessibilityLabel("Actions du dossier")
+        .accessibilityLabel("Folder actions")
     }
 
     #if os(iOS)
@@ -971,19 +971,19 @@ struct FolderView: View {
                 newFolderName = ""
                 showingNewFolderAlert = true
             } label: {
-                Label("Nouveau dossier", systemImage: "folder.badge.plus")
+                Label("New folder", systemImage: "folder.badge.plus")
             }
 
             Button {
                 showingFileImporter = true
             } label: {
-                Label("Uploader fichiers ou dossiers", systemImage: "arrow.up.doc")
+                Label("Upload files or folders", systemImage: "arrow.up.doc")
             }
 
             Button {
                 showingPhotoPicker = true
             } label: {
-                Label("Uploader depuis Photos", systemImage: "photo.on.rectangle")
+                Label("Upload from Photos", systemImage: "photo.on.rectangle")
             }
         } label: {
             Image(systemName: "plus")
@@ -993,8 +993,8 @@ struct FolderView: View {
                 .background(Circle().fill(.tint))
                 .shadow(color: .black.opacity(0.2), radius: 8, y: 4)
         }
-        .accessibilityLabel("Ajouter ou uploader")
-        .accessibilityHint("Crée un dossier ou choisis des fichiers et photos à envoyer")
+        .accessibilityLabel("Add or upload")
+        .accessibilityHint("Create a folder or choose files and photos to upload")
     }
     #endif
 
@@ -1132,7 +1132,7 @@ struct FolderView: View {
                 destinationFolder: path,
                 sourceKind: .fileProvider
             )
-            transientMessage = String(localized: "Upload ajouté à la file.")
+            transientMessage = String(localized: "Upload added to queue.")
         } catch {
             transientMessage = String(localized: "Échec upload : \(error.localizedDescription)")
         }
@@ -1190,7 +1190,7 @@ struct FolderView: View {
                 destinationFolder: path,
                 sourceKind: .photoLibrary
             )
-            transientMessage = String(localized: "Upload Photos ajouté à la file.")
+            transientMessage = String(localized: "Photos upload added to queue.")
         } catch {
             transientMessage = String(localized: "Échec upload Photos : \(error.localizedDescription)")
         }
@@ -1206,7 +1206,7 @@ struct FolderView: View {
     private var pasteConflictMessage: String {
         guard let names = pasteConflictNames else { return "" }
         if names.count == 1 {
-            return String(localized: "Le fichier de destination sera écrasé sans possibilité d'annulation. La version remplacée n'est pas envoyée à la corbeille.")
+            return String(localized: "The destination file will be overwritten with no undo. The replaced version is not sent to the trash.")
         }
         let preview = names.prefix(3).joined(separator: ", ")
         let suffix = names.count > 3 ? String(localized: " et \(names.count - 3) autre\(names.count - 3 > 1 ? "s" : "")") : ""
@@ -1218,7 +1218,7 @@ struct FolderView: View {
         let count = clip.count
         let suffix = count > 1
             ? String(localized: "\(count) éléments")
-            : String(localized: "1 élément")
+            : String(localized: "1 item")
         return clip.operation == .cut
             ? String(localized: "Coller (\(suffix), déplacer)")
             : String(localized: "Coller (\(suffix), copier)")
@@ -1228,8 +1228,8 @@ struct FolderView: View {
         do {
             _ = try await FilesClipboard.shared.paste(into: remote, folder: path, force: force)
             transientMessage = force
-                ? String(localized: "Collage avec écrasement en cours dans la file de transferts.")
-                : String(localized: "Collage en cours dans la file de transferts.")
+                ? String(localized: "Paste with overwrite queued in transfers.")
+                : String(localized: "Paste queued in transfers.")
             hapticSuccessTrigger &+= 1
             await load()
         } catch let error as FilesClipboardError {
@@ -1350,13 +1350,13 @@ private struct FolderOverviewCard: View {
             HStack(spacing: 6) {
                 FolderCountChip(
                     text: folderCount == 1
-                        ? String(localized: "1 dossier")
+                        ? String(localized: "1 folder")
                         : String(localized: "\(folderCount) dossiers"),
                     tint: .blue
                 )
                 FolderCountChip(
                     text: fileCount == 1
-                        ? String(localized: "1 fichier")
+                        ? String(localized: "1 file")
                         : String(localized: "\(fileCount) fichiers"),
                     tint: .teal
                 )
@@ -1393,13 +1393,13 @@ private struct FolderOverviewCard: View {
         let total = folderCount + fileCount
         let nounSuffix = total > 1 ? "s" : ""
         let head = total == 0
-            ? String(localized: "Dossier vide")
+            ? String(localized: "Empty folder")
             : String(localized: "\(total) élément\(nounSuffix)")
         return isInsideCrypt ? String(localized: "\(head) · déchiffrés à la volée") : head
     }
 
     private var accessibilityText: String {
-        let cryptLabel = isInsideCrypt ? String(localized: "chiffré") : ""
+        let cryptLabel = isInsideCrypt ? String(localized: "encrypted") : ""
         return "\(title) \(cryptLabel), \(breadcrumb), \(tagline)"
     }
 }
@@ -1432,15 +1432,15 @@ private struct NewFolderAlert: ViewModifier {
     let onCreate: () -> Void
 
     func body(content: Content) -> some View {
-        content.alert("Nouveau dossier", isPresented: $isPresented) {
-            TextField("Nom du dossier", text: $name)
+        content.alert("New folder", isPresented: $isPresented) {
+            TextField("Folder name", text: $name)
                 .autocorrectionDisabled()
                 #if os(iOS)
                 .textInputAutocapitalization(.never)
                 #endif
-            Button("Créer", action: onCreate)
+            Button("Create", action: onCreate)
                 .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
-            Button("Annuler", role: .cancel) { name = "" }
+            Button("Cancel", role: .cancel) { name = "" }
         } message: {
             Text("Le dossier sera créé dans \(folderTitle).")
         }

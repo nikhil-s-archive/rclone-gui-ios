@@ -20,42 +20,42 @@ struct PhotoSyncFiltersView: View {
         Form {
             Section {
                 Toggle("Photos", isOn: $filters.includePhotos)
-                Toggle("Vidéos", isOn: $filters.includeVideos)
+                Toggle("Videos", isOn: $filters.includeVideos)
             } header: {
-                Text("Types principaux")
+                Text("Main types")
             } footer: {
-                Text("Décocher exclut entièrement la catégorie. Au moins une doit rester cochée pour que la sync ait quelque chose à faire.")
+                Text("Unchecking excludes the category entirely. At least one must stay checked for the sync to have something to do.")
             }
 
             Section {
                 Toggle("Live Photos", isOn: $filters.includeLivePhotos)
                     .disabled(!filters.includePhotos)
-                Toggle("Captures d'écran", isOn: $filters.includeScreenshots)
+                Toggle("Screenshots", isOn: $filters.includeScreenshots)
                     .disabled(!filters.includePhotos)
                 Toggle("Panoramas", isOn: $filters.includePanoramas)
                     .disabled(!filters.includePhotos)
                 Toggle("Slow-mo / time-lapse", isOn: $filters.includeSlowMo)
                     .disabled(!filters.includeVideos)
             } header: {
-                Text("Sous-types")
+                Text("Subtypes")
             } footer: {
-                Text("Un Live Photo reste une photo : décocher l'option ne supprime pas la photo principale, ça ignore juste la composante vidéo liée.")
+                Text("A Live Photo is still a photo: unchecking the option doesn’t remove the main photo, it just ignores the linked video component.")
             }
 
             Section {
-                Toggle("Filtrer par dates", isOn: $useDateRange)
+                Toggle("Filter by dates", isOn: $useDateRange)
                 if useDateRange {
-                    DatePicker("Du", selection: $startDate, displayedComponents: .date)
-                    DatePicker("Au", selection: $endDate, in: startDate..., displayedComponents: .date)
+                    DatePicker("From", selection: $startDate, displayedComponents: .date)
+                    DatePicker("To", selection: $endDate, in: startDate..., displayedComponents: .date)
                 }
             } header: {
-                Text("Plage de dates")
+                Text("Date range")
             } footer: {
-                Text("Seules les photos prises entre ces deux dates seront indexées par la prochaine synchronisation.")
+                Text("Only photos taken between these two dates will be indexed by the next sync.")
             }
 
             Section {
-                Toggle("Limiter la durée des vidéos", isOn: $useMaxDuration)
+                Toggle("Limit video duration", isOn: $useMaxDuration)
                 if useMaxDuration {
                     HStack {
                         Slider(value: $maxDurationMinutes, in: 1...120, step: 1)
@@ -66,28 +66,28 @@ struct PhotoSyncFiltersView: View {
                     }
                 }
             } header: {
-                Text("Taille (durée vidéo)")
+                Text("Size (video duration)")
             } footer: {
-                Text("Les vidéos plus longues que ce seuil sont sautées. Les photos ne sont pas affectées (elles sont toujours petites).")
+                Text("Videos longer than this threshold are skipped. Photos are not affected (they’re always small).")
             }
 
             Section {
                 Button {
                     resetToDefaults()
                 } label: {
-                    Label("Tout réactiver (réinitialiser)", systemImage: "arrow.uturn.backward")
+                    Label("Re-enable all (reset)", systemImage: "arrow.uturn.backward")
                 }
                 .disabled(filters.isDefault && !useDateRange && !useMaxDuration)
             } footer: {
                 let n = filters.activeCount
                 if n == 0 {
-                    Text("Aucun filtre actif — toute la photothèque est éligible.")
+                    Text("No active filter — the entire library is eligible.")
                 } else {
                     Text("\(n) filtre(s) actif(s). Les changements s'appliquent à la prochaine synchro.")
                 }
             }
         }
-        .navigationTitle("Filtres")
+        .navigationTitle("Filters")
         #if os(iOS)
         .rgInlineNavTitle()
         #endif

@@ -227,7 +227,7 @@ struct CryptBadge: View {
         .padding(.horizontal, compact ? 4 : 5)
         .padding(.vertical, compact ? 1 : 2)
         .background(RG.accentSoft, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
-        .accessibilityLabel("Chiffré")
+        .accessibilityLabel("Encrypted")
     }
 }
 
@@ -252,17 +252,17 @@ struct FileStateGlyph: View {
             Image(systemName: "cloud")
                 .font(.system(size: 14, weight: .regular))
                 .foregroundStyle(.secondary)
-                .accessibilityLabel("Sur le remote")
+                .accessibilityLabel("On the remote")
         case .local:
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 15, weight: .regular))
                 .foregroundStyle(.green)
-                .accessibilityLabel("Téléchargé localement")
+                .accessibilityLabel("Downloaded locally")
         case .syncing:
             Image(systemName: "arrow.triangle.2.circlepath")
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(.blue)
-                .accessibilityLabel("Synchronisation en cours")
+                .accessibilityLabel("Syncing")
         case .downloading(let progress):
             ProgressArc(progress: max(0, min(1, progress)))
                 .frame(width: 18, height: 18)

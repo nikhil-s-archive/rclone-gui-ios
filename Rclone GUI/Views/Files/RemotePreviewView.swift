@@ -38,7 +38,7 @@ struct RemotePreviewHost: View {
             .rgInlineNavTitle()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Fermer") { dismiss() }
+                    Button("Close") { dismiss() }
                 }
                 ToolbarItem(placement: .primaryAction) {
                     if isPreparingPreview {
@@ -49,7 +49,7 @@ struct RemotePreviewHost: View {
                         } label: {
                             Image(systemName: "square.and.arrow.up")
                         }
-                        .accessibilityLabel("Ouvrir dans une autre app")
+                        .accessibilityLabel("Open in another app")
                     }
                 }
             }
@@ -142,13 +142,13 @@ struct RemoteExternalOpenHost: View {
                 if isLoading {
                     VStack(spacing: 12) {
                         ProgressView().controlSize(.large)
-                        Text("Préparation du fichier…")
+                        Text("Preparing file…")
                             .foregroundStyle(.secondary)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if let localURL {
                     ContentUnavailableView {
-                        Label("Fichier prêt", systemImage: "doc.badge.arrow.up")
+                        Label("File ready", systemImage: "doc.badge.arrow.up")
                     } description: {
                         Text(localURL.lastPathComponent)
                             .lineLimit(2)
@@ -157,13 +157,13 @@ struct RemoteExternalOpenHost: View {
                         Button {
                             showingActivity = true
                         } label: {
-                            Label("Ouvrir ou partager", systemImage: "square.and.arrow.up")
+                            Label("Open or share", systemImage: "square.and.arrow.up")
                         }
                         .buttonStyle(.borderedProminent)
                     }
                 } else {
                     ContentUnavailableView {
-                        Label("Ouverture impossible", systemImage: "exclamationmark.triangle")
+                        Label("Cannot open", systemImage: "exclamationmark.triangle")
                     } description: {
                         Text(error ?? "Le fichier n'a pas pu être préparé.")
                     }
@@ -173,7 +173,7 @@ struct RemoteExternalOpenHost: View {
             .rgInlineNavTitle()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Fermer") { dismiss() }
+                    Button("Close") { dismiss() }
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button {
@@ -181,7 +181,7 @@ struct RemoteExternalOpenHost: View {
                     } label: {
                         Image(systemName: "square.and.arrow.up")
                     }
-                    .accessibilityLabel("Ouvrir dans une autre app")
+                    .accessibilityLabel("Open in another app")
                     .disabled(localURL == nil)
                 }
             }
@@ -272,13 +272,13 @@ private struct MacFilePreparationHost: View {
                 if isLoading {
                     VStack(spacing: 12) {
                         ProgressView().controlSize(.large)
-                        Text("Préparation du fichier…")
+                        Text("Preparing file…")
                             .foregroundStyle(.secondary)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if let localURL {
                     ContentUnavailableView {
-                        Label("Fichier prêt", systemImage: "doc.badge.arrow.up")
+                        Label("File ready", systemImage: "doc.badge.arrow.up")
                     } description: {
                         Text(localURL.lastPathComponent)
                             .lineLimit(2)
@@ -287,18 +287,18 @@ private struct MacFilePreparationHost: View {
                         Button {
                             NSWorkspace.shared.open(localURL)
                         } label: {
-                            Label("Ouvrir", systemImage: "arrow.up.forward.app")
+                            Label("Open", systemImage: "arrow.up.forward.app")
                         }
                         .buttonStyle(.borderedProminent)
                         Button {
                             NSWorkspace.shared.activateFileViewerSelecting([localURL])
                         } label: {
-                            Label("Afficher dans le Finder", systemImage: "folder")
+                            Label("Show in Finder", systemImage: "folder")
                         }
                     }
                 } else {
                     ContentUnavailableView {
-                        Label("Aperçu impossible", systemImage: "exclamationmark.triangle")
+                        Label("Preview unavailable", systemImage: "exclamationmark.triangle")
                     } description: {
                         Text(error ?? "Le fichier n'a pas pu être préparé.")
                     }
@@ -307,7 +307,7 @@ private struct MacFilePreparationHost: View {
             .navigationTitle(entry.name)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Fermer") { dismiss() }
+                    Button("Close") { dismiss() }
                 }
             }
         }
@@ -349,12 +349,12 @@ struct RemoteExternalOpenHost: View {
 struct RemotePreviewHost: View {
     let remote: String
     let entry: RemoteEntryDTO
-    var body: some View { Text("Aperçu indisponible") }
+    var body: some View { Text("Preview unavailable") }
 }
 
 struct RemoteExternalOpenHost: View {
     let remote: String
     let entry: RemoteEntryDTO
-    var body: some View { Text("Ouverture externe indisponible") }
+    var body: some View { Text("External open unavailable") }
 }
 #endif

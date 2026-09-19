@@ -147,7 +147,7 @@ public actor RemoteService {
     /// A successful but empty response is normally authoritative. Some crypt +
     /// backend combinations can however transiently return `[]` for a populated
     /// directory. Treating that first response as final is dangerous: the UI says
-    /// "Dossier vide" and File Provider persists an empty manifest. For crypt
+    /// "Empty folder" and File Provider persists an empty manifest. For crypt
     /// remotes only, verify an empty response with a fresh Fs and finally a
     /// recursive listing before accepting it as truly empty.
     public func list(remote: String, path: String = "") async throws -> [RemoteEntryDTO] {

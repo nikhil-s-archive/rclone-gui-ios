@@ -79,18 +79,18 @@ struct HomeView: View {
     }
 
     private var heroTitle: String {
-        if !hasConfig { return String(localized: "Configure Rclone GUI") }
-        if isMockEngine { return String(localized: "Mode démo actif") }
-        if !activeTransfers.isEmpty { return String(localized: "Transferts en cours") }
-        return String(localized: "Tout est prêt")
+        if !hasConfig { return String(localized: "Set up Rclone GUI") }
+        if isMockEngine { return String(localized: "Demo mode active") }
+        if !activeTransfers.isEmpty { return String(localized: "Transfers in progress") }
+        return String(localized: "Everything is ready")
     }
 
     private var heroSubtitle: String {
         if !hasConfig {
-            return String(localized: "Importe ton rclone.conf pour parcourir tes remotes, synchroniser tes fichiers et exposer tes dossiers dans Fichiers.")
+            return String(localized: "Import your rclone.conf to browse your remotes, sync your files and expose your folders in Files.")
         }
         if isMockEngine {
-            return String(localized: "La configuration est chargée, mais le moteur RcloneKit réel n’est pas disponible dans cette session.")
+            return String(localized: "The configuration is loaded, but the real RcloneKit engine isn’t available in this session.")
         }
         if !activeTransfers.isEmpty {
             return String(localized: "\(activeTransfers.count) opération\(activeTransfers.count > 1 ? "s" : "") active\(activeTransfers.count > 1 ? "s" : "") sur tes remotes.")
@@ -99,36 +99,95 @@ struct HomeView: View {
     }
 
     var body: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: 18) {
+        List {
+            Section {
                 statusHero
-                quickActions
-                if !pinnedLocations.isEmpty {
-                    locationsSection(
-                        title: "Favoris",
-                        subtitle: "Tes dossiers épinglés",
-                        locations: Array(pinnedLocations.prefix(6)),
-                        empty: nil
-                    )
-                }
-                locationsSection(
-                    title: "Récents",
-                    subtitle: "Derniers dossiers ouverts",
-                    locations: recentLocations,
-                    empty: AppEmptyStateView(
-                        title: "Aucun dossier récent",
-                        message: "Ouvre un remote depuis Fichiers pour retrouver tes chemins ici.",
-                        systemImage: "clock",
-                        tint: .blue
-                    )
-                )
-                activitySection
+                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 14)
+
+            Section {
+                quickActions
+                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+            }
+
+            if !remotes.isEmpty {
+                Section {
+                    ForEach(remotes) { remote in
+                        NavigationLink(value: NavigationDestination.folder(remote: remote.name, path: "")) {
+                            AppLocationRow(
+                                title: remote.name,
+                                subtitle: humanType(remote.type),
+                                systemImage: remote.type == "crypt" ? "lock.shield" : "externaldrive",
+                                tint: remote.type == "crypt" ? .green : .blue
+                            )
+                        }
+                    }
+                } header: {
+                    Label(LocalizedStringKey("Connected Drives"), systemImage: "externaldrive.connected.to.line.below")
+                } footer: {
+                    if remotes.count == 1 {
+                        Text(LocalizedStringKey("1 connected drive."))
+                    } else {
+                        Text(LocalizedStringKey("\(remotes.count) lecteurs connectés."))
+                    }
+                }
+            }
+
+            if !pinnedLocations.isEmpty {
+                Section {
+                    ForEach(pinnedLocations.prefix(6)) { location in
+                        NavigationLink(value: location.destination) {
+                            AppLocationRow(
+                                title: location.displayName,
+                                subtitle: location.subtitle,
+                                systemImage: location.path.isEmpty ? "externaldrive.fill" : "folder.fill",
+                                tint: location.kind == .pinned ? .orange : .blue,
+                                trailing: location.kind == .recent ? relativeDate(location.lastOpenedAt) : nil
+                            )
+                        }
+                    }
+                } header: {
+                    Label(LocalizedStringKey("Favorites"), systemImage: "pin.fill")
+                }
+            }
+
+            Section {
+                if recentLocations.isEmpty {
+                    Text(LocalizedStringKey("No recent folders"))
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(recentLocations) { location in
+                        NavigationLink(value: location.destination) {
+                            AppLocationRow(
+                                title: location.displayName,
+                                subtitle: location.subtitle,
+                                systemImage: location.path.isEmpty ? "externaldrive.fill" : "folder.fill",
+                                tint: location.kind == .pinned ? .orange : .blue,
+                                trailing: relativeDate(location.lastOpenedAt)
+                            )
+                        }
+                    }
+                }
+            } header: {
+                Label(LocalizedStringKey("Recent"), systemImage: "clock")
+            }
+            
+            if !activeTransfers.isEmpty {
+                Section {
+                    ForEach(activeTransfers.prefix(3)) { transfer in
+                        TransferRowView(transfer: transfer)
+                    }
+                } header: {
+                    Label(LocalizedStringKey("Activity"), systemImage: "waveform.path.ecg")
+                }
+            }
         }
-        .background(Color.rgGroupedBackground)
-        .navigationTitle("Accueil")
+        .rgInsetGroupedList()
+        .navigationTitle(LocalizedStringKey("Home"))
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
@@ -136,7 +195,7 @@ struct HomeView: View {
                 } label: {
                     Image(systemName: "arrow.clockwise")
                 }
-                .accessibilityLabel("Rafraîchir l’accueil")
+                .accessibilityLabel(LocalizedStringKey("Refresh home"))
             }
         }
         .refreshable {
@@ -144,8 +203,6 @@ struct HomeView: View {
         }
         .task {
             await load()
-            // D4 : Boucle de polling PhotoSync 4s tant que Home est
-            // visible. SwiftUI cancelle automatiquement à disappear.
             await refreshPhotoSyncSnapshot()
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(4))
@@ -180,14 +237,14 @@ struct HomeView: View {
         ) {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 130), spacing: 10)], spacing: 10) {
                 AppMetricTile(value: "\(remotes.count)", label: "remotes", systemImage: "externaldrive", tint: .blue)
-                AppMetricTile(value: "\(activeTransfers.count)", label: "actifs", systemImage: "bolt.fill", tint: .indigo)
-                AppMetricTile(value: "\(trashEntries.count)", label: "corbeille", systemImage: "trash", tint: .red)
-                AppMetricTile(value: formattedBytes(cacheBytes), label: "cache média", systemImage: "tray.full", tint: .orange)
+                AppMetricTile(value: "\(activeTransfers.count)", label: "active", systemImage: "bolt.fill", tint: .indigo)
+                AppMetricTile(value: "\(trashEntries.count)", label: "Trash", systemImage: "trash", tint: .red)
+                AppMetricTile(value: formattedBytes(cacheBytes), label: "media cache", systemImage: "tray.full", tint: .orange)
             }
 
             if let loadError {
                 AppInlineMessage(
-                    title: "Lecture partielle",
+                    title: "Partial read",
                     message: LocalizedStringKey(loadError),
                     systemImage: "exclamationmark.triangle.fill",
                     tint: .orange
@@ -197,81 +254,55 @@ struct HomeView: View {
     }
 
     private var quickActions: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            AppSectionHeader(title: "Actions rapides", subtitle: "Les chemins les plus courts", systemImage: "sparkles")
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 10)], spacing: 10) {
-                Button {
-                    showAddRemote = true
-                } label: {
-                    AppActionTile(
-                        title: "Nouveau",
-                        subtitle: "Ajouter un remote",
-                        systemImage: "externaldrive.badge.plus",
-                        tint: .blue
-                    )
-                }
-                .buttonStyle(.plain)
-
-                Button {
-                    showImport = true
-                } label: {
-                    AppActionTile(
-                        title: "Importer",
-                        subtitle: "Charger rclone.conf",
-                        systemImage: "square.and.arrow.down",
-                        tint: .blue
-                    )
-                }
-                .buttonStyle(.plain)
-
-                if let firstRemoteDestination {
-                    NavigationLink(value: firstRemoteDestination) {
-                        AppActionTile(
-                            title: "Parcourir",
-                            subtitle: LocalizedStringKey(firstRemoteSubtitle),
-                            systemImage: "folder",
-                            tint: .green
-                        )
-                    }
-                    .buttonStyle(.plain)
-                } else {
-                    AppActionTile(
-                        title: "Parcourir",
-                        subtitle: "Aucun remote",
-                        systemImage: "folder",
-                        tint: .gray
-                    )
-                    .opacity(0.55)
-                }
-
-                // D4 : mini-card PhotoSync — affiche ProgressArc + X/Y
-                // quand un sync est actif, fallback subtitle textuel
-                // sinon. Tap → Settings PhotoSync (route inchangée).
-                NavigationLink {
-                    PhotoSyncSettingsView()
-                } label: {
-                    photoSyncTile
-                }
-                .buttonStyle(.plain)
-
-                NavigationLink {
-                    PerformanceSettingsView()
-                } label: {
-                    AppActionTile(
-                        title: "Performance",
-                        subtitle: "Pause et débit",
-                        systemImage: "speedometer",
-                        tint: .indigo
-                    )
-                }
-                .buttonStyle(.plain)
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 10)], spacing: 10) {
+            Button {
+                showAddRemote = true
+            } label: {
+                AppActionTile(
+                    title: "New",
+                    subtitle: "Add a remote",
+                    systemImage: "externaldrive.badge.plus",
+                    tint: .blue
+                )
             }
+            .buttonStyle(.plain)
+
+            Button {
+                showImport = true
+            } label: {
+                AppActionTile(
+                    title: "Import",
+                    subtitle: "Load rclone.conf",
+                    systemImage: "square.and.arrow.down",
+                    tint: .blue
+                )
+            }
+            .buttonStyle(.plain)
+
+            NavigationLink {
+                PhotoSyncSettingsView()
+            } label: {
+                photoSyncTile
+            }
+            .buttonStyle(.plain)
+
+            NavigationLink {
+                PerformanceSettingsView()
+            } label: {
+                AppActionTile(
+                    title: "Performance",
+                    subtitle: "Pause and bandwidth",
+                    systemImage: "speedometer",
+                    tint: .indigo
+                )
+            }
+            .buttonStyle(.plain)
         }
     }
 
     /// D4 : Tile PhotoSync sur Home. Affiche un ProgressArc + X/Y
     /// quand un sync est en cours, sinon fallback au sous-titre
-    /// textuel "Backup configuré" / "N en attente".
+    /// textuel "Backup configured" / "N en attente".
     @ViewBuilder
     private var photoSyncTile: some View {
         if let summary = photoSyncSummary,
@@ -314,7 +345,7 @@ struct HomeView: View {
         } else {
             AppActionTile(
                 title: "Photos",
-                subtitle: photoSyncPendingCount == 0 ? "Backup configuré" : "\(photoSyncPendingCount) en attente",
+                subtitle: photoSyncPendingCount == 0 ? "Backup configured" : "\(photoSyncPendingCount) en attente",
                 systemImage: "photo.stack",
                 tint: RG.photoSync.accent
             )
@@ -327,85 +358,6 @@ struct HomeView: View {
     private func refreshPhotoSyncSnapshot() async {
         photoSyncIsRunning = PhotoSyncService.shared.isSyncingPublic
         photoSyncSummary = await PhotoSyncService.shared.currentSummary()
-    }
-
-    private func locationsSection(
-        title: String,
-        subtitle: String,
-        locations: [SavedLocation],
-        empty: AppEmptyStateView?
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            AppSectionHeader(title: LocalizedStringKey(title), subtitle: LocalizedStringKey(subtitle), systemImage: title == "Favoris" ? "pin.fill" : "clock")
-            if locations.isEmpty {
-                if let empty {
-                    empty
-                }
-            } else {
-                VStack(spacing: 0) {
-                    ForEach(locations) { location in
-                        NavigationLink(value: location.destination) {
-                            AppLocationRow(
-                                title: location.displayName,
-                                subtitle: location.subtitle,
-                                systemImage: location.path.isEmpty ? "externaldrive.fill" : "folder.fill",
-                                tint: location.kind == .pinned ? .orange : .blue,
-                                trailing: location.kind == .recent ? relativeDate(location.lastOpenedAt) : nil
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        if location.id != locations.last?.id {
-                            Divider()
-                                .padding(.leading, 52)
-                        }
-                    }
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 4)
-                .appGlassSurface(cornerRadius: AppSurface.cornerRadius)
-            }
-        }
-    }
-
-    private var activitySection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            AppSectionHeader(title: "Activité", subtitle: "Transferts et hygiène locale", systemImage: "waveform.path.ecg")
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 145), spacing: 10)], spacing: 10) {
-                AppMetricTile(value: "\(completedTransfers.count)", label: "terminés", systemImage: "checkmark.circle", tint: .green)
-                AppMetricTile(value: "\(failedTransfers.count)", label: "échecs", systemImage: "exclamationmark.triangle", tint: .red)
-                AppMetricTile(value: "\(photoAssets.count)", label: "photos indexées", systemImage: "photo.on.rectangle", tint: RG.photoSync.accent)
-            }
-
-            if activeTransfers.isEmpty {
-                AppInlineMessage(
-                    title: "File calme",
-                    message: "Les prochains uploads, téléchargements ou syncs apparaîtront ici.",
-                    systemImage: "checkmark.circle.fill",
-                    tint: .green
-                )
-            } else {
-                VStack(spacing: 0) {
-                    ForEach(activeTransfers.prefix(3)) { transfer in
-                        TransferRowView(transfer: transfer)
-                        if transfer.id != activeTransfers.prefix(3).last?.id {
-                            Divider()
-                                .padding(.leading, 58)
-                        }
-                    }
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .appGlassSurface(cornerRadius: AppSurface.cornerRadius)
-            }
-        }
-    }
-
-    private var firstRemoteDestination: NavigationDestination? {
-        remotes.first.map { .folder(remote: $0.name, path: "") }
-    }
-
-    private var firstRemoteSubtitle: String {
-        remotes.first.map { "\($0.name):/" } ?? "Aucun remote"
     }
 
     private func load() async {
@@ -427,6 +379,26 @@ struct HomeView: View {
             loadError = nil
         } catch {
             loadError = error.localizedDescription
+        }
+    }
+
+    private func humanType(_ type: String) -> String {
+        switch type {
+        case "s3": return "S3 / R2 / Bunny / Wasabi"
+        case "b2": return "Backblaze B2"
+        case "sftp": return "SFTP"
+        case "ftp": return "FTP"
+        case "webdav": return "WebDAV"
+        case "drive": return "Google Drive"
+        case "dropbox": return "Dropbox"
+        case "onedrive": return "OneDrive"
+        case "box": return "Box"
+        case "crypt": return String(localized: "Crypt encrypted")
+        case "alias": return "Alias"
+        case "union": return String(localized: "Union of remotes")
+        case "combine": return "Combine"
+        case "local": return "Local"
+        default: return type
         }
     }
 

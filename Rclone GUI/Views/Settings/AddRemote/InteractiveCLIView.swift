@@ -41,7 +41,7 @@ struct InteractiveCLIView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 if session.isDone {
-                    Button("Terminer") { Task { await finalize() } }
+                    Button("Finish") { Task { await finalize() } }
                         .disabled(isFinalizing)
                 }
             }
@@ -72,7 +72,7 @@ struct InteractiveCLIView: View {
                             ProgressView()
                                 .controlSize(.small)
                                 .tint(palette.dimText)
-                            Text("rclone réfléchit…")
+                            Text("rclone is thinking…")
                                 .foregroundStyle(palette.dimText)
                         }
                         .font(.system(.footnote, design: .monospaced))
@@ -117,7 +117,7 @@ struct InteractiveCLIView: View {
             }
             .font(.system(.body, design: .monospaced))
         case .done:
-            Text("✓ Configuration terminée")
+            Text("✓ Configuration complete")
                 .font(.system(.body, design: .monospaced).weight(.semibold))
                 .foregroundStyle(palette.successText)
         }
@@ -171,7 +171,7 @@ struct InteractiveCLIView: View {
     @ViewBuilder
     private var inputField: some View {
         if session.current?.isPassword == true {
-            SecureField("mot de passe", text: $input)
+            SecureField("password", text: $input)
                 .rgNoAutocap()
                 .autocorrectionDisabled()
                 .foregroundStyle(palette.answerText)
@@ -179,7 +179,7 @@ struct InteractiveCLIView: View {
                 .submitLabel(.send)
                 .onSubmit(send)
         } else {
-            TextField("réponse", text: $input)
+            TextField("response", text: $input)
                 .rgNoAutocap()
                 .autocorrectionDisabled()
                 #if os(iOS)
@@ -236,7 +236,7 @@ struct InteractiveCLIView: View {
         HStack(spacing: 8) {
             Image(systemName: "checkmark.seal.fill")
                 .foregroundStyle(palette.successText)
-            Text("Remote prêt — appuyer sur « Terminer » pour finaliser.")
+            Text("Remote ready — tap “Finish” to complete.")
                 .font(.system(.footnote, design: .monospaced))
                 .foregroundStyle(palette.promptText)
             Spacer()

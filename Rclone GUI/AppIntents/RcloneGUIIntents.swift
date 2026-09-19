@@ -29,7 +29,7 @@ public struct RcloneGUIShortcuts: AppShortcutsProvider {
                 "Liste mes remotes \(.applicationName)",
                 "Affiche les remotes \(.applicationName)",
             ],
-            shortTitle: "Mes remotes",
+            shortTitle: "My remotes",
             systemImageName: "externaldrive"
         )
         AppShortcut(
@@ -37,7 +37,7 @@ public struct RcloneGUIShortcuts: AppShortcutsProvider {
             phrases: [
                 "Ouvrir un remote \(.applicationName)",
             ],
-            shortTitle: "Ouvrir un remote",
+            shortTitle: "Open a remote",
             systemImageName: "externaldrive.fill"
         )
         AppShortcut(
@@ -46,7 +46,7 @@ public struct RcloneGUIShortcuts: AppShortcutsProvider {
                 "Sauvegarder mes photos avec \(.applicationName)",
                 "Lancer la sauvegarde photos \(.applicationName)",
             ],
-            shortTitle: "Sauvegarder mes photos",
+            shortTitle: "Back up my photos",
             systemImageName: "photo.on.rectangle.angled"
         )
         AppShortcut(
@@ -54,7 +54,7 @@ public struct RcloneGUIShortcuts: AppShortcutsProvider {
             phrases: [
                 "Mettre en pause les transferts \(.applicationName)",
             ],
-            shortTitle: "Pause des transferts",
+            shortTitle: "Pause transfers",
             systemImageName: "pause.circle.fill"
         )
         AppShortcut(
@@ -62,7 +62,7 @@ public struct RcloneGUIShortcuts: AppShortcutsProvider {
             phrases: [
                 "Reprendre les transferts \(.applicationName)",
             ],
-            shortTitle: "Reprendre les transferts",
+            shortTitle: "Resume transfers",
             systemImageName: "play.circle.fill"
         )
     }
@@ -72,9 +72,9 @@ public struct RcloneGUIShortcuts: AppShortcutsProvider {
 
 @available(iOS 17.0, *)
 public struct ListRemotesIntent: AppIntent {
-    public static let title: LocalizedStringResource = "Liste les remotes rclone"
+    public static let title: LocalizedStringResource = "List rclone remotes"
     public static let description = IntentDescription(
-        "Renvoie la liste des remotes définis dans la configuration."
+        "Returns the list of remotes defined in the configuration."
     )
 
     public init() {}
@@ -93,9 +93,9 @@ public struct ListRemotesIntent: AppIntent {
 
 @available(iOS 17.0, *)
 public struct OpenRemoteIntent: AppIntent {
-    public static let title: LocalizedStringResource = "Ouvrir un remote"
+    public static let title: LocalizedStringResource = "Open a remote"
     public static let description = IntentDescription(
-        "Ouvre un remote rclone dans Rclone GUI."
+        "Opens an rclone remote in Rclone GUI."
     )
     public static let openAppWhenRun: Bool = true
 
@@ -123,15 +123,15 @@ public struct OpenRemoteIntent: AppIntent {
 
 @available(iOS 17.0, *)
 public struct DownloadFileIntent: AppIntent {
-    public static let title: LocalizedStringResource = "Télécharger un fichier"
+    public static let title: LocalizedStringResource = "Download a file"
     public static let description = IntentDescription(
-        "Télécharge un fichier depuis un remote rclone vers le stockage local."
+        "Downloads a file from an rclone remote to local storage."
     )
 
     @Parameter(title: "Remote")
     public var remoteName: String
 
-    @Parameter(title: "Chemin")
+    @Parameter(title: "Path")
     public var pathInRemote: String
 
     public init() {}
@@ -166,18 +166,18 @@ public struct DownloadFileIntent: AppIntent {
 
 @available(iOS 17.0, *)
 public struct UploadFileIntent: AppIntent {
-    public static let title: LocalizedStringResource = "Téléverser un fichier"
+    public static let title: LocalizedStringResource = "Upload a file"
     public static let description = IntentDescription(
-        "Téléverse un fichier vers un remote rclone (depuis Raccourcis ou la feuille de partage)."
+        "Uploads a file to an rclone remote (from Shortcuts or the share sheet)."
     )
 
-    @Parameter(title: "Fichier")
+    @Parameter(title: "File")
     public var file: IntentFile
 
     @Parameter(title: "Remote")
     public var remoteName: String
 
-    @Parameter(title: "Dossier de destination", default: "")
+    @Parameter(title: "Destination folder", default: "")
     public var destinationFolder: String
 
     public init() {}

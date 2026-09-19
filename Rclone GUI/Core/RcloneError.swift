@@ -35,9 +35,9 @@ public enum RcloneError: Error, LocalizedError, Sendable {
         case .engineNotAvailable(let msg):
             return "Rclone engine not available: \(msg)"
         case .configPasswordRequired:
-            return String(localized: "Cette configuration rclone est chiffrée. Saisis ton mot de passe rclone pour l’importer.")
+            return String(localized: "This rclone configuration is encrypted. Enter your rclone password to import it.")
         case .configPasswordIncorrect:
-            return String(localized: "Mot de passe rclone incorrect — la configuration n’a pas pu être déchiffrée.")
+            return String(localized: "Incorrect rclone password — the configuration couldn’t be decrypted.")
         case .rpcFailed(let method, let msg):
             return "RPC '\(method)' failed: \(msg)"
         case .rcloneError(let code, let method, let msg):

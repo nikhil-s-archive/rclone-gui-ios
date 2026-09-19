@@ -25,14 +25,14 @@ struct SecuritySettingsView: View {
         Form {
             Section {
                 AppHeroCard(
-                    title: "Sécurité locale",
-                    subtitle: "Protège la configuration rclone, le cache et l’accès à l’app.",
+                    title: "Local security",
+                    subtitle: "Protects the rclone configuration, the cache and app access.",
                     systemImage: "lock.shield",
                     tint: .green
                 ) {
                     HStack(spacing: 10) {
-                        AppMetricPill(value: requireBiometrics ? "Actif" : "Off", label: "biométrie", systemImage: "faceid", tint: .green)
-                        AppMetricPill(value: inactivityLabel, label: "verrouillage", systemImage: "timer", tint: .blue)
+                        AppMetricPill(value: requireBiometrics ? "Active" : "Off", label: "biometrics", systemImage: "faceid", tint: .green)
+                        AppMetricPill(value: inactivityLabel, label: "lock", systemImage: "timer", tint: .blue)
                     }
                 }
                 .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
@@ -40,20 +40,20 @@ struct SecuritySettingsView: View {
             }
 
             Section {
-                Toggle("Face ID / Touch ID au lancement", isOn: $requireBiometrics)
+                Toggle("Face ID / Touch ID on launch", isOn: $requireBiometrics)
                     .disabled(!biometricsAvailable)
             } footer: {
                 if biometricsAvailable {
-                    Text("Demande une authentification biométrique à chaque ouverture de l'app.")
+                    Text("Requires biometric authentication each time the app opens.")
                 } else {
-                    Text("La biométrie n'est pas configurée sur cet appareil.")
+                    Text("Biometrics are not set up on this device.")
                         .foregroundStyle(.orange)
                 }
             }
 
             Section {
-                Picker("Inactivité avant verrouillage", selection: $inactivityWipeMinutes) {
-                    Text("Jamais").tag(0)
+                Picker("Inactivity before lock", selection: $inactivityWipeMinutes) {
+                    Text("Never").tag(0)
                     Text("5 min").tag(5)
                     Text("15 min").tag(15)
                     Text("30 min").tag(30)
@@ -61,36 +61,36 @@ struct SecuritySettingsView: View {
                     Text("4 h").tag(240)
                     Text("24 h").tag(1440)
                 }
-                Toggle("Effacer le cache au verrouillage", isOn: $wipeCacheOnLock)
+                Toggle("Wipe cache on lock", isOn: $wipeCacheOnLock)
                     .disabled(!requireBiometrics || inactivityWipeMinutes == 0)
             } footer: {
-                Text("Au-delà de cette durée d'inactivité, l'app redemande Face ID / Touch ID. Avec « Effacer le cache au verrouillage », le cache média local (fichiers déchiffrés pour la lecture) est purgé à ce moment-là — rien en clair ne survit à l'inactivité.")
+                Text("After this period of inactivity, the app asks for Face ID / Touch ID again. With “Wipe cache on lock”, the local media cache (files decrypted for playback) is purged at that point — no cleartext survives the inactivity.")
             }
 
             Section {
-                Picker("Durée de déverrouillage du coffre-fort", selection: $vaultUnlockMinutes) {
-                    Text("À chaque accès").tag(0)
+                Picker("Vault unlock duration", selection: $vaultUnlockMinutes) {
+                    Text("On every access").tag(0)
                     Text("5 min").tag(5)
                     Text("15 min").tag(15)
                     Text("30 min").tag(30)
                     Text("1 h").tag(60)
                 }
             } header: {
-                Text("Coffre-fort")
+                Text("Vault")
             } footer: {
-                Text("Mets un remote au coffre-fort depuis l'onglet Fichiers (appui long). Il disparaît alors de l'app Fichiers d'iOS et ne s'ouvre qu'après Face ID / Touch ID. Cette durée définit combien de temps il reste déverrouillé après authentification.")
+                Text("Add a remote to the vault from the Files tab (long-press). It then disappears from the iOS Files app and only opens after Face ID / Touch ID. This duration sets how long it stays unlocked after authentication.")
             }
 
             Section {
                 Button(role: .destructive) {
                     showWipeConfirm = true
                 } label: {
-                    Label("Effacer la configuration rclone", systemImage: "trash.slash")
+                    Label("Erase rclone configuration", systemImage: "trash.slash")
                 }
             } header: {
                 Text("Configuration")
             } footer: {
-                Text("Supprime le rclone.conf chiffré localement et la clé maître Keychain. Tu pourras ré-importer ensuite.")
+                Text("Deletes the locally encrypted rclone.conf and the Keychain master key. You can re-import afterwards.")
             }
 
             if let wipeError {
@@ -103,7 +103,7 @@ struct SecuritySettingsView: View {
                 }
             }
         }
-        .navigationTitle("Sécurité")
+        .navigationTitle("Security")
         #if os(iOS)
         .rgInlineNavTitle()
         #endif
@@ -111,16 +111,16 @@ struct SecuritySettingsView: View {
             biometricsAvailable = await BiometricGate.shared.isAvailable()
         }
         .confirmationDialog(
-            "Effacer la configuration ?",
+            "Erase configuration?",
             isPresented: $showWipeConfirm,
             titleVisibility: .visible
         ) {
-            Button("Effacer", role: .destructive) {
+            Button("Erase", role: .destructive) {
                 Task { await wipeConfig() }
             }
-            Button("Annuler", role: .cancel) {}
+            Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Cette action est irréversible. Tu pourras ré-importer ton rclone.conf après.")
+            Text("This action is irreversible. You can re-import your rclone.conf afterwards.")
         }
     }
 
@@ -148,7 +148,7 @@ struct SecuritySettingsView: View {
 
     private var inactivityLabel: String {
         switch inactivityWipeMinutes {
-        case 0: return "Jamais"
+        case 0: return "Never"
         case 60: return "1 h"
         case 240: return "4 h"
         case 1440: return "24 h"

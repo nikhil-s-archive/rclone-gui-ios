@@ -31,11 +31,11 @@ enum CredentialFileStore {
         var errorDescription: String? {
             switch self {
             case .unreadable:
-                return String(localized: "Impossible de lire le fichier sélectionné.")
+                return String(localized: "Unable to read the selected file.")
             case .notUTF8:
-                return String(localized: "Ce fichier n'est pas du texte lisible (clé/certificat attendus).")
+                return String(localized: "This file isn’t readable text (a key or certificate is expected).")
             case .tooLarge:
-                return String(localized: "Fichier trop volumineux (max 512 Ko pour une clé ou un certificat).")
+                return String(localized: "File too large (max 512 KB for a key or certificate).")
             }
         }
     }

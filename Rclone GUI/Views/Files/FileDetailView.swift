@@ -48,11 +48,11 @@ struct FileDetailView: View {
                     .listRowBackground(Color.clear)
             }
 
-            Section("Informations") {
+            Section("Information") {
                 infoRow(title: "Type", value: kindLabel)
-                infoRow(title: "Taille", value: sizeLabel)
-                infoRow(title: "Modifié", value: dateLabel)
-                infoRow(title: "Chemin", value: entry.pathInRemote.isEmpty ? "—" : entry.pathInRemote)
+                infoRow(title: "Size", value: sizeLabel)
+                infoRow(title: "Modified", value: dateLabel)
+                infoRow(title: "Path", value: entry.pathInRemote.isEmpty ? "—" : entry.pathInRemote)
             }
 
             if let image = lensPreview?.image, !image.isEmpty {
@@ -62,7 +62,7 @@ struct FileDetailView: View {
                 lensPDFSection(pdf)
             }
 
-            Section("Sécurité") {
+            Section("Security") {
                 HStack(spacing: 12) {
                     RoundedRectangle(cornerRadius: 6, style: .continuous)
                         .fill(isInsideCrypt ? RG.accentSoft : Color.secondary.opacity(0.16))
@@ -73,9 +73,9 @@ struct FileDetailView: View {
                                 .foregroundStyle(isInsideCrypt ? RG.accent : .secondary)
                         }
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Chiffrement")
+                        Text("Encryption")
                             .font(.system(size: 16))
-                        Text(isInsideCrypt ? "rclone crypt · AES-256-GCM" : "Aucun (remote en clair)")
+                        Text(isInsideCrypt ? "rclone crypt · AES-256-GCM" : "None (plaintext remote)")
                             .font(.system(size: 13))
                             .foregroundStyle(.secondary)
                     }
@@ -93,7 +93,7 @@ struct FileDetailView: View {
                                 .foregroundStyle(.secondary)
                         }
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Nom déchiffré")
+                        Text("Decrypted name")
                             .font(.system(size: 16))
                         Text(entry.name)
                             .font(RG.mono)
@@ -136,23 +136,23 @@ struct FileDetailView: View {
     }
 
     private func lensImageSection(_ m: RemoteImageMetadata) -> some View {
-        Section("Informations média") {
+        Section("Media Information") {
             if let w = m.pixelWidth, let h = m.pixelHeight {
                 infoRow(title: "Dimensions", value: "\(w) × \(h) px")
             }
             if let make = m.cameraMake, let model = m.cameraModel {
-                infoRow(title: "Appareil", value: "\(make) \(model)")
+                infoRow(title: "Device", value: "\(make) \(model)")
             } else if let model = m.cameraModel {
-                infoRow(title: "Appareil", value: model)
+                infoRow(title: "Device", value: model)
             }
-            if let lens = m.lensModel { infoRow(title: "Objectif", value: lens) }
+            if let lens = m.lensModel { infoRow(title: "Lens", value: lens) }
             if let date = m.captureDate {
-                infoRow(title: "Prise le", value: Self.mediaDateFormatter.string(from: date))
+                infoRow(title: "Taken on", value: Self.mediaDateFormatter.string(from: date))
             }
-            if let exp = m.exposure { infoRow(title: "Exposition", value: exp) }
-            if let f = m.fNumber { infoRow(title: "Ouverture", value: f) }
-            if let iso = m.iso { infoRow(title: "Sensibilité", value: iso) }
-            if let focal = m.focalLength { infoRow(title: "Focale", value: focal) }
+            if let exp = m.exposure { infoRow(title: "Exposure", value: exp) }
+            if let f = m.fNumber { infoRow(title: "Opening", value: f) }
+            if let iso = m.iso { infoRow(title: "Sensitivity", value: iso) }
+            if let focal = m.focalLength { infoRow(title: "Focal Length", value: focal) }
             if let lat = m.latitude, let lon = m.longitude {
                 infoRow(title: "Position", value: RemoteLensPlan.formatCoordinate(lat: lat, lon: lon))
             }
@@ -160,10 +160,10 @@ struct FileDetailView: View {
     }
 
     private func lensPDFSection(_ m: RemotePDFMetadata) -> some View {
-        Section("Informations média") {
+        Section("Media Information") {
             if let count = m.pageCount { infoRow(title: "Pages", value: "\(count)") }
-            if let title = m.title { infoRow(title: "Titre", value: title) }
-            if let author = m.author { infoRow(title: "Auteur", value: author) }
+            if let title = m.title { infoRow(title: "Title", value: title) }
+            if let author = m.author { infoRow(title: "Author", value: author) }
         }
     }
 
@@ -261,23 +261,23 @@ struct FileDetailView: View {
     private var actionGrid: some View {
         HStack(spacing: 8) {
             RGActionTile(
-                title: "Aperçu",
+                title: "Preview",
                 systemImage: isMedia ? "play.fill" : "doc.text.magnifyingglass",
                 primary: true,
                 action: { onPlay?() }
             )
             RGActionTile(
-                title: "Charger",
+                title: "Load",
                 systemImage: "arrow.down.circle",
                 action: { onDownload?() }
             )
             RGActionTile(
-                title: "Partager",
+                title: "Share",
                 systemImage: "square.and.arrow.up",
                 action: { onShare?() }
             )
             RGActionTile(
-                title: "Hors-ligne",
+                title: "Offline",
                 systemImage: "star",
                 action: { onPin?() }
             )
@@ -300,9 +300,9 @@ struct FileDetailView: View {
     // MARK: - Derived display values
 
     private var kindLabel: String {
-        if entry.isDirectory { return String(localized: "Dossier") }
+        if entry.isDirectory { return String(localized: "Folder") }
         let ext = (entry.name as NSString).pathExtension.uppercased()
-        return ext.isEmpty ? String(localized: "Fichier") : String(localized: "Fichier \(ext)")
+        return ext.isEmpty ? String(localized: "File") : String(localized: "Fichier \(ext)")
     }
 
     private var sizeLabel: String {

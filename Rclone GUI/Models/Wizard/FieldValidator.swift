@@ -22,11 +22,11 @@ enum FieldValidationError: Error, Sendable, Hashable {
 extension FieldValidationError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        case .required:          return String(localized: "Requis")
-        case .invalidInt:        return String(localized: "Doit être un nombre entier")
-        case .invalidSizeSuffix: return String(localized: "Format invalide (ex : 100M, 5G, 1Ki)")
-        case .invalidDuration:   return String(localized: "Format invalide (ex : 10s, 5m, 2h)")
-        case .invalidTristate:   return String(localized: "Doit être true, false ou vide")
+        case .required:          return String(localized: "Required")
+        case .invalidInt:        return String(localized: "Must be a whole number")
+        case .invalidSizeSuffix: return String(localized: "Invalid format (e.g. 100M, 5G, 1Ki)")
+        case .invalidDuration:   return String(localized: "Invalid format (e.g. 10s, 5m, 2h)")
+        case .invalidTristate:   return String(localized: "Must be true, false or empty")
         }
     }
 }

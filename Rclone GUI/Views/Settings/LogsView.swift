@@ -31,9 +31,9 @@ struct LogsView: View {
             filterBar
             Divider()
             if entries.isEmpty {
-                ContentUnavailableView("Aucun log",
+                ContentUnavailableView("No logs",
                                        systemImage: "doc.text",
-                                       description: Text("Les événements apparaîtront ici dès la première action."))
+                                       description: Text("Events will appear here after the first action."))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 let visibleEntries = Array(entries.prefix(displayLimit))
@@ -87,7 +87,7 @@ struct LogsView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Menu {
-                    Button("Tout effacer", role: .destructive) {
+                    Button("Clear all", role: .destructive) {
                         Task {
                             await LogService.shared.clear()
                             await MainActor.run {
@@ -96,16 +96,16 @@ struct LogsView: View {
                             await reload()
                         }
                     }
-                    Button("Réinitialiser Fichiers") {
+                    Button("Reset Files") {
                         Task {
                             await FileProviderManager.shared.resetDomain()
                             await reload()
                         }
                     }
-                    Button("Rafraîchir") {
+                    Button("Refresh") {
                         Task { await reload() }
                     }
-                    Button("Exporter") {
+                    Button("Export") {
                         Task { await exportLogs() }
                     }
                 } label: {
@@ -134,7 +134,7 @@ struct LogsView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding()
                 }
-                .navigationTitle("Rapport de crash")
+                .navigationTitle("Crash report")
                 .rgInlineNavTitle()
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
@@ -143,7 +143,7 @@ struct LogsView: View {
                         }
                     }
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("Fermer") { showCrashReport = false }
+                        Button("Close") { showCrashReport = false }
                     }
                 }
             }
@@ -153,14 +153,14 @@ struct LogsView: View {
         .sheet(isPresented: $showShare) {
             if let url = exportURL {
                 ShareLink(item: url) {
-                    Label("Partager le fichier de log", systemImage: "square.and.arrow.up")
+                    Label("Share log file", systemImage: "square.and.arrow.up")
                         .padding()
                 }
             }
         }
         #endif
         .alert(
-            "Export échoué",
+            "Export failed",
             isPresented: Binding(
                 get: { exportError != nil },
                 set: { if !$0 { exportError = nil } }
@@ -176,17 +176,17 @@ struct LogsView: View {
     @ViewBuilder
     private var crashBanner: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Label("Crash détecté", systemImage: "exclamationmark.triangle.fill")
+            Label("Crash detected", systemImage: "exclamationmark.triangle.fill")
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.orange)
-            Text("L'app a quitté inopinément lors de la session précédente. Envoie le rapport au développeur pour aider à corriger le problème.")
+            Text("The app closed unexpectedly during the previous session. Send the report to the developer to help fix the issue.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
             HStack(spacing: 10) {
                 Button {
                     showCrashReport = true
                 } label: {
-                    Label("Voir le rapport", systemImage: "doc.text.magnifyingglass")
+                    Label("View the report", systemImage: "doc.text.magnifyingglass")
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.small)
@@ -194,7 +194,7 @@ struct LogsView: View {
                 #if canImport(UIKit)
                 if let url = crashReportURL {
                     ShareLink(item: url) {
-                        Label("Envoyer", systemImage: "square.and.arrow.up")
+                        Label("Send", systemImage: "square.and.arrow.up")
                     }
                     .buttonStyle(.bordered)
                     .controlSize(.small)
@@ -203,7 +203,7 @@ struct LogsView: View {
 
                 Spacer(minLength: 0)
 
-                Button("Ignorer") {
+                Button("Skip") {
                     CrashReporter.clearPendingReport()
                     crashReport = nil
                     crashReportURL = nil
@@ -218,11 +218,11 @@ struct LogsView: View {
     }
 
     private var filterBar: some View {
-        Picker("Niveau", selection: $levelFilter) {
-            Text("Tous").tag(nil as LogLevel?)
+        Picker("Level", selection: $levelFilter) {
+            Text("All").tag(nil as LogLevel?)
             Text("Info").tag(LogLevel.info as LogLevel?)
             Text("Debug").tag(LogLevel.debug as LogLevel?)
-            Text("Erreur").tag(LogLevel.error as LogLevel?)
+            Text("Error").tag(LogLevel.error as LogLevel?)
         }
         .pickerStyle(.segmented)
         .padding()

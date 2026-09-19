@@ -123,7 +123,7 @@ public final class SubscriptionService: ObservableObject {
             }
             await refreshIntroOfferEligibility()
         } catch {
-            self.lastErrorMessage = String(localized: "Impossible de charger les offres. Vérifiez votre connexion puis réessayez.")
+            self.lastErrorMessage = String(localized: "Unable to load offers. Check your connection and try again.")
         }
     }
 
@@ -158,7 +158,7 @@ public final class SubscriptionService: ObservableObject {
         introOfferEligibility[productID] ?? false
     }
 
-    /// Description localisée de l'intro offer ("7 jours offerts", "1 semaine gratuite"…)
+    /// Description localisée de l'intro offer ("7 days free", "1 semaine gratuite"…)
     /// dérivée du SubscriptionPeriod Apple. Renvoie nil si pas d'offre éligible.
     public func trialDescription(for productID: String) -> String? {
         guard isTrialAvailable(for: productID) else { return nil }
@@ -206,7 +206,7 @@ public final class SubscriptionService: ObservableObject {
                     await refreshEntitlements()
                     didCompleteVerifiedPurchase = true
                 case .unverified:
-                    lastErrorMessage = String(localized: "L'achat n'a pas pu être validé par Apple. Réessayez.")
+                    lastErrorMessage = String(localized: "The purchase could not be verified by Apple. Try again.")
                 }
             case .userCancelled:
                 // Pas d'erreur à afficher : l'utilisateur a explicitement annulé.
@@ -214,9 +214,9 @@ public final class SubscriptionService: ObservableObject {
             case .pending:
                 // Ask to Buy / parental approval : on ne débloque pas encore,
                 // observeTransactionUpdates() s'en chargera après approbation.
-                lastErrorMessage = String(localized: "Achat en attente d'approbation. L'accès sera activé automatiquement.")
+                lastErrorMessage = String(localized: "Purchase pending approval. Access will be activated automatically.")
             @unknown default:
-                lastErrorMessage = String(localized: "Résultat d'achat inconnu.")
+                lastErrorMessage = String(localized: "Unknown purchase result.")
             }
         } catch {
             lastErrorMessage = String(localized: "Échec de l'achat : \(error.localizedDescription)")
@@ -238,7 +238,7 @@ public final class SubscriptionService: ObservableObject {
             try await AppStore.sync()
             await refreshEntitlements()
             if !snapshot.isUnlocked {
-                lastErrorMessage = String(localized: "Aucun abonnement ou achat à vie actif trouvé sur ce compte Apple.")
+                lastErrorMessage = String(localized: "No active subscription or lifetime purchase found on this Apple account.")
             }
         } catch {
             lastErrorMessage = String(localized: "Restauration impossible : \(error.localizedDescription)")

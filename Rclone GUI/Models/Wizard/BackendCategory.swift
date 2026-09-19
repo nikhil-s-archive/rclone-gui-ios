@@ -23,11 +23,11 @@ enum BackendCategory: String, CaseIterable, Identifiable, Sendable, Hashable {
     /// User-facing label (FR primary, EN fallback handled at the view layer).
     var displayName: String {
         switch self {
-        case .officialCloud: return String(localized: "Cloud officiels")
+        case .officialCloud: return String(localized: "Official clouds")
         case .s3Compatible:  return String(localized: "S3 compatible")
-        case .mainstream:    return String(localized: "Sync grand public")
+        case .mainstream:    return String(localized: "Consumer sync")
         case .selfHosted:    return String(localized: "Self-hosted / Standards")
-        case .specialized:   return String(localized: "Spécialisés")
+        case .specialized:   return String(localized: "Specialized")
         case .wrapper:       return String(localized: "Wrappers / Composites")
         case .local:         return String(localized: "Local")
         }

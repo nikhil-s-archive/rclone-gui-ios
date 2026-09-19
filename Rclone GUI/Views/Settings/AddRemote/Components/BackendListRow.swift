@@ -39,7 +39,7 @@ struct BackendListRow: View {
                 Image(systemName: "lock.shield.fill")
                     .font(.caption)
                     .foregroundStyle(.tint)
-                    .accessibilityLabel("Requiert une authentification")
+                    .accessibilityLabel("Requires authentication")
             }
 
             Image(systemName: "chevron.right")

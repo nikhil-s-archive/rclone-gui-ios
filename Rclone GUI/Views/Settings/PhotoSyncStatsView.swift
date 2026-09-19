@@ -21,33 +21,33 @@ struct PhotoSyncStatsView: View {
         Form {
             Section {
                 if let summary {
-                    LabeledContent("Total à transférer", value: formatBytes(summary.totalBytes))
-                    LabeledContent("Déjà transféré", value: formatBytes(summary.transferredBytes))
-                    LabeledContent("Débit instantané", value: formatThroughput(summary.averageBytesPerSecond))
+                    LabeledContent("Total to transfer", value: formatBytes(summary.totalBytes))
+                    LabeledContent("Already transferred", value: formatBytes(summary.transferredBytes))
+                    LabeledContent("Instant throughput", value: formatThroughput(summary.averageBytesPerSecond))
                     if let eta = summary.estimatedTimeRemaining, eta > 0 {
-                        LabeledContent("Temps estimé", value: formatETA(eta))
+                        LabeledContent("Estimated time", value: formatETA(eta))
                     }
                 } else {
-                    Text("Aucune donnée pour l'instant.")
+                    Text("No data yet.")
                         .foregroundStyle(.secondary)
                 }
             } header: {
-                Text("État global")
+                Text("Overall status")
             }
 
             Section {
                 if throughputPoints.count >= 2 {
                     Chart(throughputPoints) { point in
                         LineMark(
-                            x: .value("Temps", point.date),
-                            y: .value("Débit", point.bytesPerSecond / 1024)
+                            x: .value("Time", point.date),
+                            y: .value("Throughput", point.bytesPerSecond / 1024)
                         )
                         .interpolationMethod(.catmullRom)
                         .foregroundStyle(RG.photoSync.accent)
                         // Aire = accent doux pour cohérence avec le reste de l'app
                         AreaMark(
-                            x: .value("Temps", point.date),
-                            y: .value("Débit", point.bytesPerSecond / 1024)
+                            x: .value("Time", point.date),
+                            y: .value("Throughput", point.bytesPerSecond / 1024)
                         )
                         .interpolationMethod(.catmullRom)
                         .foregroundStyle(.pink.opacity(0.15))
@@ -55,61 +55,61 @@ struct PhotoSyncStatsView: View {
                     .chartYAxisLabel("KB/s")
                     .frame(height: 180)
                 } else {
-                    Text("Le graphique apparaîtra dès que le débit sera mesuré.")
+                    Text("The chart will appear as soon as throughput is measured.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
             } header: {
-                Text("Débit (fenêtre 30 s)")
+                Text("Throughput (30 s window)")
             }
 
             if let summary {
                 Section {
                     Chart {
                         BarMark(
-                            x: .value("État", "Attente"),
+                            x: .value("Status", "Waiting"),
                             y: .value("Count", summary.pendingCount)
                         )
                         .foregroundStyle(.orange)
                         BarMark(
-                            x: .value("État", "En cours"),
+                            x: .value("Status", "In progress"),
                             y: .value("Count", summary.activeCount)
                         )
                         .foregroundStyle(.blue)
                         BarMark(
-                            x: .value("État", "Terminés"),
+                            x: .value("Status", "Completed"),
                             y: .value("Count", summary.completedCount)
                         )
                         .foregroundStyle(.green)
                         BarMark(
-                            x: .value("État", "Échecs"),
+                            x: .value("Status", "Failures"),
                             y: .value("Count", summary.failedCount)
                         )
                         .foregroundStyle(.red)
                         BarMark(
-                            x: .value("État", "Ignorés"),
+                            x: .value("Status", "Ignorés"),
                             y: .value("Count", summary.skippedCount)
                         )
                         .foregroundStyle(.gray)
                     }
                     .frame(height: 180)
                 } header: {
-                    Text("Distribution par statut")
+                    Text("Distribution by status")
                 }
             }
 
             Section {
-                LabeledContent("Vérifiés", value: "\(hashCounts.verified)")
-                LabeledContent("Hash distant manquant", value: "\(hashCounts.unsupported)")
-                LabeledContent("Discordances", value: "\(hashCounts.mismatch)")
-                LabeledContent("Introuvables côté remote", value: "\(hashCounts.missing)")
+                LabeledContent("Verified", value: "\(hashCounts.verified)")
+                LabeledContent("Remote hash missing", value: "\(hashCounts.unsupported)")
+                LabeledContent("Mismatches", value: "\(hashCounts.mismatch)")
+                LabeledContent("Not found on remote", value: "\(hashCounts.missing)")
             } header: {
-                Text("Intégrité (MD5)")
+                Text("Integrity (MD5)")
             } footer: {
-                Text("La vérification est lancée automatiquement après chaque upload réussi. Une discordance indique une corruption pendant le transfert — l'asset reste marqué terminé, mais devrait être ré-uploadé manuellement.")
+                Text("Verification runs automatically after each successful upload. A mismatch indicates corruption during transfer — the asset stays marked complete, but should be re-uploaded manually.")
             }
         }
-        .navigationTitle("Statistiques")
+        .navigationTitle("Statistics")
         #if os(iOS)
         .rgInlineNavTitle()
         #endif

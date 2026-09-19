@@ -75,13 +75,13 @@ nonisolated public enum AutoTransferPolicy {
 
         public var localizedLabel: String {
             switch self {
-            case .nominal:          return String(localized: "connexion rapide")
-            case .cellular:         return String(localized: "réseau cellulaire")
-            case .constrained:      return String(localized: "mode données réduites")
-            case .lowPower:         return String(localized: "économie d'énergie")
-            case .thermalSerious:   return String(localized: "appareil chaud")
-            case .thermalCritical:  return String(localized: "surchauffe critique")
-            case .offline:          return String(localized: "hors-ligne")
+            case .nominal:          return String(localized: "fast connection")
+            case .cellular:         return String(localized: "cellular network")
+            case .constrained:      return String(localized: "Low Data Mode")
+            case .lowPower:         return String(localized: "Low Power Mode")
+            case .thermalSerious:   return String(localized: "device warm")
+            case .thermalCritical:  return String(localized: "critical overheating")
+            case .offline:          return String(localized: "offline")
             }
         }
     }

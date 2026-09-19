@@ -33,26 +33,26 @@ struct PhotoSyncAlbumPicker: View {
             switch authorizationStatus {
             case .denied, .restricted:
                 ContentUnavailableView(
-                    "Accès Photos refusé",
+                    "Photos access denied",
                     systemImage: "photo.badge.exclamationmark",
-                    description: Text("Activez l'accès à la photothèque dans Réglages › Confidentialité.")
+                    description: Text("Enable photo library access in Settings › Privacy.")
                 )
             default:
                 if isLoading {
-                    ProgressView("Chargement des albums…")
+                    ProgressView("Loading albums…")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else if smartAlbums.isEmpty && userAlbums.isEmpty {
                     ContentUnavailableView(
-                        "Aucun album",
+                        "No album",
                         systemImage: "rectangle.stack",
-                        description: Text("La photothèque ne contient aucun album exploitable.")
+                        description: Text("The photo library contains no usable album.")
                     )
                 } else {
                     list
                 }
             }
         }
-        .navigationTitle("Albums à sauvegarder")
+        .navigationTitle("Albums to back up")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Menu {
@@ -60,14 +60,14 @@ struct PhotoSyncAlbumPicker: View {
                         selectedIDs.removeAll()
                         save()
                     } label: {
-                        Label("Tout désélectionner (sauvegarder tout)", systemImage: "checkmark.circle")
+                        Label("Deselect all (back up everything)", systemImage: "checkmark.circle")
                     }
                     .disabled(selectedIDs.isEmpty)
                     Button {
                         selectedIDs = Set(smartAlbums.map(\.id) + userAlbums.map(\.id))
                         save()
                     } label: {
-                        Label("Tout sélectionner", systemImage: "square.stack.3d.up")
+                        Label("Select all", systemImage: "square.stack.3d.up")
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
@@ -94,7 +94,7 @@ struct PhotoSyncAlbumPicker: View {
                         row(for: album)
                     }
                 } header: {
-                    Text("Albums système")
+                    Text("System albums")
                 }
             }
             if !userAlbums.isEmpty {
@@ -103,7 +103,7 @@ struct PhotoSyncAlbumPicker: View {
                         row(for: album)
                     }
                 } header: {
-                    Text("Mes albums")
+                    Text("My albums")
                 }
             }
         }
@@ -118,11 +118,11 @@ struct PhotoSyncAlbumPicker: View {
                 .foregroundStyle(.white)
                 .background(selectedIDs.isEmpty ? Color.gray : Color.pink, in: .rect(cornerRadius: 12, style: .continuous))
             VStack(alignment: .leading, spacing: 3) {
-                Text(selectedIDs.isEmpty ? "Tous les albums" : "\(selectedIDs.count) album(s) sélectionné(s)")
+                Text(selectedIDs.isEmpty ? "All albums" : "\(selectedIDs.count) album(s) sélectionné(s)")
                     .font(.headline)
                 Text(selectedIDs.isEmpty
-                     ? "Toutes les photos visibles seront sauvegardées."
-                     : "Seules les photos de ces albums seront sauvegardées.")
+                     ? "All visible photos will be backed up."
+                     : "Only photos from these albums will be backed up.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .lineLimit(2)

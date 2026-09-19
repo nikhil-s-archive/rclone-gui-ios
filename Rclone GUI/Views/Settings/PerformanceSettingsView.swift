@@ -49,7 +49,7 @@ struct PerformanceSettingsView: View {
             Section {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack {
-                        Text("Limite")
+                        Text("Limit")
                             .font(.subheadline)
                         Spacer()
                         Text(rateLabel)
@@ -62,7 +62,7 @@ struct PerformanceSettingsView: View {
                         in: 0...Self.maxMBps,
                         step: 0.5
                     ) {
-                        Text("Limite de bande passante")
+                        Text("Bandwidth limit")
                     } minimumValueLabel: {
                         Text("0").font(.caption2).foregroundStyle(.tertiary)
                     } maximumValueLabel: {
@@ -72,16 +72,16 @@ struct PerformanceSettingsView: View {
                         Task { await applyBandwidthLimit(mbps: newValue) }
                     }
                     .accessibilityValue(rateLabel)
-                    .accessibilityHint("Faites glisser pour ajuster la limite globale de bande passante en MB/s. Zéro signifie pas de limite.")
+                    .accessibilityHint("Drag to adjust the global bandwidth limit in MB/s. Zero means no limit.")
                 }
                 .padding(.vertical, 4)
             } header: {
-                Text("Limite globale")
+                Text("Global limit")
             } footer: {
-                Text("0 MB/s = sans limite. La limite s'applique à toutes les opérations rclone (upload + download). Idéal pour préserver la batterie ou éviter de saturer une connexion cellulaire.")
+                Text("0 MB/s = unlimited. The limit applies to all rclone operations (upload + download). Ideal to save battery or avoid saturating a cellular connection.")
             }
 
-            Section("Pause globale") {
+            Section("Global pause") {
                 Toggle(isOn: Binding(
                     get: { isPaused },
                     set: { newValue in
@@ -89,11 +89,11 @@ struct PerformanceSettingsView: View {
                     }
                 )) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(isPaused ? "Tous les transferts en pause" : "Transferts actifs")
+                        Text(isPaused ? "All transfers paused" : "Active transfers")
                             .font(.body.weight(.medium))
                         Text(isPaused
-                             ? "Les jobs en cours conservent leurs slots et reprendront à la reprise."
-                             : "Mettre en pause stoppe immédiatement le débit sans annuler les jobs.")
+                             ? "Running jobs keep their slots and will resume when you do."
+                             : "Pausing immediately stops throughput without cancelling jobs.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -114,16 +114,16 @@ struct PerformanceSettingsView: View {
                     }
                 )) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Gestion automatique")
+                        Text("Automatic management")
                             .font(.body.weight(.medium))
-                        Text("Ajuste le nombre de transferts simultanés selon le réseau, la chauffe et la batterie.")
+                        Text("Adjusts the number of simultaneous transfers based on network, heat and battery.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                 }
                 if autoMode {
                     HStack {
-                        Text("Transferts simultanés")
+                        Text("Simultaneous transfers")
                         Spacer()
                         // verbatim : nombre + libellé déjà localisé, pas de clé à
                         // extraire. @State (et non lecture directe du singleton) :
@@ -143,7 +143,7 @@ struct PerformanceSettingsView: View {
                         }
                     ), in: 1...8) {
                         HStack {
-                            Text("Transferts simultanés")
+                            Text("Simultaneous transfers")
                             Spacer()
                             Text("\(maxConcurrent)")
                                 .font(.body.weight(.semibold))
@@ -153,14 +153,14 @@ struct PerformanceSettingsView: View {
                     }
                 }
             } header: {
-                Text("File d'attente")
+                Text("Queue")
             } footer: {
                 // Deux Text littéraux distincts (pas un ternaire de String) pour
                 // rester sur LocalizedStringKey → clés extraites dans le catalogue.
                 if autoMode {
-                    Text("Wi-Fi : 4 · Cellulaire : 2 · Économie d'énergie ou chauffe : 1-2 · Surchauffe critique : 1. Les petits fichiers passent en premier et un échec hors-ligne reprend tout seul au retour du réseau. Vos réglages manuels sont conservés et restaurés si vous désactivez le mode automatique.")
+                    Text("Wi-Fi: 4 · Cellular: 2 · Low Power or heat: 1-2 · Critical overheating: 1. Small files go first, and an offline failure resumes on its own when the network returns. Your manual settings are kept and restored if you turn off automatic mode.")
                 } else {
-                    Text("Nombre maximum de téléchargements/envois actifs en même temps. Les suivants patientent dans la file et démarrent automatiquement dès qu'un slot se libère.")
+                    Text("Maximum number of concurrent downloads/uploads. Remaining transfers wait in the queue and start automatically as slots open.")
                 }
             }
 
@@ -173,9 +173,9 @@ struct PerformanceSettingsView: View {
                     }
                 )) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Pause en cellulaire")
+                        Text("Pause on cellular")
                             .font(.body.weight(.medium))
-                        Text("Suspend les transferts sur données cellulaires (et Wi-Fi en mode données réduites). Ils reprennent automatiquement en Wi-Fi.")
+                        Text("Suspends transfers on cellular data (and Low Data Mode Wi-Fi). They automatically resume on Wi-Fi.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -183,7 +183,7 @@ struct PerformanceSettingsView: View {
                 if !pauseOnCellular {
                     VStack(alignment: .leading, spacing: 10) {
                         HStack {
-                            Text("Limite cellulaire")
+                            Text("Cellular limit")
                                 .font(.subheadline)
                             Spacer()
                             Text(cellularRateLabel)
@@ -203,9 +203,9 @@ struct PerformanceSettingsView: View {
                     .padding(.vertical, 2)
                 }
             } header: {
-                Text("Réseau cellulaire")
+                Text("Cellular network")
             } footer: {
-                Text("Limite distincte appliquée quand l'appareil est en cellulaire. 0 MB/s = sans limite.")
+                Text("Separate limit applied when the device is on cellular. 0 MB/s = unlimited.")
             }
         }
         .navigationTitle("Performance")
@@ -283,7 +283,7 @@ struct PerformanceSettingsView: View {
     // MARK: - Derived
 
     private var rateLabel: String {
-        if bandwidthLimitMBps <= 0 { return String(localized: "Illimité") }
+        if bandwidthLimitMBps <= 0 { return String(localized: "Unlimited") }
         if bandwidthLimitMBps < 1 {
             return "\(Int(bandwidthLimitMBps * 1024)) KB/s"
         }
@@ -291,7 +291,7 @@ struct PerformanceSettingsView: View {
     }
 
     private var cellularRateLabel: String {
-        if cellularLimitMBps <= 0 { return String(localized: "Illimité") }
+        if cellularLimitMBps <= 0 { return String(localized: "Unlimited") }
         if cellularLimitMBps < 1 {
             return "\(Int(cellularLimitMBps * 1024)) KB/s"
         }
@@ -303,9 +303,9 @@ struct PerformanceSettingsView: View {
         HStack(spacing: 14) {
             AppIconTile(systemImage: "speedometer", tint: .indigo, size: 54, iconSize: .title2)
             VStack(alignment: .leading, spacing: 4) {
-                Text(isPaused ? "En pause" : rateLabel)
+                Text(isPaused ? "Paused" : rateLabel)
                     .font(.headline)
-                Text("Limite globale appliquée à toutes les opérations rclone (upload + download).")
+                Text("Global limit applied to all rclone operations (upload + download).")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .lineLimit(2)

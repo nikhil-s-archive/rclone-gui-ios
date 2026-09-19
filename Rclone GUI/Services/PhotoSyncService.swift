@@ -282,7 +282,7 @@ public struct PhotoSyncRunSummary: Sendable, Equatable {
         if indexedCount > 0 {
             return String(localized: "\(indexedCount) élément(s) indexé(s)")
         }
-        return String(localized: "Aucun élément en attente")
+        return String(localized: "No items pending")
     }
 
     /// True if any PhotoSync activity has happened (used to decide whether
@@ -693,7 +693,7 @@ public final class PhotoSyncService: NSObject, PHPhotoLibraryChangeObserver {
     /// last quit. Reads the persisted `shouldContinueUntilEmpty` flag and the
     /// pending count from SwiftData; if there's still work to do, kick off a
     /// background `startFullSync()` so the user doesn't have to revisit
-    /// Settings to tap "Synchroniser" every time.
+    /// Settings to tap "Sync" every time.
     ///
     /// Idempotent and cheap: returns immediately when sync is disabled, no
     /// remote is configured, or no pending records remain.
@@ -962,7 +962,7 @@ public final class PhotoSyncService: NSObject, PHPhotoLibraryChangeObserver {
 
     /// Persisted user-initiated pause. Distinct from the policy suspension
     /// (battery/network) so the pipeline doesn't auto-resume when the device
-    /// is plugged in — only an explicit "Reprendre" tap lifts this.
+    /// is plugged in — only an explicit "Resume" tap lifts this.
     public var isPausedByUser: Bool {
         get { UserDefaults.standard.bool(forKey: "photoSync.pausedByUser") }
         set { UserDefaults.standard.set(newValue, forKey: "photoSync.pausedByUser") }
@@ -2837,7 +2837,7 @@ public final class PhotoSyncService: NSObject, PHPhotoLibraryChangeObserver {
             case 3169:
                 return .skip(reason: "Asset supprimé ou déplacé dans Photos")
             case 3303:
-                return .skip(reason: "Accès Photos refusé")
+                return .skip(reason: "Photos access denied")
             default:
                 break
             }
@@ -3518,10 +3518,10 @@ public final class PhotoSyncService: NSObject, PHPhotoLibraryChangeObserver {
 
     /// Why the sync is currently paused, or nil if it can run. Exposed so the
     /// PhotoSyncSettingsView can render a clear banner instead of letting the
-    /// user wonder why nothing is happening after they tapped "Synchroniser".
+    /// user wonder why nothing is happening after they tapped "Sync".
     public var suspensionReason: String? {
         if ProcessInfo.processInfo.isLowPowerModeEnabled {
-            return String(localized: "Mode économie d'énergie actif — la synchro reprendra automatiquement.")
+            return String(localized: "Low Power Mode active — sync will resume automatically.")
         }
         guard requiresExternalPower else { return nil }
         #if os(iOS)
@@ -3530,7 +3530,7 @@ public final class PhotoSyncService: NSObject, PHPhotoLibraryChangeObserver {
         if state == .charging || state == .full {
             return nil
         }
-        return String(localized: "En attente du branchement secteur (option « Exiger la charge » activée).")
+        return String(localized: "Waiting to be plugged in (the “Require charging” option is enabled).")
         #else
         // macOS : pas d'API UIDevice. NSBackgroundActivityScheduler respecte déjà
         // les conditions d'énergie au niveau système ; on ne bloque pas ici.

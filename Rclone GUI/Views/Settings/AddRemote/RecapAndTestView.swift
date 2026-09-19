@@ -6,11 +6,11 @@
 //  to rclone.conf, runs a connection test, then commits.
 //
 //  Flow:
-//  1. "Tester la connexion" calls `config/create` (writing the section
+//  1. "Test connection" calls `config/create` (writing the section
 //     to rclone.conf) followed by `operations/list`. We mark
 //     `state.remoteWasPreCreated = true` so a Cancel later cleans up
 //     via `config/delete`.
-//  2. "Créer le remote" calls `RcloneConfigEditor.refreshRuntimeAndNotify`
+//  2. "Create remote" calls `RcloneConfigEditor.refreshRuntimeAndNotify`
 //     which re-encrypts ConfigStore + reloads engine + posts the
 //     `rcloneConfigurationDidChange` notification, then dismisses.
 //
@@ -48,7 +48,7 @@ struct RecapAndTestView: View {
                 actionsSection
             } else {
                 Section {
-                    Label("Aucun backend sélectionné.", systemImage: "exclamationmark.triangle.fill")
+                    Label("No backend selected.", systemImage: "exclamationmark.triangle.fill")
                         .foregroundStyle(.red)
                 }
             }
@@ -67,10 +67,10 @@ struct RecapAndTestView: View {
             TextField(questionTitle(for: question.option), text: $questionAnswer)
                 .rgNoAutocap()
                 .autocorrectionDisabled()
-            Button("Valider") {
+            Button("Submit") {
                 resolveQuestion(with: questionAnswer)
             }
-            Button("Annuler", role: .cancel) {
+            Button("Cancel", role: .cancel) {
                 resolveQuestion(with: nil)
             }
         } message: { question in
@@ -109,7 +109,7 @@ struct RecapAndTestView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                     if backend.requiresOAuth {
-                        Label(state.oauthCompleted ? "Authentifié" : "Authentification requise",
+                        Label(state.oauthCompleted ? "Authenticated" : "Authentication required",
                               systemImage: state.oauthCompleted ? "checkmark.seal.fill" : "exclamationmark.triangle.fill")
                             .font(.caption)
                             .foregroundStyle(state.oauthCompleted ? .green : .red)
@@ -121,9 +121,9 @@ struct RecapAndTestView: View {
 
     private func parametersSection(for backend: BackendSchema) -> some View {
         let entries = nonSecretParameters(for: backend)
-        return Section("Paramètres") {
+        return Section("Settings") {
             if entries.isEmpty {
-                Text("Aucun paramètre à afficher.")
+                Text("No settings to display.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } else {
@@ -139,7 +139,7 @@ struct RecapAndTestView: View {
                     }
                 }
                 if hasMaskedSecrets(for: backend) {
-                    Label("Champs sensibles masqués", systemImage: "lock.fill")
+                    Label("Sensitive fields hidden", systemImage: "lock.fill")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
@@ -150,7 +150,7 @@ struct RecapAndTestView: View {
     private var testSection: some View {
         Section {
             if state.selectedBackend?.name == "iclouddrive" {
-                Label("iCloud : après le code 2FA, l'obtention du jeton de session Apple peut prendre plusieurs minutes. Laisse l'écran ouvert pendant le test.",
+                Label("iCloud: after the 2FA code, getting the Apple session token can take several minutes. Keep this screen open during the test.",
                       systemImage: "clock.badge.exclamationmark")
                     .font(.caption)
                     .foregroundStyle(.orange)
@@ -161,22 +161,22 @@ struct RecapAndTestView: View {
                 Group {
                     switch state.testResult {
                     case .notTested:
-                        Text("Tester la connexion")
+                        Text("Test connection")
                             .frame(maxWidth: .infinity)
                     case .inProgress:
                         HStack {
                             ProgressView()
-                            Text("Test en cours…")
+                            Text("Testing…")
                         }
                     case .success(let count, _):
                         Label("Connexion OK — \(count) éléments", systemImage: "checkmark.seal.fill")
                             .foregroundStyle(.green)
                             .frame(maxWidth: .infinity)
                     case .failure:
-                        Label("Tester à nouveau", systemImage: "arrow.clockwise")
+                        Label("Test again", systemImage: "arrow.clockwise")
                             .frame(maxWidth: .infinity)
                     case .timeout:
-                        Label("Tester à nouveau (timeout)", systemImage: "arrow.clockwise")
+                        Label("Test again (timeout)", systemImage: "arrow.clockwise")
                             .frame(maxWidth: .infinity)
                     }
                 }
@@ -200,7 +200,7 @@ struct RecapAndTestView: View {
                     .font(.caption)
                     .foregroundStyle(.red)
             case .timeout:
-                Label("Le serveur ne répond pas. Vérifie ta connexion ou tes paramètres.",
+                Label("The server isn’t responding. Check your connection or your settings.",
                       systemImage: "clock.badge.exclamationmark")
                     .font(.caption)
                     .foregroundStyle(.orange)
@@ -220,10 +220,10 @@ struct RecapAndTestView: View {
                 if isFinalizing {
                     HStack {
                         ProgressView()
-                        Text(state.isEditing ? "Enregistrement…" : "Création…")
+                        Text(state.isEditing ? "Saving…" : "Creating…")
                     }
                 } else {
-                    Text(state.isEditing ? "Enregistrer les modifications" : "Créer le remote")
+                    Text(state.isEditing ? "Save changes" : "Create remote")
                         .frame(maxWidth: .infinity)
                 }
             }
@@ -232,8 +232,8 @@ struct RecapAndTestView: View {
         } footer: {
             if !canFinalize {
                 Text(state.isEditing
-                     ? "Applique d’abord les modifications et teste la connexion."
-                     : "Le remote sera créé après un test réussi. Si le test échoue de manière connue, tu peux quand même créer le remote.")
+                     ? "Apply your changes first, then test the connection."
+                     : "The remote will be created after a successful test. If the test fails in a known way, you can still create the remote.")
                     .font(.caption2)
             }
         }
@@ -427,9 +427,9 @@ struct RecapAndTestView: View {
     private func questionTitle(for option: RcloneOptionSchema?) -> String {
         switch option?.name {
         case "config_2fa":
-            return String(localized: "Code de vérification Apple (2FA)")
+            return String(localized: "Apple verification code (2FA)")
         case nil:
-            return String(localized: "Question rclone")
+            return String(localized: "rclone question")
         case .some(let name):
             return name
         }

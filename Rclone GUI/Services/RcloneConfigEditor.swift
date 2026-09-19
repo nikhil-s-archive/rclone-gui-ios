@@ -34,13 +34,13 @@ enum RcloneConfigEditor {
             case .deletionFailed(let name):
                 return String(localized: "Le remote « \(name) » est toujours présent après la suppression. Redémarre l’app puis réessaie ; si ça persiste, envoie les logs depuis Réglages → Logs.")
             case .invalidRemoteName:
-                return String(localized: "Choisis un nom de remote sans :, [, ], / ni retour à la ligne.")
+                return String(localized: "Choose a remote name without :, [, ], / or line breaks.")
             case .invalidType:
-                return String(localized: "Choisis un type rclone valide.")
+                return String(localized: "Choose a valid rclone type.")
             case .invalidOptionKey(let key):
                 return String(localized: "L’option « \(key) » n’est pas valide.")
             case .invalidUTF8:
-                return String(localized: "Le rclone.conf existant n’est pas lisible en UTF-8.")
+                return String(localized: "The existing rclone.conf isn’t readable as UTF-8.")
             }
         }
     }

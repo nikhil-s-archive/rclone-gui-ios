@@ -21,12 +21,12 @@ struct AboutView: View {
                 LabeledContent("rclone (librclone)", value: rcloneVersion)
             }
 
-            Section("Liens") {
+            Section("Links") {
                 Link(destination: URL(string: "https://rclone.rougetet.com")!) {
                     Label("rclone.rougetet.com", systemImage: "globe")
                 }
                 Link(destination: URL(string: "https://rclone.rougetet.com/transparency.html")!) {
-                    Label("Transparence & vie privée", systemImage: "lock.shield")
+                    Label("Transparency & Privacy", systemImage: "lock.shield")
                 }
                 Link(destination: URL(string: "https://github.com/VitalysRDT/rclone-gui-ios")!) {
                     Label("GitHub", systemImage: "chevron.left.forwardslash.chevron.right")
@@ -35,26 +35,26 @@ struct AboutView: View {
                     Label("rclone.org", systemImage: "globe")
                 }
                 Link(destination: URL(string: "https://forum.rclone.org")!) {
-                    Label("Forum communauté rclone", systemImage: "person.3")
+                    Label("rclone community forum", systemImage: "person.3")
                 }
                 Link(destination: URL(string: "https://github.com/rclone/rclone")!) {
-                    Label("Code source rclone", systemImage: "chevron.left.forwardslash.chevron.right")
+                    Label("rclone source code", systemImage: "chevron.left.forwardslash.chevron.right")
                 }
                 Link(destination: URL(string: "https://code.videolan.org/videolan/VLCKit")!) {
-                    Label("Code source VLCKit (libVLC)", systemImage: "chevron.left.forwardslash.chevron.right")
+                    Label("VLCKit (libVLC) source code", systemImage: "chevron.left.forwardslash.chevron.right")
                 }
             }
 
-            Section("Crédits") {
-                Text("Construit avec rclone et SwiftUI.")
+            Section("Credits") {
+                Text("Built with rclone and SwiftUI.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                Text("Lecture multi-format propulsée par VLCKit / libVLC (VideoLAN), sous licence LGPL v2.1. Le code source de VLCKit est disponible via le lien ci-dessus.")
+                Text("Multi-format playback powered by VLCKit / libVLC (VideoLAN), licensed under LGPL v2.1. VLCKit's source code is available via the link above.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
         }
-        .navigationTitle("À propos")
+        .navigationTitle("About")
         #if os(iOS)
         .rgInlineNavTitle()
         #endif

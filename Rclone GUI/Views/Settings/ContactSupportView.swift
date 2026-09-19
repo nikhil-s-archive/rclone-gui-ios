@@ -38,7 +38,7 @@ struct ContactSupportView: View {
                                         .foregroundStyle(.white)
                                 }
                             VStack(alignment: .leading, spacing: 2) {
-                                Text("Écrire un e-mail")
+                                Text("Write an email")
                                     .font(.system(size: 16))
                                     .foregroundStyle(.primary)
                                 Text(Self.supportEmail)
@@ -59,7 +59,7 @@ struct ContactSupportView: View {
                     Button {
                         copyAddress()
                     } label: {
-                        Label(copied ? String(localized: "Adresse copiée") : String(localized: "Copier l'adresse"),
+                        Label(copied ? String(localized: "Address copied") : String(localized: "Copy address"),
                               systemImage: copied ? "checkmark" : "doc.on.doc")
                             .font(.footnote)
                     }
@@ -67,7 +67,7 @@ struct ContactSupportView: View {
                     .foregroundStyle(RG.accent)
                     .padding(.leading, 4)
 
-                    Text("Le sujet inclut automatiquement la version de l'app pour accélérer le diagnostic. Réponse généralement sous quelques jours.")
+                    Text("The subject automatically includes the app version to speed up diagnosis. You'll usually get a reply within a few days.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -94,9 +94,9 @@ struct ContactSupportView: View {
                         .foregroundStyle(RG.accent)
                 }
             VStack(alignment: .leading, spacing: 4) {
-                Text("Contacter le développeur")
+                Text("Contact the developer")
                     .font(.system(size: 20, weight: .bold))
-                Text("Bug, idée de fonctionnalité ou question — chaque message est lu.")
+                Text("Bug, feature idea or question — every message is read.")
                     .font(.system(size: 13))
                     .foregroundStyle(.secondary)
             }

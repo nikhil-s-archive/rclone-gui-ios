@@ -45,7 +45,7 @@ struct NameAndBackendView: View {
         .scrollDismissesKeyboard(.interactively)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Suivant") {
+                Button("Next") {
                     state.useInteractiveCLI = false
                     onNext()
                 }
@@ -65,9 +65,9 @@ struct NameAndBackendView: View {
                 HStack {
                     Image(systemName: "terminal")
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Mode interactif (CLI)")
+                        Text("Interactive mode (CLI)")
                             .font(.subheadline.weight(.semibold))
-                        Text("Réplique `rclone config` — utile pour crypt, alias, union, combine et tout backend exigeant des prompts dynamiques.")
+                        Text("Replicates `rclone config` — useful for crypt, alias, union, combine and any backend requiring dynamic prompts.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.leading)
@@ -80,9 +80,9 @@ struct NameAndBackendView: View {
             .buttonStyle(.plain)
             .disabled(!state.canProceedFromStep1)
         } header: {
-            Text("Configuration avancée")
+            Text("Advanced configuration")
         } footer: {
-            Text("Le mode interactif est compatible avec 100 % des backends rclone, y compris ceux non listés dans le catalogue graphique.")
+            Text("Interactive mode is compatible with 100% of rclone backends, including those not listed in the graphical catalog.")
                 .font(.caption2)
         }
     }
@@ -94,7 +94,7 @@ struct NameAndBackendView: View {
             // Label masqué (l'en-tête de section dit déjà « Nom du remote ») et
             // exemple en prompt → s'affiche comme placeholder dans le champ sur
             // iOS comme sur macOS (sinon le titre devient un libellé à gauche).
-            TextField("Nom du remote", text: $state.name, prompt: Text("ex : mondrive"))
+            TextField("Remote name", text: $state.name, prompt: Text("e.g. mydrive"))
                 .labelsHidden()
                 .rgNoAutocap()
                 .autocorrectionDisabled()
@@ -107,16 +107,16 @@ struct NameAndBackendView: View {
                     .font(.caption)
                     .foregroundStyle(.red)
             } else if !state.name.isEmpty && !state.nameIsValid {
-                Label("Caractères interdits : « : », « [ », « ] », « / »",
+                Label("Forbidden characters: “:”, “[”, “]”, “/”",
                       systemImage: "exclamationmark.triangle.fill")
                     .font(.caption)
                     .foregroundStyle(.red)
             }
         } header: {
-            Text("Nom du remote")
+            Text("Remote name")
         } footer: {
             if !state.nameIsValid || state.nameAlreadyExists {
-                Text("Donne d'abord un nom à ton remote pour afficher la liste des connexions disponibles.")
+                Text("First give your remote a name to show the list of available connections.")
                     .font(.caption2)
             }
         }
@@ -127,7 +127,7 @@ struct NameAndBackendView: View {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(.secondary)
-                TextField("Recherche backend", text: $state.searchQuery, prompt: Text("Rechercher (drive, S3, sftp…)"))
+                TextField("Search backends", text: $state.searchQuery, prompt: Text("Search (drive, S3, sftp…)"))
                     .labelsHidden()
                     .textFieldStyle(.plain)
                     .rgNoAutocap()
@@ -149,7 +149,7 @@ struct NameAndBackendView: View {
         Section {
             HStack {
                 ProgressView()
-                Text("Chargement des backends rclone…")
+                Text("Loading rclone backends…")
                     .foregroundStyle(.secondary)
             }
         }
@@ -158,13 +158,13 @@ struct NameAndBackendView: View {
     private func errorSection(_ message: String) -> some View {
         Section {
             VStack(alignment: .leading, spacing: 8) {
-                Label("Catalogue indisponible", systemImage: "wifi.exclamationmark")
+                Label("Catalog unavailable", systemImage: "wifi.exclamationmark")
                     .font(.headline)
                     .foregroundStyle(.red)
                 Text(message)
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                Button("Réessayer") {
+                Button("Retry") {
                     Task { await loadCatalog(forcingReload: true) }
                 }
                 .buttonStyle(.borderedProminent)
@@ -182,7 +182,7 @@ struct NameAndBackendView: View {
                 Text("Aucun backend ne correspond à « \(state.searchQuery) ».")
                     .font(.callout)
                     .foregroundStyle(.secondary)
-                Button("Effacer la recherche") {
+                Button("Clear search") {
                     state.searchQuery = ""
                 }
                 .buttonStyle(.bordered)

@@ -40,18 +40,18 @@ struct PlaybackSettingsView: View {
         Form {
             Section {
                 Toggle(isOn: $backgroundAudio) {
-                    Label("Audio en arrière-plan", systemImage: "speaker.wave.2")
+                    Label("Background audio", systemImage: "speaker.wave.2")
                 }
             } footer: {
-                Text("Continuer la lecture audio quand l'app passe en arrière-plan ou que l'écran se verrouille. Désactivé, la lecture se met en pause.")
+                Text("Continue audio playback when the app goes into background or the screen is locked. When disabled, playback pauses.")
             }
 
             Section {
                 Toggle(isOn: $autoPiP) {
-                    Label("PiP automatique", systemImage: "pip.enter")
+                    Label("Automatic PiP", systemImage: "pip.enter")
                 }
             } footer: {
-                Text("Basculer la vidéo en Picture-in-Picture (fenêtre flottante) quand tu quittes l'app pendant la lecture.")
+                Text("Switch video to Picture-in-Picture (floating window) when leaving the app during playback.")
             }
 
             Section {
@@ -60,16 +60,16 @@ struct PlaybackSettingsView: View {
                         Text(rateLabel(r)).tag(r)
                     }
                 } label: {
-                    Label("Vitesse par défaut", systemImage: "gauge.with.dots.needle.67percent")
+                    Label("Default speed", systemImage: "gauge.with.dots.needle.67percent")
                 }
                 #if os(iOS)
                 .pickerStyle(.menu)
                 #endif
             } footer: {
-                Text("Vitesse appliquée au démarrage d'une piste audio (pratique pour les podcasts et livres audio).")
+                Text("Speed applied at the start of an audio track (useful for podcasts and audiobooks).")
             }
         }
-        .navigationTitle("Lecture")
+        .navigationTitle("Playback")
         .rgInlineNavTitle()
     }
 

@@ -46,7 +46,7 @@ struct FieldRow: View {
             Text(spec.label)
                 .font(.subheadline.weight(.semibold))
             if spec.required {
-                Text("• requis")
+                Text("• required")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -85,7 +85,7 @@ struct FieldRow: View {
                         .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(revealSecret ? "Masquer" : "Afficher")
+                .accessibilityLabel(revealSecret ? "Hide" : "Show")
             }
 
         case .toggle:
@@ -110,7 +110,7 @@ struct FieldRow: View {
         case .picker:
             Picker(spec.label, selection: $value) {
                 if value.isEmpty || !exampleValues.contains(where: { $0.value == value }) {
-                    Text("— choisir —").tag(value)
+                    Text("— choose —").tag(value)
                 }
                 ForEach(visibleExamples, id: \.value) { example in
                     Text(exampleLabel(example)).tag(example.value)
@@ -122,7 +122,7 @@ struct FieldRow: View {
             VStack(alignment: .leading, spacing: 8) {
                 if !visibleExamples.isEmpty {
                     Picker("Suggestions", selection: $value) {
-                        Text("Personnalisé…").tag("")
+                        Text("Custom…").tag("")
                         ForEach(visibleExamples, id: \.value) { example in
                             Text(exampleLabel(example)).tag(example.value)
                         }
@@ -137,9 +137,9 @@ struct FieldRow: View {
 
         case .tristate:
             Picker(spec.label, selection: $value) {
-                Text("Par défaut").tag("")
-                Text("Oui").tag("true")
-                Text("Non").tag("false")
+                Text("Default").tag("")
+                Text("Yes").tag("true")
+                Text("No").tag("false")
             }
             .labelsHidden()
             .pickerStyle(.segmented)
@@ -167,7 +167,7 @@ struct FieldRow: View {
     @ViewBuilder
     private var footer: some View {
         if let error = validationError {
-            Label(error.errorDescription ?? "Erreur", systemImage: "exclamationmark.triangle.fill")
+            Label(error.errorDescription ?? "Error", systemImage: "exclamationmark.triangle.fill")
                 .font(.caption2)
                 .foregroundStyle(.red)
         } else if let hint = spec.validationHint {
@@ -246,7 +246,7 @@ private struct FileImportControl: View {
                             .foregroundStyle(.secondary)
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel("Retirer le fichier")
+                    .accessibilityLabel("Remove file")
                 }
             }
 
@@ -254,7 +254,7 @@ private struct FileImportControl: View {
                 presentingPicker = true
             } label: {
                 Label(
-                    value.isEmpty ? "Importer un fichier…" : "Remplacer le fichier…",
+                    value.isEmpty ? "Import a file…" : "Replace file…",
                     systemImage: "doc.badge.arrow.up"
                 )
             }
@@ -273,7 +273,7 @@ private struct FileImportControl: View {
 
             // Manual path entry stays possible for path-typed options.
             if kind == .path {
-                TextField("ou saisir un chemin", text: $value)
+                TextField("or enter a path", text: $value)
                     .rgNoAutocap()
                     .autocorrectionDisabled()
                     .font(.caption)
@@ -293,7 +293,7 @@ private struct FileImportControl: View {
         if let importedName { return importedName }
         switch kind {
         case .inlineContent:
-            return String(localized: "Contenu importé")
+            return String(localized: "Content imported")
         case .path:
             return URL(fileURLWithPath: value).lastPathComponent
         }
@@ -302,9 +302,9 @@ private struct FileImportControl: View {
     private var hint: String {
         switch kind {
         case .inlineContent:
-            return String(localized: "Importez le fichier (clé PEM, JSON…) — son contenu est enregistré directement.")
+            return String(localized: "Import the file (PEM key, JSON…) — its content is saved directly.")
         case .path:
-            return String(localized: "Importez le fichier requis — il est copié en sécurité dans l'app, jamais transmis ailleurs.")
+            return String(localized: "Import the required file — it’s copied securely into the app, never sent anywhere else.")
         }
     }
 

@@ -208,7 +208,7 @@ enum DemoSeeder {
             ))
         }
         let recent: [(String, String, String, Double)] = [
-            ("iPhone", "Vidéos", "Vidéos", 0.4),
+            ("iPhone", "Videos", "Videos", 0.4),
             ("Wasabi S3", "archives", "archives", 1.5),
             ("NAS SFTP", "media/films", "films", 6.0),
         ]

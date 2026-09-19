@@ -27,31 +27,31 @@ struct BackupSettingsView: View {
                         excludeFromBackup = newValue
                         let ok = BackupExclusionManager.apply(excluded: newValue)
                         if !ok {
-                            transientMessage = "Certaines données n'ont pas pu être marquées. Réessaie ; si ça persiste, c'est sans danger pour l'app."
+                            transientMessage = "Some data couldn't be marked. Try again; if it persists, it's harmless for the app."
                         }
                     }
                 )) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Exclure des sauvegardes iCloud")
+                        Text("Exclude from iCloud backups")
                             .font(.body.weight(.medium))
                         Text(excludeFromBackup
-                             ? "Les données de l'app ne seront pas incluses dans la sauvegarde iCloud de l'appareil."
-                             : "Les données de l'app sont incluses dans la sauvegarde iCloud de l'appareil.")
+                             ? "The app's data won't be included in the device's iCloud backup."
+                             : "The app's data is included in the device's iCloud backup.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                 }
             } header: {
-                Text("Sauvegarde iCloud")
+                Text("iCloud Backup")
             } footer: {
                 Text("Quand c'est activé, la configuration rclone (chiffrée), le cache de navigation, les miniatures, le coffre-fort et les fichiers téléchargés sont marqués « exclus de la sauvegarde » (NSURLIsExcludedFromBackupKey). Utile pour la confidentialité ou pour ne pas alourdir votre sauvegarde iCloud.\n\nVos identifiants restent dans le Trousseau (sauvegardé séparément). Après une restauration sur un nouvel appareil, il faudra réimporter votre configuration.")
             }
         }
-        .navigationTitle("Sauvegarde iCloud")
+        .navigationTitle("iCloud Backup")
         #if os(iOS)
         .rgInlineNavTitle()
         #endif
-        .alert("Sauvegarde", isPresented: Binding(
+        .alert("Backup", isPresented: Binding(
             get: { transientMessage != nil },
             set: { if !$0 { transientMessage = nil } }
         )) {
@@ -66,9 +66,9 @@ struct BackupSettingsView: View {
         HStack(spacing: 14) {
             AppIconTile(systemImage: "icloud.slash", tint: .blue, size: 54, iconSize: .title2)
             VStack(alignment: .leading, spacing: 4) {
-                Text(excludeFromBackup ? "Exclu de la sauvegarde" : "Inclus dans la sauvegarde")
+                Text(excludeFromBackup ? "Excluded from backup" : "Included in backup")
                     .font(.headline)
-                Text("Contrôle si les données de l'app figurent dans la sauvegarde iCloud de l'appareil.")
+                Text("Controls whether the app's data appears in the device's iCloud backup.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .lineLimit(3)

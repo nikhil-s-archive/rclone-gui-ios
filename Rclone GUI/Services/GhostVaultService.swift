@@ -76,7 +76,7 @@ public actor GhostVaultService {
         request: GhostVaultCreateRequest
     ) async throws -> GhostVaultCreateResult {
         guard let plaintext = try await ConfigStore.shared.load() else {
-            throw RcloneError.engineNotAvailable(String(localized: "Aucune configuration rclone à sauvegarder."))
+            throw RcloneError.engineNotAvailable(String(localized: "No rclone configuration to back up."))
         }
         let rcloneVersion = await currentRcloneVersion()
         let remoteSummaries = try await RemoteService.shared.listRemoteSummaries()

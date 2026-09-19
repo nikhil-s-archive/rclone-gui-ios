@@ -41,13 +41,13 @@ struct QRScannerSheet: View {
                     .ignoresSafeArea()
                 }
             }
-            .navigationTitle("Scanner un QR")
+            .navigationTitle("Scan a QR code")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Annuler") { onCancel() }
+                    Button("Cancel") { onCancel() }
                 }
             }
         }
@@ -62,9 +62,9 @@ struct QRScannerSheet: View {
             Image(systemName: "camera.fill.badge.ellipsis")
                 .font(.system(size: 56))
                 .foregroundStyle(.orange)
-            Text("Accès à la caméra refusé")
+            Text("Camera access denied")
                 .font(.title3.weight(.semibold))
-            Text("Pour scanner un QR Handoff, autorise l'accès à la caméra dans Réglages → Rclone GUI → Caméra. Tu peux aussi coller le payload manuellement.")
+            Text("To scan a Handoff QR code, allow camera access in Settings → Rclone GUI → Camera. You can also paste the payload manually.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

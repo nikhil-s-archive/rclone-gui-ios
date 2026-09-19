@@ -24,21 +24,21 @@ public enum BiometricReason: Sendable {
     nonisolated var localized: String {
         switch self {
         case .appOpen:
-            return NSLocalizedString("Déverrouiller Rclone GUI", comment: "FaceID prompt at app open")
+            return NSLocalizedString("Unlock Rclone GUI", comment: "FaceID prompt at app open")
         case .configRead:
-            return NSLocalizedString("Accéder à votre configuration rclone", comment: "FaceID prompt before reading rclone.conf")
+            return NSLocalizedString("Access your rclone configuration", comment: "FaceID prompt before reading rclone.conf")
         case .configWrite:
-            return NSLocalizedString("Sauvegarder votre configuration rclone", comment: "FaceID prompt before writing rclone.conf")
+            return NSLocalizedString("Save your rclone configuration", comment: "FaceID prompt before writing rclone.conf")
         case .revealRemoteCredentials:
-            return NSLocalizedString("Afficher les identifiants de ce remote", comment: "FaceID prompt before showing credentials")
+            return NSLocalizedString("Show this remote’s credentials", comment: "FaceID prompt before showing credentials")
         case .ghostVaultSeal:
-            return NSLocalizedString("Sceller un Ghost Vault", comment: "FaceID prompt before sealing a Ghost Vault backup")
+            return NSLocalizedString("Seal a Ghost Vault", comment: "FaceID prompt before sealing a Ghost Vault backup")
         case .ghostVaultUnseal:
-            return NSLocalizedString("Ouvrir un Ghost Vault", comment: "FaceID prompt before restoring a Ghost Vault backup")
+            return NSLocalizedString("Open a Ghost Vault", comment: "FaceID prompt before restoring a Ghost Vault backup")
         case .handoffSend:
-            return NSLocalizedString("Préparer un Handoff P2P", comment: "FaceID prompt before sealing a Handoff P2P payload")
+            return NSLocalizedString("Prepare a P2P Handoff", comment: "FaceID prompt before sealing a Handoff P2P payload")
         case .handoffReceive:
-            return NSLocalizedString("Importer un Handoff P2P", comment: "FaceID prompt before applying a Handoff P2P payload")
+            return NSLocalizedString("Import a P2P Handoff", comment: "FaceID prompt before applying a Handoff P2P payload")
         }
     }
 }
@@ -78,7 +78,7 @@ public actor BiometricGate {
         var nsError: NSError?
 
         guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &nsError) else {
-            let msg = nsError?.localizedDescription ?? String(localized: "Biométrie non disponible")
+            let msg = nsError?.localizedDescription ?? String(localized: "Biometrics unavailable")
             return .unavailable(msg)
         }
 
@@ -90,7 +90,7 @@ public actor BiometricGate {
                     return
                 }
                 guard let laError = error as? LAError else {
-                    continuation.resume(returning: .unavailable(error?.localizedDescription ?? String(localized: "Erreur biométrie inconnue")))
+                    continuation.resume(returning: .unavailable(error?.localizedDescription ?? String(localized: "Unknown biometric error")))
                     return
                 }
                 switch laError.code {

@@ -19,24 +19,24 @@ struct CacheSettingsView: View {
                     .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                     .listRowBackground(Color.clear)
             } footer: {
-                Text("Fichiers téléchargés temporairement pour la lecture. Tu peux les purger à tout moment.")
+                Text("Files downloaded temporarily for playback. You can purge them at any time.")
             }
 
             Section {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
-                        Text("Taille max")
+                        Text("Max size")
                         Spacer()
                         Text("\(Int(maxSizeGB)) Go")
                             .foregroundStyle(.secondary)
                             .monospacedDigit()
                     }
                     Slider(value: $maxSizeGB, in: 1...50, step: 1) {
-                        Text("Cache max")
+                        Text("Max cache")
                     }
                 }
             } footer: {
-                Text("Quand le cache dépasse cette taille, les fichiers les moins récemment lus sont effacés automatiquement en premier (LRU).")
+                Text("When the cache exceeds this size, the least recently played files are deleted automatically first (LRU).")
             }
 
             Section {
@@ -44,9 +44,9 @@ struct CacheSettingsView: View {
                     Task { await purge() }
                 } label: {
                     if purging {
-                        HStack { ProgressView(); Text("Effacement…") }
+                        HStack { ProgressView(); Text("Erasing…") }
                     } else {
-                        Label("Effacer le cache maintenant", systemImage: "trash")
+                        Label("Clear cache now", systemImage: "trash")
                     }
                 }
                 .disabled(purging || currentBytes == 0)
@@ -112,14 +112,14 @@ private struct CacheHeaderCard: View {
 
     var body: some View {
         AppHeroCard(
-            title: "Cache média",
-            subtitle: "Lecture plus fluide, purge locale et limite LRU.",
+            title: "Media cache",
+            subtitle: "Smoother playback, local purge and LRU limit.",
             systemImage: "tray.full",
             tint: .orange
         ) {
             HStack(spacing: 10) {
-                AppMetricPill(value: humanSize(currentBytes), label: "utilisé", systemImage: "internaldrive", tint: .orange)
-                AppMetricPill(value: "\(Int(maxSizeGB)) Go", label: "limite", systemImage: "gauge.with.dots.needle.67percent", tint: .blue)
+                AppMetricPill(value: humanSize(currentBytes), label: "used", systemImage: "internaldrive", tint: .orange)
+                AppMetricPill(value: "\(Int(maxSizeGB)) Go", label: "Limit", systemImage: "gauge.with.dots.needle.67percent", tint: .blue)
             }
         }
     }

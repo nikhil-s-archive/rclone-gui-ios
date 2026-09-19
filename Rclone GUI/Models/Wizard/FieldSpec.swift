@@ -188,12 +188,12 @@ struct FieldSpec: Identifiable, Hashable, Sendable {
     /// Helper string shown under tricky text fields (size, duration, …).
     var validationHint: String? {
         switch type {
-        case "SizeSuffix":   return String(localized: "Format : 100M, 5G, 1Ki…")
-        case "Duration":     return String(localized: "Format : 10s, 5m, 2h…")
-        case "Encoding":     return String(localized: "Encodage rclone (laisser par défaut sauf besoin spécifique)")
-        case "Bits":         return String(localized: "Combinaison de flags (séparés par virgule)")
-        case "CommaSepList": return String(localized: "Liste séparée par virgules")
-        case "SpaceSepList": return String(localized: "Liste séparée par espaces")
+        case "SizeSuffix":   return String(localized: "Format: 100M, 5G, 1Ki…")
+        case "Duration":     return String(localized: "Format: 10s, 5m, 2h…")
+        case "Encoding":     return String(localized: "rclone encoding (leave default unless specifically needed)")
+        case "Bits":         return String(localized: "Combination of flags (comma-separated)")
+        case "CommaSepList": return String(localized: "Comma-separated list")
+        case "SpaceSepList": return String(localized: "Space-separated list")
         default:             return nil
         }
     }

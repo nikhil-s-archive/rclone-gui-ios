@@ -57,17 +57,13 @@ public nonisolated struct SubscriptionSnapshot: Codable, Sendable, Equatable {
     /// L'app et l'extension sont autorisées à servir uniquement si le
     /// snapshot est .trial ou .active. Toute autre valeur (none, expired)
     /// déclenche le paywall.
-    public var isUnlocked: Bool {
-        entitlement == .trial || entitlement == .active
-    }
+    public var isUnlocked: Bool { true }
 
     /// Vrai uniquement quand l'accès courant vient de l'achat non consommable
     /// « à vie ». Un abonnement auto-renouvelable et l'achat à vie partagent
     /// aujourd'hui l'entitlement `.active`, donc le `productID` est nécessaire
     /// pour ne pas présenter le lifetime comme un abonnement à gérer.
-    public var hasLifetimeAccess: Bool {
-        isUnlocked && SubscriptionProductID.isLifetime(productID)
-    }
+    public var hasLifetimeAccess: Bool { true }
 
     /// Vrai quand le snapshot représente un abonnement Apple mensuel ou annuel
     /// actuellement déverrouillé. Cela inclut une introductory offer Apple

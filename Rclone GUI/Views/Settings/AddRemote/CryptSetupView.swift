@@ -56,7 +56,7 @@ struct CryptSetupView: View {
         }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Suivant") { onNext() }
+                Button("Next") { onNext() }
                     .disabled(!state.canProceedFromCrypt || !passwordsMatch)
             }
         }
@@ -70,19 +70,19 @@ struct CryptSetupView: View {
             if loadingRemotes {
                 HStack {
                     ProgressView()
-                    Text("Chargement des remotes…").foregroundStyle(.secondary)
+                    Text("Loading remotes…").foregroundStyle(.secondary)
                 }
             } else if let loadError {
                 Label(loadError, systemImage: "exclamationmark.triangle.fill")
                     .foregroundStyle(.red)
             } else if selectableRemotes.isEmpty {
-                Label("Aucun stockage disponible. Ajoute d'abord un remote (Drive, S3, SFTP…) puis reviens créer le coffre.",
+                Label("No storage available. Add a remote first (Drive, S3, SFTP…), then come back to create the vault.",
                       systemImage: "externaldrive.badge.exclamationmark")
                     .font(.callout)
                     .foregroundStyle(.secondary)
             } else {
-                Picker("Stockage", selection: $state.cryptUnderlyingRemote) {
-                    Text("Choisir…").tag("")
+                Picker("Storage", selection: $state.cryptUnderlyingRemote) {
+                    Text("Choose…").tag("")
                     ForEach(selectableRemotes) { remote in
                         Text("\(remote.name) (\(remote.type))").tag(remote.name)
                     }
@@ -94,9 +94,9 @@ struct CryptSetupView: View {
                 }
             }
         } header: {
-            Text("Stockage sous-jacent")
+            Text("Underlying storage")
         } footer: {
-            Text("Le coffre chiffre les fichiers au-dessus de ce remote. Les données restent stockées chez le fournisseur, mais chiffrées de bout en bout.")
+            Text("The vault encrypts files on top of this remote. Data stays with the provider, but end-to-end encrypted.")
         }
     }
 
@@ -111,7 +111,7 @@ struct CryptSetupView: View {
                 HStack {
                     Label {
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("Dossier de destination")
+                            Text("Destination folder")
                                 .foregroundStyle(.primary)
                             Text(folderDisplay)
                                 .font(.caption)
@@ -123,7 +123,7 @@ struct CryptSetupView: View {
                         Image(systemName: "folder")
                     }
                     Spacer()
-                    Text("Parcourir")
+                    Text("Browse")
                         .font(.callout)
                         .foregroundStyle(RG.accent)
                 }
@@ -131,15 +131,15 @@ struct CryptSetupView: View {
             .buttonStyle(.plain)
             .disabled(state.cryptUnderlyingRemote.isEmpty)
         } header: {
-            Text("Dossier")
+            Text("Folder")
         } footer: {
-            Text("Emplacement du coffre dans le remote. Laisse à la racine pour chiffrer tout le remote.")
+            Text("Where the vault lives in the remote. Leave at the root to encrypt the whole remote.")
         }
     }
 
     private var folderDisplay: String {
         guard !state.cryptUnderlyingRemote.isEmpty else {
-            return String(localized: "Sélectionne d'abord un stockage")
+            return String(localized: "Select a storage first")
         }
         return state.cryptRemoteValue
     }
@@ -149,18 +149,18 @@ struct CryptSetupView: View {
     @ViewBuilder
     private var passwordSection: some View {
         Section {
-            SecureField("Mot de passe", text: $state.cryptPassword)
-            SecureField("Confirmer le mot de passe", text: $confirmPassword)
+            SecureField("Password", text: $state.cryptPassword)
+            SecureField("Confirm password", text: $confirmPassword)
             if !confirmPassword.isEmpty && !passwordsMatch {
-                Label("Les mots de passe ne correspondent pas.", systemImage: "exclamationmark.triangle.fill")
+                Label("Passwords do not match.", systemImage: "exclamationmark.triangle.fill")
                     .font(.caption)
                     .foregroundStyle(.red)
             }
-            SecureField("Sel / password2 (optionnel)", text: $state.cryptPassword2)
+            SecureField("Salt / password2 (optional)", text: $state.cryptPassword2)
         } header: {
-            Text("Mot de passe")
+            Text("Password")
         } footer: {
-            Text("Sans ce mot de passe, les fichiers sont irrécupérables — il n'est stocké que sur ton appareil. Le sel (password2) renforce le chiffrement ; conserve-le aussi.")
+            Text("Without this password the files are unrecoverable — it is stored only on your device. The salt (password2) strengthens encryption; keep it too.")
         }
     }
 
@@ -169,16 +169,16 @@ struct CryptSetupView: View {
     @ViewBuilder
     private var encryptionSection: some View {
         Section {
-            Picker("Noms de fichiers", selection: $state.cryptFilenameEncryption) {
-                Text("Chiffrés (standard)").tag("standard")
-                Text("Masqués (obfuscate)").tag("obfuscate")
-                Text("En clair (off)").tag("off")
+            Picker("File names", selection: $state.cryptFilenameEncryption) {
+                Text("Encrypted (standard)").tag("standard")
+                Text("Obfuscated").tag("obfuscate")
+                Text("Plain (off)").tag("off")
             }
-            Toggle("Chiffrer les noms de dossiers", isOn: $state.cryptDirNameEncryption)
+            Toggle("Encrypt folder names", isOn: $state.cryptDirNameEncryption)
         } header: {
-            Text("Chiffrement des noms")
+            Text("Name encryption")
         } footer: {
-            Text("« Standard » chiffre noms de fichiers et dossiers. « En clair » garde les noms lisibles (utile pour retrouver des fichiers côté fournisseur).")
+            Text("“Standard” encrypts file and folder names. “Plain” keeps names readable (handy to find files on the provider side).")
         }
     }
 
@@ -218,7 +218,7 @@ private struct CryptFolderPicker: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("Annuler") { dismiss() }
+                        Button("Cancel") { dismiss() }
                     }
                 }
         }
@@ -257,21 +257,21 @@ private struct CryptFolderLevel: View {
                     onPick(path)
                 } label: {
                     Label(
-                        path.isEmpty ? "Choisir la racine" : "Choisir « \(path) »",
+                        path.isEmpty ? "Choose the root" : "Choisir « \(path) »",
                         systemImage: "checkmark.circle.fill"
                     )
                 }
             }
 
-            Section("Sous-dossiers") {
+            Section("Subfolders") {
                 if loading {
-                    HStack { ProgressView(); Text("Chargement…").foregroundStyle(.secondary) }
+                    HStack { ProgressView(); Text("Loading…").foregroundStyle(.secondary) }
                 } else if let error {
                     Label(error, systemImage: "exclamationmark.triangle.fill")
                         .font(.caption)
                         .foregroundStyle(.red)
                 } else if directories.isEmpty {
-                    Text("Aucun sous-dossier ici.").foregroundStyle(.secondary)
+                    Text("No subfolders here.").foregroundStyle(.secondary)
                 } else {
                     ForEach(directories) { dir in
                         NavigationLink(value: dir.pathInRemote) {

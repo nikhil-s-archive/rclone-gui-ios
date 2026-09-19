@@ -84,7 +84,7 @@ struct AudioMiniBar: View {
                             .font(.system(size: 14, weight: .semibold))
                             .lineLimit(1)
                             .truncationMode(.middle)
-                        Text(audio.isLoading ? "Chargement…" : subtitle)
+                        Text(audio.isLoading ? "Loading…" : subtitle)
                             .font(.system(size: 11))
                             .foregroundStyle(.secondary)
                             .lineLimit(1)

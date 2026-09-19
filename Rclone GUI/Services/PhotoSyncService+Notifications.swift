@@ -7,7 +7,7 @@
 //
 //  Auth model:
 //   - We never request authorization implicitly — only when the user toggles
-//     the "Notifications après sync" switch in PhotoSyncSettingsView.
+//     the "Notifications after sync" switch in PhotoSyncSettingsView.
 //   - postSyncCompleteNotification is best-effort: if the user has not granted
 //     permission, the call is a no-op (UNNotificationCenter ignores the request).
 //
@@ -41,12 +41,12 @@ extension PhotoSyncService {
     public static func registerNotificationCategories() {
         let pause = UNNotificationAction(
             identifier: pauseActionID,
-            title: "Mettre en pause",
+            title: "Pause",
             options: []
         )
         let resume = UNNotificationAction(
             identifier: resumeActionID,
-            title: "Reprendre",
+            title: "Resume",
             options: []
         )
         let category = UNNotificationCategory(

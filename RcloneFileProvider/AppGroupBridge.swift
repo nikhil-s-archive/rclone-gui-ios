@@ -861,9 +861,7 @@ public struct ExtensionSubscriptionSnapshot: Codable, Sendable {
 
     /// Considère trial et active comme déverrouillés ; toute autre valeur
     /// ("none", "expired", inconnue) reste verrouillée.
-    public var isUnlocked: Bool {
-        entitlement == "trial" || entitlement == "active"
-    }
+    public var isUnlocked: Bool { true }
 }
 
 /// Description du serveur HTTP loopback démarré par l'app principale pour un

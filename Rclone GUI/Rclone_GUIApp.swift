@@ -11,8 +11,10 @@ import Darwin
 @main
 struct Rclone_GUIApp: App {
     @Environment(\.scenePhase) private var scenePhase
+    @AppStorage("appLanguage") private var appLanguage: String = "en"
 
     init() {
+        UserDefaults.standard.register(defaults: ["appLanguage": "en"])
         // EN TOUT PREMIER : redirige stderr + arme la capture de crash avant
         // que librclone ne démarre (son fatal OAuth écrit sur stderr puis os.Exit).
         CrashReporter.install()
@@ -91,6 +93,7 @@ struct Rclone_GUIApp: App {
             RootGateView {
                 ContentView()
             }
+            .environment(\.locale, appLanguage == "system" ? Locale.autoupdatingCurrent : Locale(identifier: appLanguage))
                 #if os(macOS)
                 // macOS rend les Form en style « colonnes » par défaut (libellé à
                 // gauche / contrôle à droite), ce qui casse les en-têtes/pieds de
@@ -154,7 +157,7 @@ struct Rclone_GUIApp: App {
                     }
                     // Resume an interrupted photo full-sync if the previous run
                     // didn't drain the backlog. Without this, the user has to
-                    // reopen Settings and tap "Synchroniser" after every cold
+                    // reopen Settings and tap "Sync" after every cold
                     // start — exactly the symptom of "il faut tout le temps
                     // appuyer sur synchronisation".
                     Task.detached(priority: .background) { @MainActor in

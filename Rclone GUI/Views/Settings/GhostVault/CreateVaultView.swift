@@ -52,13 +52,13 @@ struct CreateVaultView: View {
                 }
             }
         }
-        .navigationTitle("Créer un vault")
+        .navigationTitle("Create a vault")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("Annuler") { dismiss() }
+                Button("Cancel") { dismiss() }
                     .disabled(submitting)
             }
         }
@@ -86,10 +86,10 @@ struct CreateVaultView: View {
                 if loadingRemotes {
                     HStack {
                         ProgressView()
-                        Text("Chargement des remotes…").foregroundStyle(.secondary)
+                        Text("Loading remotes…").foregroundStyle(.secondary)
                     }
                 } else if remotes.isEmpty {
-                    Text("Aucun remote configuré. Ajoute d'abord un remote dans Réglages → Configuration.")
+                    Text("No remotes configured. Add a remote first in Settings → Configuration.")
                         .foregroundStyle(.secondary)
                 } else {
                     ForEach(remotes) { remote in
@@ -116,12 +116,12 @@ struct CreateVaultView: View {
                     }
                 }
             } header: {
-                Text("Remote de destination")
+                Text("Destination remote")
             } footer: {
                 if let remote = selectedRemote {
                     Text("Vault écrit dans \(remote.name):\(selectedFolder.isEmpty ? "/" : selectedFolder)/ghost-vault-AAAA-MM-JJ.rclonebackup")
                 } else {
-                    Text("On chiffre TOUJOURS côté client, même si le remote est déjà un `crypt` rclone.")
+                    Text("ALWAYS encrypted client-side, even if the remote is already an rclone `crypt`.")
                 }
             }
 
@@ -131,7 +131,7 @@ struct CreateVaultView: View {
                         showFolderPicker = true
                     } label: {
                         HStack {
-                            Label("Dossier dans le remote", systemImage: "folder.fill")
+                            Label("Folder in the remote", systemImage: "folder.fill")
                             Spacer()
                             Text(selectedFolder.isEmpty ? "/" : selectedFolder)
                                 .foregroundStyle(.secondary)
@@ -143,7 +143,7 @@ struct CreateVaultView: View {
                     }
                     .buttonStyle(.plain)
                 } header: {
-                    Text("Emplacement")
+                    Text("Location")
                 } footer: {
                     Text("Par défaut : \(GhostVault.remoteFolder)/. Tu peux créer un sous-dossier si tu ranges tes backups.")
                 }
@@ -152,7 +152,7 @@ struct CreateVaultView: View {
                     Button {
                         step = .passphrase
                     } label: {
-                        Text("Continuer")
+                        Text("Continue")
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
@@ -171,7 +171,7 @@ struct CreateVaultView: View {
                     #if os(iOS)
                     .textInputAutocapitalization(.never)
                     #endif
-                SecureField("Confirmer la passphrase", text: $passphraseConfirm)
+                SecureField("Confirm the passphrase", text: $passphraseConfirm)
                     .textContentType(.newPassword)
                     .autocorrectionDisabled()
                     #if os(iOS)
@@ -180,11 +180,11 @@ struct CreateVaultView: View {
             } header: {
                 Text("Passphrase")
             } footer: {
-                Text("La passphrase sert à chiffrer le vault. Elle ne quitte jamais l'appareil et ne peut pas être récupérée — choisis-la longue (phrase + chiffres) et conserve-la dans un endroit sûr (gestionnaire de mots de passe).")
+                Text("The passphrase encrypts the vault. It never leaves the device and cannot be recovered — choose a long one (phrase + digits) and store it safely in a password manager.")
             }
 
             Section {
-                Toggle("Afficher les critères", isOn: .constant(false))
+                Toggle("Show criteria", isOn: .constant(false))
                     .disabled(true)
                 ForEach(passphraseChecks, id: \.label) { check in
                     HStack(spacing: 8) {
@@ -196,7 +196,7 @@ struct CreateVaultView: View {
                     }
                 }
             } header: {
-                Text("Critères")
+                Text("Criteria")
             }
 
             Section {
@@ -204,10 +204,10 @@ struct CreateVaultView: View {
                     Task { await seal() }
                 } label: {
                     if submitting {
-                        HStack { ProgressView(); Text("Scellement…") }
+                        HStack { ProgressView(); Text("Sealing…") }
                             .frame(maxWidth: .infinity)
                     } else {
-                        Text("Sceller et uploader")
+                        Text("Seal and upload")
                             .frame(maxWidth: .infinity)
                     }
                 }
@@ -215,7 +215,7 @@ struct CreateVaultView: View {
                 .controlSize(.large)
                 .disabled(!passphraseIsValid || submitting)
 
-                Button("Retour") { step = .remote }
+                Button("Back") { step = .remote }
                     .disabled(submitting)
             }
         }
@@ -225,10 +225,10 @@ struct CreateVaultView: View {
         Section {
             HStack(spacing: 12) {
                 ProgressView()
-                Text("Scellement et upload en cours…")
+                Text("Sealing and uploading…")
             }
         } footer: {
-            Text("Face ID / Touch ID est demandé pour confirmer l'opération.")
+            Text("Face ID / Touch ID is required to confirm this action.")
         }
     }
 
@@ -236,10 +236,10 @@ struct CreateVaultView: View {
         Section {
             if let result = success {
                 VStack(alignment: .leading, spacing: 8) {
-                    Label("Vault créé", systemImage: "checkmark.seal.fill")
+                    Label("Vault created", systemImage: "checkmark.seal.fill")
                         .font(.headline)
                         .foregroundStyle(.green)
-                    Text("Emplacement :")
+                    Text("Location:")
                         .font(.caption).foregroundStyle(.secondary)
                     Text("\(result.descriptor.remote):\(result.descriptor.remotePath)")
                         .font(.caption.monospaced())
@@ -249,7 +249,7 @@ struct CreateVaultView: View {
                 }
                 .padding(.vertical, 4)
             }
-            Button("Terminé") { dismiss() }
+            Button("Completed") { dismiss() }
                 .frame(maxWidth: .infinity)
                 .buttonStyle(.borderedProminent)
         }
@@ -292,7 +292,7 @@ struct CreateVaultView: View {
             if case .unavailable(let msg) = biometricResult {
                 submitError = msg
             } else {
-                submitError = "Authentification annulée."
+                submitError = "Authentication cancelled."
             }
             return
         }
@@ -322,7 +322,7 @@ struct CreateVaultView: View {
 
 /// Petit navigateur de dossier adapté à Ghost Vault : on choisit un dossier
 /// dans le remote, on n'autorise que les dossiers (pas de fichier), et le
-/// bouton "Choisir" est toujours disponible pour valider le dossier courant.
+/// bouton "Choose" est toujours disponible pour valider le dossier courant.
 private struct GhostVaultFolderPicker: View {
     let remote: String
     let initial: String
@@ -341,7 +341,7 @@ private struct GhostVaultFolderPicker: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("Annuler") { dismiss() }
+                        Button("Cancel") { dismiss() }
                     }
                 }
         }
@@ -368,19 +368,19 @@ private struct GhostVaultFolderLevel: View {
                     onPick(path)
                 } label: {
                     Label(
-                        path.isEmpty ? "Choisir la racine" : "Choisir « \(path) »",
+                        path.isEmpty ? "Choose the root" : "Choisir « \(path) »",
                         systemImage: "checkmark.circle.fill"
                     )
                 }
             }
-            Section("Sous-dossiers") {
+            Section("Subfolders") {
                 if loading {
-                    HStack { ProgressView(); Text("Chargement…").foregroundStyle(.secondary) }
+                    HStack { ProgressView(); Text("Loading…").foregroundStyle(.secondary) }
                 } else if let error {
                     Label(error, systemImage: "exclamationmark.triangle.fill")
                         .font(.caption).foregroundStyle(.red)
                 } else if directories.isEmpty {
-                    Text("Aucun sous-dossier ici.").foregroundStyle(.secondary)
+                    Text("No subfolders here.").foregroundStyle(.secondary)
                 } else {
                     ForEach(directories) { dir in
                         NavigationLink(value: dir.pathInRemote) {

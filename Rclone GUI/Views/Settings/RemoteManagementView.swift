@@ -20,18 +20,18 @@ struct RemoteManagementView: View {
     var body: some View {
         Group {
             if isLoading && remotes.isEmpty {
-                ProgressView("Chargement des remotes…")
+                ProgressView("Loading remotes…")
             } else if let loadError, remotes.isEmpty {
                 ContentUnavailableView(
-                    "Remotes indisponibles",
+                    "Remotes unavailable",
                     systemImage: "externaldrive.badge.questionmark",
                     description: Text(loadError)
                 )
             } else if remotes.isEmpty {
                 ContentUnavailableView(
-                    "Aucun remote",
+                    "No remotes",
                     systemImage: "externaldrive",
-                    description: Text("Ajoute ou importe un remote depuis Réglages.")
+                    description: Text("Add or import a remote from Settings.")
                 )
             } else {
                 List {
@@ -40,13 +40,13 @@ struct RemoteManagementView: View {
                             remoteRow(remote)
                         }
                     } footer: {
-                        Text("Les tokens et mots de passe existants restent masqués. Laisse un champ sensible vide pour le conserver, ou saisis une nouvelle valeur pour le remplacer.")
+                        Text("Existing tokens and passwords stay hidden. Leave a sensitive field empty to keep it, or enter a new value to replace it.")
                     }
                 }
                 .refreshable { await load() }
             }
         }
-        .navigationTitle("Gérer les remotes")
+        .navigationTitle("Manage remotes")
         .task { await load() }
         .sheet(item: $editingRemote) { remote in
             AddRemoteWizard(editingRemoteName: remote.name) {
@@ -58,7 +58,7 @@ struct RemoteManagementView: View {
             RemotePublicLinkSettingsView(remote: remote.name)
         }
         .confirmationDialog(
-            "Supprimer ce remote ?",
+            "Delete this remote?",
             isPresented: Binding(
                 get: { remoteToDelete != nil },
                 set: { if !$0 { remoteToDelete = nil } }
@@ -68,12 +68,12 @@ struct RemoteManagementView: View {
             Button("Supprimer « \(remote.name) »", role: .destructive) {
                 Task { await delete(remote) }
             }
-            Button("Annuler", role: .cancel) {}
+            Button("Cancel", role: .cancel) {}
         } message: { remote in
-            Text("Cette action retire uniquement la section de rclone.conf. Les fichiers distants ne sont pas supprimés.")
+            Text("This only removes the section from rclone.conf. Your remote files are not deleted.")
         }
         .alert(
-            "Action impossible",
+            "Action failed",
             isPresented: Binding(
                 get: { actionError != nil },
                 set: { if !$0 { actionError = nil } }
@@ -106,12 +106,12 @@ struct RemoteManagementView: View {
                     .labelStyle(.iconOnly)
             }
             .buttonStyle(.bordered)
-            .accessibilityHint("Configure un domaine CDN personnalisé")
+            .accessibilityHint("Configure a custom CDN domain")
             Button {
                 editingRemote = remote
             } label: {
                 Label(
-                    BackendOverrides.oauthConfigs[remote.type] == nil ? "Modifier" : "Modifier / réautoriser",
+                    BackendOverrides.oauthConfigs[remote.type] == nil ? "Edit" : "Edit / re-authorize",
                     systemImage: BackendOverrides.oauthConfigs[remote.type] == nil ? "pencil" : "key.fill"
                 )
                 .labelStyle(.iconOnly)
@@ -120,22 +120,22 @@ struct RemoteManagementView: View {
             .accessibilityLabel(
                 BackendOverrides.oauthConfigs[remote.type] == nil ? "Modifier \(remote.name)" : "Modifier ou réautoriser \(remote.name)"
             )
-            .accessibilityHint("Les valeurs sensibles existantes restent masquées")
+            .accessibilityHint("Existing sensitive values stay hidden")
             .contextMenu {
                 Button {
                     editingRemote = remote
                 } label: {
-                    Label("Modifier / réautoriser", systemImage: "pencil")
+                    Label("Edit / re-authorize", systemImage: "pencil")
                 }
                 Button {
                     publicLinkRemote = remote
                 } label: {
-                    Label("Liens publics / CDN", systemImage: "link")
+                    Label("Public links / CDN", systemImage: "link")
                 }
                 Button(role: .destructive) {
                     remoteToDelete = remote
                 } label: {
-                    Label("Supprimer", systemImage: "trash")
+                    Label("Delete", systemImage: "trash")
                 }
             }
         }
@@ -144,7 +144,7 @@ struct RemoteManagementView: View {
             Button(role: .destructive) {
                 remoteToDelete = remote
             } label: {
-                Label("Supprimer", systemImage: "trash")
+                Label("Delete", systemImage: "trash")
             }
         }
     }

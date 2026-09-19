@@ -73,7 +73,7 @@ struct LocalDirectoryPicker: View {
                     panel.canChooseDirectories = true
                     panel.canChooseFiles = false
                     panel.allowsMultipleSelection = false
-                    panel.prompt = String(localized: "Choisir")
+                    panel.prompt = String(localized: "Choose")
                     if panel.runModal() == .OK, let url = panel.url {
                         onPicked(url)
                     } else {
@@ -87,6 +87,6 @@ struct LocalDirectoryPicker: View {
 struct LocalDirectoryPicker: View {
     let onPicked: (URL) -> Void
     let onCancelled: () -> Void
-    var body: some View { Text("Selection de dossier indisponible") }
+    var body: some View { Text("Folder selection unavailable") }
 }
 #endif

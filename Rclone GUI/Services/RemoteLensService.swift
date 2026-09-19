@@ -146,7 +146,7 @@ public actor RemoteLensService {
         let strategy = RemoteLensPlan.imageStrategy(size: entry.size)
         if strategy == .skip {
             return RemoteLensPreview(kind: .image,
-                                     note: String(localized: "Image trop volumineuse pour l'aperçu."))
+                                     note: String(localized: "Image too large for preview."))
         }
 
         let built: RemoteLensPreview? = await RemoteRangeReader.withSession(
@@ -172,7 +172,7 @@ public actor RemoteLensService {
                   let full = await source.read(0...(cap - 1)),
                   let decoded = decodeImage(full) else {
                 return RemoteLensPreview(kind: .image,
-                                         note: String(localized: "Aperçu indisponible."))
+                                         note: String(localized: "Preview unavailable."))
             }
             persistThumbnail(decoded.thumbnail, remote: remote, entry: entry)
             return RemoteLensPreview(kind: .image, thumbnail: decoded.thumbnail, image: decoded.meta)
@@ -180,7 +180,7 @@ public actor RemoteLensService {
 
         // withSession renvoie nil si le bridge est indisponible.
         return built ?? RemoteLensPreview(kind: .image,
-                                          note: String(localized: "Aperçu indisponible (pont hors ligne)."))
+                                          note: String(localized: "Preview unavailable (bridge offline)."))
     }
 
     // MARK: - PDF (hors acteur)
@@ -192,13 +192,13 @@ public actor RemoteLensService {
             let total = await source.size() ?? entry.size
             guard total > 0 else {
                 return RemoteLensPreview(kind: .pdf,
-                                         note: String(localized: "Aperçu indisponible."))
+                                         note: String(localized: "Preview unavailable."))
             }
             guard let render = await RemoteRangePDFProvider.render(source: source, totalSize: total) else {
                 return RemoteLensPreview(
                     kind: .pdf,
                     pdf: RemotePDFMetadata(pageCount: nil, title: nil, author: nil, firstPageAvailable: false),
-                    note: String(localized: "Aperçu PDF indisponible.")
+                    note: String(localized: "PDF preview unavailable.")
                 )
             }
             let box = render.firstPage
@@ -210,11 +210,11 @@ public actor RemoteLensService {
                     pageCount: render.pageCount, title: nil, author: nil,
                     firstPageAvailable: box != nil
                 ),
-                note: box == nil ? String(localized: "Première page non rendue.") : nil
+                note: box == nil ? String(localized: "First page not rendered.") : nil
             )
         }
         return built ?? RemoteLensPreview(kind: .pdf,
-                                          note: String(localized: "Aperçu indisponible (pont hors ligne)."))
+                                          note: String(localized: "Preview unavailable (bridge offline)."))
     }
 
     /// Décode vignette + métadonnées à partir d'octets (possiblement partiels).

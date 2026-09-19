@@ -183,14 +183,14 @@ public enum GlassEngine {
         dests.append(EgressDestination(
             host: "127.0.0.1",
             category: .loopback,
-            purpose: String(localized: "Pont rclone local — téléchargements & streaming, restent sur l'appareil")
+            purpose: String(localized: "Local rclone bridge — downloads & streaming, remain on device")
         ))
 
         // 2) Apple — abonnement & codes promo.
         dests.append(EgressDestination(
             host: "apps.apple.com",
             category: .apple,
-            purpose: String(localized: "App Store — abonnement & codes promo (StoreKit)")
+            purpose: String(localized: "App Store — subscription & promo codes (StoreKit)")
         ))
 
         // 3) Fournisseurs OAuth — groupés par host, dérivés de BackendOverrides.

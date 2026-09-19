@@ -666,12 +666,12 @@ struct EmbeddedVLCPlayerView: View {
                 .scaleEffect(1.4)
             if offerLocalDownload {
                 VStack(spacing: 10) {
-                    Text("La lecture en streaming a du mal sur ce fichier.")
+                    Text("Streaming playback is having trouble with this file.")
                         .font(.system(size: 14))
                         .foregroundStyle(.white.opacity(0.85))
                         .multilineTextAlignment(.center)
                     Button { downloadAndPlayLocal() } label: {
-                        Label("Télécharger pour lire", systemImage: "arrow.down.circle.fill")
+                        Label("Download to play", systemImage: "arrow.down.circle.fill")
                             .font(.system(size: 15, weight: .semibold))
                             .padding(.horizontal, 18)
                             .padding(.vertical, 10)
@@ -692,10 +692,10 @@ struct EmbeddedVLCPlayerView: View {
                 .progressViewStyle(.circular)
                 .tint(.white)
                 .scaleEffect(1.4)
-            Text("Téléchargement pour une lecture fluide…")
+            Text("Downloading for smooth playback…")
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(.white)
-            Text("La lecture locale démarre sans saccade dès que c'est prêt. Pour un gros fichier 4K, ça peut prendre quelques minutes.")
+            Text("Local playback starts smoothly once ready. For large 4K files, this may take a few minutes.")
                 .font(.system(size: 12))
                 .foregroundStyle(.white.opacity(0.7))
                 .multilineTextAlignment(.center)
@@ -708,7 +708,7 @@ struct EmbeddedVLCPlayerView: View {
                     .padding(.horizontal, 36)
             }
             Button { onClose?() } label: {
-                Text("Fermer (le téléchargement continue en arrière-plan)")
+                Text("Close (download continues in background)")
                     .font(.system(size: 13))
                     .foregroundStyle(.white.opacity(0.85))
             }
@@ -875,7 +875,7 @@ struct EmbeddedVLCPlayerView: View {
                 Spacer()
                 if let onOpenExternal {
                     Button { onOpenExternal() } label: {
-                        Label("Externe", systemImage: "play.rectangle.on.rectangle")
+                        Label("External", systemImage: "play.rectangle.on.rectangle")
                             .font(.system(size: 12, weight: .medium))
                             .foregroundStyle(.white)
                     }
@@ -899,10 +899,10 @@ struct EmbeddedVLCPlayerView: View {
                 Button {
                     model.selectSubtitle(id: nil)
                 } label: {
-                    Label("Désactivés", systemImage: model.currentSubtitleID == nil ? "checkmark" : "")
+                    Label("Off", systemImage: model.currentSubtitleID == nil ? "checkmark" : "")
                 }
                 if !model.subtitleTracks.isEmpty {
-                    Section("Pistes intégrées") {
+                    Section("Embedded tracks") {
                         ForEach(model.subtitleTracks) { track in
                             Button {
                                 model.selectSubtitle(id: track.id)
@@ -913,7 +913,7 @@ struct EmbeddedVLCPlayerView: View {
                     }
                 }
                 if !subtitles.isEmpty {
-                    Section("Fichiers à côté") {
+                    Section("Sidecar files") {
                         ForEach(subtitles) { sub in
                             Button {
                                 addSidecarSubtitle(sub)
@@ -976,10 +976,10 @@ struct EmbeddedVLCPlayerView: View {
             Image(systemName: "exclamationmark.triangle")
                 .font(.largeTitle)
                 .foregroundStyle(.red)
-            Text("Lecture impossible")
+            Text("Cannot play")
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(.white)
-            Text("Ce fichier n'a pas pu être lu dans l'app.")
+            Text("This file could not be played in the app.")
                 .font(.system(size: 13))
                 .foregroundStyle(.white.opacity(0.7))
                 .multilineTextAlignment(.center)
@@ -987,12 +987,12 @@ struct EmbeddedVLCPlayerView: View {
                 Button {
                     onOpenExternal()
                 } label: {
-                    Label("Ouvrir dans une app externe", systemImage: "play.rectangle.on.rectangle")
+                    Label("Open in an external app", systemImage: "play.rectangle.on.rectangle")
                 }
                 .buttonStyle(.borderedProminent)
                 .padding(.top, 4)
             }
-            Button("Fermer") { onClose?() }
+            Button("Close") { onClose?() }
                 .foregroundStyle(.white)
         }
         .padding(28)
@@ -1089,10 +1089,10 @@ struct EmbeddedVLCPlayerView: View {
                 Image(systemName: "film.stack")
                     .font(.largeTitle)
                     .foregroundStyle(.white.opacity(0.8))
-                Text("Lecteur VLC indisponible")
+                Text("VLC player unavailable")
                     .font(.headline)
                     .foregroundStyle(.white)
-                Text("Le module de lecture multi-format n'est pas inclus dans ce build.")
+                Text("The multi-format playback module isn't included in this build.")
                     .font(.caption)
                     .foregroundStyle(.white.opacity(0.7))
                     .multilineTextAlignment(.center)
@@ -1100,11 +1100,11 @@ struct EmbeddedVLCPlayerView: View {
                     Button {
                         onOpenExternal()
                     } label: {
-                        Label("Ouvrir dans une app externe", systemImage: "play.rectangle.on.rectangle")
+                        Label("Open in an external app", systemImage: "play.rectangle.on.rectangle")
                     }
                     .buttonStyle(.borderedProminent)
                 }
-                Button("Fermer") { onClose?() }
+                Button("Close") { onClose?() }
                     .foregroundStyle(.white)
             }
             .padding(28)

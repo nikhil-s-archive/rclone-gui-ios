@@ -64,17 +64,17 @@ struct HandoffReceiveView: View {
 
         var title: LocalizedStringKey {
             switch self {
-            case .qr: return "Scanner un QR"
-            case .file: return "Depuis Fichiers"
-            case .clipboard: return "Coller le payload"
+            case .qr: return "Scan a QR code"
+            case .file: return "From Files"
+            case .clipboard: return "Paste the payload"
             }
         }
 
         var subtitle: LocalizedStringKey {
             switch self {
-            case .qr: return "Utilise la caméra de cet appareil"
-            case .file: return "Sélectionne un fichier .rclonebackup"
-            case .clipboard: return "Colle un payload HND1:"
+            case .qr: return "Uses the camera of this device"
+            case .file: return "Select a .rclonebackup file"
+            case .clipboard: return "Paste an HND1: payload"
             }
         }
     }
@@ -95,7 +95,7 @@ struct HandoffReceiveView: View {
             if let error {
                 Section {
                     AppInlineMessage(
-                        title: "Erreur",
+                        title: "Error",
                         message: LocalizedStringKey(error),
                         systemImage: "exclamationmark.triangle.fill",
                         tint: .red
@@ -103,13 +103,13 @@ struct HandoffReceiveView: View {
                 }
             }
         }
-        .navigationTitle("Recevoir")
+        .navigationTitle("Receive")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("Annuler") { dismiss() }
+                Button("Cancel") { dismiss() }
                     .disabled(importing)
             }
         }
@@ -149,8 +149,8 @@ struct HandoffReceiveView: View {
         Group {
             Section {
                 AppHeroCard(
-                    title: "Importer une config chiffrée",
-                    subtitle: "Choisis d'abord comment l'autre appareil t'a fait passer le payload chiffré. La passphrase reste à taper à part.",
+                    title: "Import an encrypted config",
+                    subtitle: "First choose how the other device delivered the encrypted payload. The passphrase is typed separately.",
                     systemImage: "arrow.down.doc.fill",
                     tint: .blue
                 ) {
@@ -183,7 +183,7 @@ struct HandoffReceiveView: View {
                     .buttonStyle(.plain)
                 }
             } header: {
-                Text("Source du payload")
+                Text("Payload source")
             }
 
             Section {
@@ -198,7 +198,7 @@ struct HandoffReceiveView: View {
                         if payload.isEmpty {
                             VStack {
                                 Spacer()
-                                Text("Colle ici le payload commençant par HND1:")
+                                Text("Paste the payload starting with HND1: here")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                                 Spacer()
@@ -213,15 +213,15 @@ struct HandoffReceiveView: View {
                 Button {
                     Task { await inspect() }
                 } label: {
-                    Label("Utiliser ce payload", systemImage: "arrow.right.circle.fill")
+                    Label("Use this payload", systemImage: "arrow.right.circle.fill")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(payload.isEmpty)
             } header: {
-                Text("Ou colle directement")
+                Text("Or paste directly")
             } footer: {
-                Text("Colle le payload complet (commence toujours par « HND1: »). Si tu as entouré d'autre texte, on extrait le payload automatiquement.")
+                Text("Paste the full payload (always starts with “HND1:”). Any surrounding text will be trimmed automatically.")
             }
         }
     }
@@ -250,16 +250,16 @@ struct HandoffReceiveView: View {
             Button {
                 Task { await unseal() }
             } label: {
-                Label("Déchiffrer", systemImage: "lock.open.fill")
+                Label("Decrypt", systemImage: "lock.open.fill")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .disabled(!allWordsFilled || importing)
         } header: {
-            Text("Passphrase de 6 mots")
+            Text("6-word passphrase")
         } footer: {
-            Text("L'autre personne a lu ces mots sur son écran. Tape-les tels quels, dans l'ordre, sans accent.")
+            Text("The other person saw these words on their screen. Enter them as shown, in order, without accents.")
         }
     }
 
@@ -290,7 +290,7 @@ struct HandoffReceiveView: View {
                             .font(.caption2).foregroundStyle(.tertiary)
                     }
                 } header: {
-                    Text("Aperçu du payload")
+                    Text("Payload preview")
                 }
 
                 conflictSection(preview: preview)
@@ -312,7 +312,7 @@ struct HandoffReceiveView: View {
                 Section {
                     HStack(spacing: 12) {
                         ProgressView()
-                        Text("FaceID puis application…").foregroundStyle(.secondary)
+                        Text("Face ID then apply…").foregroundStyle(.secondary)
                     }
                 }
             }
@@ -323,26 +323,26 @@ struct HandoffReceiveView: View {
         Section {
             if let importResult {
                 VStack(alignment: .leading, spacing: 10) {
-                    Label("Configuration importée", systemImage: "checkmark.seal.fill")
+                    Label("Configuration imported", systemImage: "checkmark.seal.fill")
                         .font(.headline)
                         .foregroundStyle(.green)
                     Text("\(importResult.appliedCount) remote(s) dans ta configuration.")
                         .font(.subheadline).foregroundStyle(.secondary)
                     if let url = importResult.snapshotURL {
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("Sauvegarde de l'ancienne config :")
+                            Text("Backup of old config:")
                                 .font(.caption.weight(.semibold)).foregroundStyle(.secondary)
                             Text(url.lastPathComponent)
                                 .font(.caption.monospaced())
                                 .textSelection(.enabled)
-                            Text("Si quelque chose ne va pas, le service client peut te restaurer.")
+                            Text("If anything goes wrong, support can restore your access.")
                                 .font(.caption2).foregroundStyle(.tertiary)
                         }
                         .padding(.top, 4)
                     }
                 }
                 .padding(.vertical, 6)
-                Button("Terminé") { dismiss() }
+                Button("Completed") { dismiss() }
                     .frame(maxWidth: .infinity)
                     .buttonStyle(.borderedProminent)
             }
@@ -373,22 +373,22 @@ struct HandoffReceiveView: View {
                     }
                 }
             }
-            Picker("Stratégie", selection: $strategy) {
+            Picker("Strategy", selection: $strategy) {
                 ForEach([HandoffImportStrategy.replace, .merge, .cancel], id: \.self) { s in
                     Text(s.localizedTitle).tag(s)
                 }
             }
             .pickerStyle(.segmented)
         } header: {
-            Text("Conflit avec ta config locale")
+            Text("Conflict with your local config")
         } footer: {
             switch strategy {
             case .replace:
-                Text("Ton rclone.conf actuel sera sauvegardé localement avant d'être écrasé.")
+                Text("Your current rclone.conf will be backed up locally before being overwritten.")
             case .merge:
-                Text("Les remotes manquants sont ajoutés. En cas de collision (même nom), on garde la version locale pour préserver tes tokens OAuth.")
+                Text("Missing remotes are added. In case of collision (same name), the local version is kept to preserve your OAuth tokens.")
             case .cancel:
-                Text("Aucune écriture — tu restes sur l'écran d'aperçu.")
+                Text("No changes written — you remain on the preview screen.")
             }
         }
     }
@@ -520,9 +520,9 @@ struct HandoffReceiveView: View {
 
     private var applyLabel: LocalizedStringKey {
         switch strategy {
-        case .replace: return "Remplacer ma config"
-        case .merge: return "Fusionner"
-        case .cancel: return "Annuler"
+        case .replace: return "Replace my config"
+        case .merge: return "Merge"
+        case .cancel: return "Cancel"
         }
     }
 

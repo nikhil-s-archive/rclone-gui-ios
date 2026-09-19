@@ -40,7 +40,7 @@ struct ImportConfigView: View {
                                 importSourceRow(
                                     icon: "folder.fill",
                                     tint: .blue,
-                                    title: "Depuis Fichiers",
+                                    title: "From Files",
                                     subtitle: "rclone.conf"
                                 )
                                 .contentShape(Rectangle())
@@ -54,8 +54,8 @@ struct ImportConfigView: View {
                                 importSourceRow(
                                     icon: "qrcode",
                                     tint: .green,
-                                    title: "Scanner un QR",
-                                    subtitle: "Handoff P2P : payload chiffré en HND1:",
+                                    title: "Scan a QR code",
+                                    subtitle: "P2P Handoff: encrypted payload in HND1:",
                                     disabled: false
                                 )
                                 .contentShape(Rectangle())
@@ -66,25 +66,25 @@ struct ImportConfigView: View {
                                 icon: "globe",
                                 tint: .indigo,
                                 title: "URL / iCloud",
-                                subtitle: "Bientôt",
+                                subtitle: "Coming soon",
                                 disabled: true
                             )
                         }
                         .padding(.vertical, 4)
                         .padding(.horizontal, 12)
                         .background(Color.rgGroupedRowBackground, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        Text("Le fichier sera chiffré et stocké localement. Tes clés ne quittent jamais ton appareil.")
+                        Text("The file is encrypted and stored locally. Your keys never leave your device.")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
 
                     // MARK: Mot de passe rclone
                     VStack(alignment: .leading, spacing: 8) {
-                        sectionLabel("Mot de passe rclone")
+                        sectionLabel("rclone password")
                         HStack(spacing: 8) {
                             Image(systemName: "lock")
                                 .foregroundStyle(.secondary)
-                            SecureField("Mot de passe rclone (optionnel)", text: $rclonePassword)
+                            SecureField("rclone password (optional)", text: $rclonePassword)
                                 .textContentType(.password)
                                 #if os(iOS)
                                 .textInputAutocapitalization(.never)
@@ -93,7 +93,7 @@ struct ImportConfigView: View {
                         }
                         .padding(12)
                         .background(Color.rgGroupedRowBackground, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        Text("Requis uniquement si ton rclone.conf est chiffré (« rclone config encryption set »). Utilisé une seule fois pour déchiffrer à l'import, jamais stocké.")
+                        Text("Only required if your rclone.conf is encrypted ("rclone config encryption set"). Used once to decrypt on import, never stored.")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
 
@@ -108,7 +108,7 @@ struct ImportConfigView: View {
                                     } else {
                                         Image(systemName: "lock.open.fill")
                                     }
-                                    Text("Déchiffrer et importer")
+                                    Text("Decrypt and Import")
                                 }
                                 .frame(maxWidth: .infinity)
                             }
@@ -118,9 +118,9 @@ struct ImportConfigView: View {
                     }
 
                     if let success {
-                        AppInlineMessage(title: "Configuration importée", message: LocalizedStringKey(success), systemImage: "checkmark.circle.fill", tint: .green)
+                        AppInlineMessage(title: "Configuration imported", message: LocalizedStringKey(success), systemImage: "checkmark.circle.fill", tint: .green)
                     } else if let error {
-                        AppInlineMessage(title: "Import impossible", message: LocalizedStringKey(error), systemImage: "exclamationmark.triangle.fill", tint: .red)
+                        AppInlineMessage(title: "Import failed", message: LocalizedStringKey(error), systemImage: "exclamationmark.triangle.fill", tint: .red)
                     }
                 }
                 .padding(20)
@@ -128,13 +128,13 @@ struct ImportConfigView: View {
                 .frame(maxWidth: .infinity)
             }
             .background(Color.rgGroupedBackground)
-            .navigationTitle("Importer")
+            .navigationTitle("Import")
             #if os(iOS)
             .rgInlineNavTitle()
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Annuler") { dismiss() }
+                    Button("Cancel") { dismiss() }
                 }
             }
             // .fileImporter est cross-platform (iOS + macOS) et présente le
@@ -178,7 +178,7 @@ struct ImportConfigView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Import rclone.conf")
                     .font(.system(size: 20, weight: .bold))
-                Text("Chiffré localement (Secure Enclave + biométrie)")
+                Text("Encrypted locally (Secure Enclave + biometrics)")
                     .font(.system(size: 13))
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
@@ -260,7 +260,7 @@ struct ImportConfigView: View {
             if ConfigStore.isRcloneEncrypted(data) {
                 if rclonePassword.isEmpty {
                     pendingEncrypted = data
-                    error = String(localized: "Cette configuration est chiffrée par rclone. Saisis ton mot de passe ci-dessus puis touche « Déchiffrer et importer ».")
+                    error = String(localized: "This configuration is encrypted by rclone. Enter your password above, then tap "Decrypt and Import".")
                     success = nil
                     return
                 }
@@ -309,7 +309,7 @@ struct ImportConfigView: View {
         dismiss()
     }
 
-    /// Path used by the "Scanner un QR" entry-point. We delegate to the
+    /// Path used by the "Scan a QR code" entry-point. We delegate to the
     /// Handoff receive flow so the user types the 6 Diceware words on a
     /// dedicated screen (the casual QR-from-Settings case shares the same
     /// unlocking UI as the dedicated Handoff → Recevoir button).

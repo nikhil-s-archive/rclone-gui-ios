@@ -68,7 +68,7 @@ struct OnboardingView: View {
             VStack(spacing: 18) {
                 RGCryptSeal(size: 120)
                 VStack(spacing: 6) {
-                    Text("Bienvenue dans Rclone")
+                    Text("Welcome to Rclone")
                         .font(.system(size: 30, weight: .bold))
                         .multilineTextAlignment(.center)
                         .lineLimit(2)
@@ -76,7 +76,7 @@ struct OnboardingView: View {
                         .font(.system(size: 14))
                         .foregroundStyle(.secondary)
                 }
-                Text("Tous tes remotes — y compris chiffrés — accessibles depuis Fichiers, en streaming et hors-ligne.")
+                Text("All your remotes — including encrypted ones — accessible from Files, streaming and offline.")
                     .font(.system(size: 16))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -92,8 +92,8 @@ struct OnboardingView: View {
                 featureRow(
                     icon: "lock.fill",
                     tint: RG.accent,
-                    title: "Crypt rclone natif",
-                    subtitle: "AES-256, noms déchiffrés à la volée"
+                    title: "Native rclone crypt",
+                    subtitle: "AES-256, names decrypted on the fly"
                 )
                 featureRow(
                     icon: "cloud.fill",
@@ -104,8 +104,8 @@ struct OnboardingView: View {
                 featureRow(
                     icon: "folder.fill",
                     tint: .orange,
-                    title: "Intégration Fichiers",
-                    subtitle: "Chaque remote = un emplacement natif"
+                    title: "Files integration",
+                    subtitle: "Each remote = a native location"
                 )
             }
             .padding(.horizontal, 28)
@@ -117,7 +117,7 @@ struct OnboardingView: View {
                 Button {
                     showImportPicker = true
                 } label: {
-                    Text("Importer un rclone.conf")
+                    Text("Import an rclone.conf")
                         .font(.system(size: 17, weight: .semibold))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 15)
@@ -133,7 +133,7 @@ struct OnboardingView: View {
                     // tourne déjà en fond — aucun paywall à ce stade.
                     showAddRemote = true
                 } label: {
-                    Text("Créer un Passeport Crypt")
+                    Text("Create a Crypt Passport")
                         .font(.system(size: 17, weight: .medium))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
@@ -141,7 +141,7 @@ struct OnboardingView: View {
                 }
                 .buttonStyle(.plain)
 
-                Text("Tes clés ne quittent jamais ton appareil")
+                Text("Your keys never leave your device")
                     .font(.system(size: 13))
                     .foregroundStyle(.secondary)
                     .padding(.top, 4)
@@ -174,7 +174,7 @@ struct OnboardingView: View {
 
     // MARK: - PhotoSync step (D5)
 
-    /// Présenté après l'import de la config rclone (ou via "Plus tard").
+    /// Présenté après l'import de la config rclone (ou via "Later").
     /// Promotion de la feature PhotoSync : visible, skippable, demande
     /// l'authorization Photos dès le tap "Activer".
     private var photoSyncView: some View {
@@ -186,15 +186,15 @@ struct OnboardingView: View {
             VStack(spacing: 18) {
                 photoSyncSeal
                 VStack(spacing: 6) {
-                    Text("Garde tes photos en sûreté")
+                    Text("Keep your photos safe")
                         .font(.system(size: 28, weight: .bold))
                         .multilineTextAlignment(.center)
                         .lineLimit(2)
-                    Text("PhotoSync — backup automatique")
+                    Text("PhotoSync — automatic backup")
                         .font(.system(size: 14))
                         .foregroundStyle(.secondary)
                 }
-                Text("Sauvegarde toute ta photothèque vers ton remote rclone, en pipeline batché, avec dédup pré-export et reprise auto.")
+                Text("Backs up your entire photo library to your rclone remote, in a batched pipeline, with pre-export dedup and auto-resume.")
                     .font(.system(size: 16))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -210,20 +210,20 @@ struct OnboardingView: View {
                 featureRow(
                     icon: "photo.on.rectangle.angled",
                     tint: RG.photoSync.accent,
-                    title: "Backup automatique",
-                    subtitle: "Les nouvelles photos sont envoyées en arrière-plan"
+                    title: "Automatic backup",
+                    subtitle: "New photos are uploaded in the background"
                 )
                 featureRow(
                     icon: "bolt.slash.fill",
                     tint: .green,
-                    title: "Wi-Fi + charge par défaut",
-                    subtitle: "Pas de surprise data, batterie préservée"
+                    title: "Wi-Fi + charging by default",
+                    subtitle: "No data surprises, battery preserved"
                 )
                 featureRow(
                     icon: "rectangle.stack.fill.badge.plus",
                     tint: .orange,
-                    title: "Choisis tes albums",
-                    subtitle: "Backup ciblé ou photothèque complète"
+                    title: "Choose your albums",
+                    subtitle: "Targeted backup or full library"
                 )
             }
             .padding(.horizontal, 28)
@@ -234,7 +234,7 @@ struct OnboardingView: View {
                 Button {
                     Task { await enablePhotoSync() }
                 } label: {
-                    Text("Activer PhotoSync")
+                    Text("Enable PhotoSync")
                         .font(.system(size: 17, weight: .semibold))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 15)
@@ -247,7 +247,7 @@ struct OnboardingView: View {
                 Button {
                     step = .done
                 } label: {
-                    Text("Plus tard")
+                    Text("Later")
                         .font(.system(size: 17, weight: .medium))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
@@ -255,7 +255,7 @@ struct OnboardingView: View {
                 }
                 .buttonStyle(.plain)
 
-                Text("Tu peux modifier tout ça plus tard dans Réglages → Synchro Photos")
+                Text("You can change all this later in Settings → Photo sync")
                     .font(.system(size: 13))
                     .foregroundStyle(.tertiary)
                     .multilineTextAlignment(.center)
@@ -303,10 +303,10 @@ struct OnboardingView: View {
         .accessibilityHidden(true)
     }
 
-    /// Tap "Activer PhotoSync" — demande l'authorization Photos puis
+    /// Tap "Enable PhotoSync" — demande l'authorization Photos puis
     /// persiste `photoSync.enabled = true`. Si l'authorization est
     /// refusée ou limitée, on bascule quand même au step done (le user
-    /// trouvera le bouton "Modifier l'accès aux Photos" dans Réglages).
+    /// trouvera le bouton "Change Photos access" dans Réglages).
     @MainActor
     private func enablePhotoSync() async {
         let status = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
@@ -322,9 +322,9 @@ struct OnboardingView: View {
         VStack(spacing: 20) {
             Spacer(minLength: 0)
             RGCryptSeal(size: 96)
-            Text("C’est prêt")
+            Text("You’re all set")
                 .font(.system(size: 28, weight: .bold))
-            Text("Tu peux maintenant parcourir tes remotes, transférer des fichiers et lire tes médias depuis Fichiers.")
+            Text("You can now browse your remotes, transfer files and play your media from Files.")
                 .font(.system(size: 15))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -333,7 +333,7 @@ struct OnboardingView: View {
             Button {
                 isPresented = false
             } label: {
-                Text("Aller à l’app")
+                Text("Go to the app")
                     .font(.system(size: 17, weight: .semibold))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 15)

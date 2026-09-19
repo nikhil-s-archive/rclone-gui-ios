@@ -70,17 +70,17 @@ struct FilesRootView: View {
 
     var body: some View {
         content
-            .navigationTitle("Fichiers")
+            .navigationTitle("Files")
             .navigationDestination(item: $unlockTarget) { remote in
                 FolderView(remote: remote.name, path: "")
             }
-            .alert("Déverrouillage impossible", isPresented: .constant(vaultError != nil)) {
+            .alert("Unlock failed", isPresented: .constant(vaultError != nil)) {
                 Button("OK") { vaultError = nil }
             } message: {
                 Text(vaultError ?? "")
             }
             .alert(
-                "Action impossible",
+                "Action failed",
                 isPresented: Binding(
                     get: { actionError != nil },
                     set: { if !$0 { actionError = nil } }
@@ -92,7 +92,7 @@ struct FilesRootView: View {
                 Text(message)
             }
             .confirmationDialog(
-                "Supprimer ce remote ?",
+                "Delete this remote?",
                 isPresented: Binding(
                     get: { remoteToDelete != nil },
                     set: { if !$0 { remoteToDelete = nil } }
@@ -103,7 +103,7 @@ struct FilesRootView: View {
                 Button("Supprimer « \(remote.name) »", role: .destructive) {
                     Task { await performDelete(remote) }
                 }
-                Button("Annuler", role: .cancel) { remoteToDelete = nil }
+                Button("Cancel", role: .cancel) { remoteToDelete = nil }
             } message: { remote in
                 Text("Le remote « \(remote.name) » sera retiré de rclone.conf. Tes fichiers distants ne sont pas supprimés.")
             }
@@ -114,14 +114,14 @@ struct FilesRootView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
-                    .accessibilityLabel("Ajouter un remote")
+                    .accessibilityLabel("Add a remote")
 
                     Button {
                         Task { await load(force: true) }
                     } label: {
                         Image(systemName: "arrow.clockwise")
                     }
-                    .accessibilityLabel("Rafraîchir les fichiers")
+                    .accessibilityLabel("Refresh files")
                 }
             }
             .task {
@@ -160,26 +160,26 @@ struct FilesRootView: View {
 
         case .failed(let message):
             ContentUnavailableView {
-                Label("Erreur de chargement", systemImage: "exclamationmark.triangle")
+                Label("Loading error", systemImage: "exclamationmark.triangle")
             } description: {
                 Text(message)
             } actions: {
-                Button("Réessayer") { Task { await load(force: true) } }
+                Button("Retry") { Task { await load(force: true) } }
                     .buttonStyle(.borderedProminent)
             }
 
         case .loaded where remotes.isEmpty:
             VStack(spacing: 16) {
                 AppEmptyStateView(
-                    title: "Aucune configuration",
-                    message: "Importe ton rclone.conf pour afficher tes remotes et parcourir tes fichiers.",
+                    title: "No configuration",
+                    message: "Import your rclone.conf to show your remotes and browse your files.",
                     systemImage: "externaldrive.badge.plus",
                     tint: .blue
                 )
                 Button {
                     showImport = true
                 } label: {
-                    Label("Importer rclone.conf", systemImage: "square.and.arrow.down")
+                    Label("Import rclone.conf", systemImage: "square.and.arrow.down")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
@@ -188,7 +188,7 @@ struct FilesRootView: View {
                 Button {
                     showAddRemote = true
                 } label: {
-                    Label("Ajouter un remote", systemImage: "externaldrive.badge.plus")
+                    Label("Add a remote", systemImage: "externaldrive.badge.plus")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
@@ -238,8 +238,8 @@ struct FilesRootView: View {
             if isMockEngine {
                 Section {
                     AppInlineMessage(
-                        title: "Mode mock actif",
-                        message: "La navigation et les transferts réels nécessitent RcloneKit.",
+                        title: "Mock mode active",
+                        message: "Real browsing and transfers require RcloneKit.",
                         systemImage: "exclamationmark.triangle.fill",
                         tint: .orange
                     )
@@ -261,7 +261,7 @@ struct FilesRootView: View {
                         }
                     }
                 } header: {
-                    AppSectionHeader(title: "Favoris", subtitle: "Dossiers épinglés", systemImage: "pin.fill")
+                    AppSectionHeader(title: "Favorites", subtitle: "Pinned folders", systemImage: "pin.fill")
                 }
             }
 
@@ -279,7 +279,7 @@ struct FilesRootView: View {
                         }
                     }
                 } header: {
-                    AppSectionHeader(title: "Récents", subtitle: "Dernières ouvertures", systemImage: "clock")
+                    AppSectionHeader(title: "Recent", subtitle: "Recently opened", systemImage: "clock")
                 }
             }
 
@@ -290,9 +290,9 @@ struct FilesRootView: View {
                         .task { loadSpaceIfNeeded(for: remote.name) }
                 }
             } header: {
-                AppSectionHeader(title: "Remotes", subtitle: "Racines disponibles", systemImage: "externaldrive")
+                AppSectionHeader(title: "Remotes", subtitle: "Available roots", systemImage: "externaldrive")
             } footer: {
-                Text("Touche un remote pour ouvrir sa racine. Un remote au coffre-fort se déverrouille par Face ID et reste masqué dans l'app Fichiers d'iOS tant qu'il est verrouillé.")
+                Text("Tap a remote to open its root. A vaulted remote unlocks with Face ID and stays hidden in the iOS Files app while locked.")
             }
         }
         .rgInsetGroupedList()
@@ -408,7 +408,7 @@ struct FilesRootView: View {
                     message: "[seq] FAIL remote=\(remote.name) in \(ms)ms : \(error.localizedDescription)"
                 )
                 await MainActor.run {
-                    remoteSpaces[remote.name] = "Espace indisponible"
+                    remoteSpaces[remote.name] = "Space unavailable"
                 }
             }
         }
@@ -486,32 +486,32 @@ struct FilesRootView: View {
                 Button {
                     vault.relock(remote.name)
                 } label: {
-                    Label("Verrouiller maintenant", systemImage: "lock")
+                    Label("Lock now", systemImage: "lock")
                 }
             } else {
                 Button {
                     Task { await unlockAndOpen(remote) }
                 } label: {
-                    Label("Déverrouiller", systemImage: "lock.open")
+                    Label("Unlock", systemImage: "lock.open")
                 }
             }
             Button(role: .destructive) {
                 Task { await disableVault(remote) }
             } label: {
-                Label("Retirer du coffre-fort", systemImage: "lock.slash")
+                Label("Remove from vault", systemImage: "lock.slash")
             }
         } else {
             Button {
                 vault.addToVault(remote.name)
             } label: {
-                Label("Mettre au coffre-fort (Face ID)", systemImage: "lock.shield")
+                Label("Add to vault (Face ID)", systemImage: "lock.shield")
             }
         }
 
         Button {
             Task { await pin(remote: remote) }
         } label: {
-            Label("Épingler", systemImage: "pin")
+            Label("Pin", systemImage: "pin")
         }
 
         Divider()
@@ -519,7 +519,7 @@ struct FilesRootView: View {
         Button(role: .destructive) {
             remoteToDelete = remote
         } label: {
-            Label("Supprimer le remote", systemImage: "trash")
+            Label("Delete remote", systemImage: "trash")
         }
     }
 
@@ -550,7 +550,7 @@ struct FilesRootView: View {
         if await vault.unlock(remote.name) {
             unlockTarget = remote
         } else {
-            vaultError = String(localized: "Authentification refusée ou biométrie indisponible.")
+            vaultError = String(localized: "Authentication denied or biometrics unavailable.")
         }
     }
 
@@ -563,7 +563,7 @@ struct FilesRootView: View {
         if await vault.unlock(remote.name) {
             vault.removeFromVault(remote.name)
         } else {
-            vaultError = String(localized: "Authentification refusée ou biométrie indisponible.")
+            vaultError = String(localized: "Authentication denied or biometrics unavailable.")
         }
     }
 
@@ -572,7 +572,7 @@ struct FilesRootView: View {
             if let free = space.free {
                 return String(localized: "\(Self.formattedBytes(free)) libres")
             }
-            return String(localized: "Espace indisponible")
+            return String(localized: "Space unavailable")
         }
         if let total = space.total {
             return "\(Self.formattedBytes(used)) / \(Self.formattedBytes(total))"
@@ -600,7 +600,7 @@ private struct FileManagerOverviewCard: View {
 
     var body: some View {
         AppHeroCard(
-            title: "Bibliothèque fichiers",
+            title: "File library",
             subtitle: "\(remoteCount) remote\(remoteCount > 1 ? "s" : "") configuré\(remoteCount > 1 ? "s" : "")",
             systemImage: "folder.fill.badge.gearshape",
             tint: .blue
@@ -656,9 +656,9 @@ private struct FilesRemoteRow: View {
     private var subtitleText: String {
         switch lockState {
         case .locked:
-            return String(localized: "Verrouillé · Face ID requis")
+            return String(localized: "Locked · Face ID required")
         case .unlocked:
-            return spaceText ?? String(localized: "Déverrouillé")
+            return spaceText ?? String(localized: "Unlocked")
         case .none:
             return spaceText ?? humanType
         }
@@ -696,9 +696,9 @@ private struct FilesRemoteRow: View {
         case "dropbox": return "Dropbox"
         case "onedrive": return "OneDrive"
         case "box": return "Box"
-        case "crypt": return String(localized: "Crypt chiffré")
+        case "crypt": return String(localized: "Crypt encrypted")
         case "alias": return "Alias"
-        case "union": return String(localized: "Union de remotes")
+        case "union": return String(localized: "Union of remotes")
         case "combine": return "Combine"
         case "local": return "Local"
         default: return remote.type
@@ -754,7 +754,7 @@ private struct ActiveTransfersBanner: View {
         if totalAll > 0 {
             return "\(formatted(totalDone)) / \(formatted(totalAll))"
         }
-        return String(localized: "Préparation…")
+        return String(localized: "Preparing…")
     }
 
     private var progress: Double {

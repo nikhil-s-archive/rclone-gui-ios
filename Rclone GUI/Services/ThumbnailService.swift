@@ -33,9 +33,9 @@ public enum ThumbnailPolicy: String, CaseIterable, Sendable {
 
     public var label: String {
         switch self {
-        case .always:   return String(localized: "Toujours")
-        case .wifiOnly: return String(localized: "Wi-Fi seulement")
-        case .never:    return String(localized: "Jamais")
+        case .always:   return String(localized: "Always")
+        case .wifiOnly: return String(localized: "Wi-Fi only")
+        case .never:    return String(localized: "Never")
         }
     }
 }

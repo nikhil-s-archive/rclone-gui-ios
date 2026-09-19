@@ -31,11 +31,11 @@ nonisolated enum ConfigCreateFlowError: Error, Equatable, LocalizedError {
     var errorDescription: String? {
         switch self {
         case .malformedContinuation:
-            return String(localized: "Réponse rclone inattendue pendant la configuration.")
+            return String(localized: "Unexpected rclone response during setup.")
         case .cancelled:
-            return String(localized: "Configuration annulée — la question rclone est restée sans réponse.")
+            return String(localized: "Configuration cancelled — the rclone prompt received no answer.")
         case .tooManyQuestions:
-            return String(localized: "Trop de questions de configuration successives — abandon.")
+            return String(localized: "Too many consecutive configuration questions — aborting.")
         case .rclone(let message):
             return message
         }

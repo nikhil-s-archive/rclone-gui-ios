@@ -47,7 +47,7 @@ struct OAuthView: View {
                 }
             } else {
                 Section {
-                    Label("Aucun backend sélectionné nécessitant une authentification.",
+                    Label("No selected backend requires authentication.",
                           systemImage: "exclamationmark.triangle.fill")
                         .foregroundStyle(.red)
                 }
@@ -56,7 +56,7 @@ struct OAuthView: View {
         .scrollDismissesKeyboard(.interactively)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Suivant") { onNext() }
+                Button("Next") { onNext() }
                     .disabled(!state.oauthCompleted)
             }
         }
@@ -89,9 +89,9 @@ struct OAuthView: View {
     }
 
     private func tutorialSection(config: OAuthProviderConfig) -> some View {
-        Section("Comment obtenir le token") {
+        Section("How to get the token") {
             if config.setupSteps.isEmpty {
-                Text("Aucune procédure documentée. Voir la doc rclone du backend.")
+                Text("No documented procedure. See the backend’s rclone docs.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } else {
@@ -152,11 +152,11 @@ struct OAuthView: View {
                 applyPastedValue(config: config)
             } label: {
                 if state.oauthCompleted {
-                    Label("Token validé", systemImage: "checkmark.seal.fill")
+                    Label("Token validated", systemImage: "checkmark.seal.fill")
                         .foregroundStyle(.green)
                         .frame(maxWidth: .infinity)
                 } else {
-                    Text("Valider le token")
+                    Text("Validate token")
                         .frame(maxWidth: .infinity)
                 }
             }

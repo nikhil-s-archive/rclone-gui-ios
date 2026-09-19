@@ -58,7 +58,7 @@ struct HandoffSendView: View {
             if let error {
                 Section {
                     AppInlineMessage(
-                        title: "Impossible de préparer le Handoff",
+                        title: "Unable to prepare Handoff",
                         message: LocalizedStringKey(error),
                         systemImage: "exclamationmark.triangle.fill",
                         tint: .red
@@ -66,13 +66,13 @@ struct HandoffSendView: View {
                 }
             }
         }
-        .navigationTitle("Envoyer")
+        .navigationTitle("Send")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("Annuler") { dismiss() }
+                Button("Cancel") { dismiss() }
                     .disabled(preparing)
             }
         }
@@ -82,11 +82,11 @@ struct HandoffSendView: View {
         }
         #endif
         .confirmationDialog(
-            "As-tu noté les 6 mots ?",
+            "Did you write down the 6 words?",
             isPresented: $showPassphraseConfirm,
             titleVisibility: .visible
         ) {
-            Button("J'ai les 6 mots — continuer") {
+            Button("I have the 6 words — continue") {
                 passphraseAcknowledged = true
                 let transport = pendingTransport
                 pendingTransport = nil
@@ -99,11 +99,11 @@ struct HandoffSendView: View {
                     }
                 }
             }
-            Button("Pas encore, voir les mots", role: .cancel) {
+            Button("Not yet, view words", role: .cancel) {
                 pendingTransport = nil
             }
         } message: {
-            Text("La passphrase n'est jamais incluse dans le payload envoyé. Sans les 6 mots, l'autre appareil ne pourra rien déchiffrer.")
+            Text("The passphrase is never included in the sent payload. Without the 6 words, the other device will not be able to decrypt anything.")
         }
         .appToast($toast)
     }
@@ -114,21 +114,21 @@ struct HandoffSendView: View {
         Group {
             Section {
                 AppHeroCard(
-                    title: "Préparer un Handoff",
-                    subtitle: "On va chiffrer ta config actuelle et te donner une passphrase de 6 mots à taper sur l'autre appareil.",
+                    title: "Prepare a Handoff",
+                    subtitle: "Your current config will be encrypted and a 6-word passphrase will be provided to enter on the other device.",
                     systemImage: "lock.rotation",
                     tint: .purple
                 ) {
                     HStack(spacing: 10) {
                         AppMetricPill(
                             value: "6",
-                            label: "mots",
+                            label: "words",
                             systemImage: "key.fill",
                             tint: .purple
                         )
                         AppMetricPill(
                             value: "E2E",
-                            label: "chiffré",
+                            label: "encrypted",
                             systemImage: "lock.fill",
                             tint: .green
                         )
@@ -142,7 +142,7 @@ struct HandoffSendView: View {
                 if preparing {
                     HStack(spacing: 12) {
                         ProgressView()
-                        Text("FaceID puis scellement…")
+                        Text("Face ID then seal…")
                             .foregroundStyle(.secondary)
                     }
                 } else {
@@ -151,7 +151,7 @@ struct HandoffSendView: View {
                     } label: {
                         HStack {
                             Image(systemName: "wand.and.stars")
-                            Text("Préparer le Handoff")
+                            Text("Prepare Handoff")
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -159,7 +159,7 @@ struct HandoffSendView: View {
                     .controlSize(.large)
                 }
             } footer: {
-                Text("L'opération demande Face ID / Touch ID avant de chiffrer et d'exposer la passphrase.")
+                Text("This operation requires Face ID / Touch ID before encrypting and revealing the passphrase.")
             }
         }
     }
@@ -184,7 +184,7 @@ struct HandoffSendView: View {
                     HandoffQRDisplay(payload: prepared.payload)
                         .frame(maxWidth: .infinity)
                 }
-                Text("Fais scanner ce QR par l'autre appareil, puis tape les 6 mots ci-dessous.")
+                Text("Scan this QR code with the other device, then enter the 6 words below.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -201,10 +201,10 @@ struct HandoffSendView: View {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .font(.title)
                     .foregroundStyle(.orange)
-                Text("Ta config est trop grosse pour tenir dans un seul QR.")
+                Text("Your config is too large to fit in a single QR code.")
                     .font(.subheadline.weight(.semibold))
                     .multilineTextAlignment(.center)
-                Text("Utilise AirDrop, le presse-papiers ou un fichier .rclonebackup à la place — le chiffrement reste identique.")
+                Text("Use AirDrop, clipboard, or a .rclonebackup file instead — encryption remains the same.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -222,7 +222,7 @@ struct HandoffSendView: View {
                 HStack {
                     Image(systemName: "key.horizontal.fill")
                         .foregroundStyle(.purple)
-                    Text("Code de récupération")
+                    Text("Recovery code")
                         .font(.subheadline.weight(.semibold))
                     Spacer()
                     Button {
@@ -231,7 +231,7 @@ struct HandoffSendView: View {
                         Image(systemName: passphraseRevealed ? "eye.slash.fill" : "eye.fill")
                     }
                     .buttonStyle(.borderless)
-                    .accessibilityLabel(passphraseRevealed ? "Masquer les mots" : "Afficher les mots")
+                    .accessibilityLabel(passphraseRevealed ? "Hide the words" : "Show the words")
                 }
 
                 if passphraseRevealed, let prepared {
@@ -259,20 +259,20 @@ struct HandoffSendView: View {
                         }
                     }
                     Toggle(isOn: $passphraseAcknowledged) {
-                        Text("J'ai mémorisé ou noté les 6 mots")
+                        Text("I have memorized or noted the 6 words")
                             .font(.footnote)
                     }
                 } else {
-                    Text("Tape pour afficher les 6 mots. Ils ne sont jamais inclus dans le QR ou le fichier — transmets-les à l'autre personne par un canal séparé.")
+                    Text("Tap to show the 6 words. They are never included in the QR or file — transmit them to the other person via a separate channel.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
             }
             .padding(.vertical, 4)
         } header: {
-            Text("Passphrase (hors-canal)")
+            Text("Passphrase (out-of-band)")
         } footer: {
-            Text("Une fois la passphrase révélée ici, l'autre appareil ne peut l'utiliser qu'une seule fois. Pour un nouveau transfert, lance un autre Handoff.")
+            Text("Once the passphrase is revealed here, the other device can only use it once. For a new transfer, start another Handoff.")
         }
     }
 
@@ -281,27 +281,27 @@ struct HandoffSendView: View {
             Button {
                 requestTransport(.airdrop)
             } label: {
-                Label("Partager via AirDrop", systemImage: "square.and.arrow.up")
+                Label("Share via AirDrop", systemImage: "square.and.arrow.up")
             }
 
             Button {
                 requestTransport(.clipboard)
             } label: {
-                Label("Copier le payload", systemImage: "doc.on.clipboard")
+                Label("Copy the payload", systemImage: "doc.on.clipboard")
             }
 
             Button {
                 requestTransport(.file)
             } label: {
-                Label("Enregistrer dans Fichiers", systemImage: "folder.fill")
+                Label("Save to Files", systemImage: "folder.fill")
             }
         } header: {
-            Text("Transports alternatifs")
+            Text("Alternative transports")
         } footer: {
             if passphraseAcknowledged {
-                Text("L'envoi via AirDrop / fichier partage aussi le payload chiffré. La passphrase reste toujours à transmettre séparément.")
+                Text("Sending via AirDrop or file also shares the encrypted payload. The passphrase must always be transmitted separately.")
             } else {
-                Text("Le payload envoyé est chiffré : l'autre appareil aura besoin des 6 mots ci-dessus. On te demande de les confirmer au premier envoi.")
+                Text("The payload sent is encrypted: the other device will need the 6 words above. You will be asked to confirm them on the first send.")
             }
         }
     }
@@ -437,7 +437,7 @@ private struct HandoffQRDisplay: View {
                 .frame(width: 280, height: 280)
                 .padding(20)
                 .background(Color.white, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-                .accessibilityLabel("QR code Handoff")
+                .accessibilityLabel("Handoff QR code")
         } else {
             placeholder
         }
@@ -464,7 +464,7 @@ private struct HandoffQRDisplay: View {
             Image(systemName: "qrcode")
                 .font(.system(size: 60))
                 .foregroundStyle(.tertiary)
-            Text("Génération du QR impossible")
+            Text("Unable to generate QR code")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

@@ -1045,7 +1045,7 @@ public final class TransferQueue {
                 let reason = isPausedGlobally
                     ? "pause globale active"
                     : (!NetworkReachability.shared.isOnline
-                        ? "hors-ligne"
+                        ? "offline"
                         : "cellulaire + « pause en cellulaire »")
                 Task { await LogService.shared.log(.info, category: "transfer",
                     message: "⏳ File en attente : démarrage bloqué (\(reason))") }
@@ -1577,7 +1577,7 @@ public final class TransferQueue {
         }
 
         // Annotate the original transfer so the UI can collapse old failures.
-        transfer.lastError = (transfer.lastError ?? "Échec") + " — retry lancé"
+        transfer.lastError = (transfer.lastError ?? "Failed") + " — retry lancé"
         try? modelContext?.save()
     }
 
@@ -1975,7 +1975,7 @@ public final class TransferQueue {
                         autoRetryCounts[key] = attempt
                         let budget = retryBudget(for: status.error)
                         transfer.status = .failed
-                        transfer.lastError = (status.error ?? "Échec") + " — nouvelle tentative \(attempt)/\(budget)"
+                        transfer.lastError = (status.error ?? "Failed") + " — nouvelle tentative \(attempt)/\(budget)"
                         transfer.finishedAt = .now
                         try? modelContext?.save()
                         await LogService.shared.log(

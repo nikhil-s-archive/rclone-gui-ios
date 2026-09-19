@@ -2,7 +2,7 @@
 //  TrashService.swift
 //  Rclone GUI — Services
 //
-//  Soft-delete buffer ("corbeille") for files & folders trashed from the app.
+//  Soft-delete buffer ("Trash") for files & folders trashed from the app.
 //  Implementation: server-side rename to `<remote>:.rclone-gui-trash/<uuid>/<name>`
 //  (one rclone moveto / sync.move call) and a SwiftData TrashEntry for the metadata.
 //
@@ -291,7 +291,7 @@ public enum TrashError: LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .notAttached:
-            return String(localized: "Le service de corbeille n'est pas initialisé.")
+            return String(localized: "The trash service is not initialized.")
         case .destinationOccupied(let path):
             return String(localized: "Un élément existe déjà à \(path). Renommez-le ou déplacez-le avant de restaurer.")
         }

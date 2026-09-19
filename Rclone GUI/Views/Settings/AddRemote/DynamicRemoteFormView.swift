@@ -39,7 +39,7 @@ struct DynamicRemoteFormView: View {
                 }
             } else {
                 Section {
-                    Label("Aucun backend sélectionné. Reviens à l'étape précédente.",
+                    Label("No backend selected. Go back to the previous step.",
                           systemImage: "exclamationmark.triangle.fill")
                         .foregroundStyle(.red)
                 }
@@ -48,7 +48,7 @@ struct DynamicRemoteFormView: View {
         .scrollDismissesKeyboard(.interactively)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Suivant") { onNext() }
+                Button("Next") { onNext() }
                     .disabled(!state.canProceedFromStep2)
             }
         }
@@ -81,7 +81,7 @@ struct DynamicRemoteFormView: View {
         } header: {
             Text("Provider")
         } footer: {
-            Text("Le choix du provider détermine quels champs sont disponibles plus bas.")
+            Text("The provider choice determines which fields are available below.")
         }
     }
 
@@ -89,7 +89,7 @@ struct DynamicRemoteFormView: View {
         let fields = primaryFields(for: backend)
         return Section {
             if fields.isEmpty {
-                Text("Aucun champ obligatoire pour ce backend.")
+                Text("No required fields for this backend.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } else {
@@ -150,7 +150,7 @@ struct DynamicRemoteFormView: View {
                 Link(destination: url) {
                     HStack {
                         Image(systemName: "safari.fill")
-                        Text("Ouvrir la page d'identifiants")
+                        Text("Open the credentials page")
                         Spacer()
                         Image(systemName: "arrow.up.right.square")
                             .foregroundStyle(.secondary)
@@ -164,7 +164,7 @@ struct DynamicRemoteFormView: View {
                     .foregroundStyle(.secondary)
             }
         } header: {
-            Label("Où obtenir tes identifiants", systemImage: "key.fill")
+            Label("Where to get your credentials", systemImage: "key.fill")
         }
     }
 
@@ -276,7 +276,7 @@ private struct RemoteRefPickerRow: View {
             HStack(spacing: 6) {
                 Text(label).font(.subheadline.weight(.semibold))
                 if required {
-                    Text("• requis").font(.caption).foregroundStyle(.secondary)
+                    Text("• required").font(.caption).foregroundStyle(.secondary)
                 }
                 Spacer()
             }
@@ -284,7 +284,7 @@ private struct RemoteRefPickerRow: View {
                 HStack {
                     Image(systemName: "externaldrive.fill.badge.plus")
                     if value.isEmpty {
-                        Text("Choisir un remote…")
+                        Text("Choose a remote…")
                             .foregroundStyle(.secondary)
                     } else {
                         Text(value)
@@ -293,21 +293,21 @@ private struct RemoteRefPickerRow: View {
                             .truncationMode(.middle)
                     }
                     Spacer()
-                    Text("Parcourir").font(.callout).foregroundStyle(.tint)
+                    Text("Browse").font(.callout).foregroundStyle(.tint)
                 }
             }
             .buttonStyle(.plain)
-            TextField("ou saisir « remote:chemin »", text: $value)
+            TextField("or type "remote:path"", text: $value)
                 .rgNoAutocap()
                 .autocorrectionDisabled()
                 .font(.caption)
                 .foregroundStyle(.secondary)
             if let validationError {
-                Label(validationError.errorDescription ?? "Erreur",
+                Label(validationError.errorDescription ?? "Error",
                       systemImage: "exclamationmark.triangle.fill")
                     .font(.caption2).foregroundStyle(.red)
             } else {
-                Text("Le remote existant que ce backend va envelopper.")
+                Text("The existing remote this backend will wrap.")
                     .font(.caption2).foregroundStyle(.secondary)
             }
         }
@@ -336,16 +336,16 @@ private struct UpstreamsBuilderRow: View {
             HStack(spacing: 6) {
                 Text(label).font(.subheadline.weight(.semibold))
                 if required {
-                    Text("• requis").font(.caption).foregroundStyle(.secondary)
+                    Text("• required").font(.caption).foregroundStyle(.secondary)
                 }
                 Spacer()
             }
             if entries.isEmpty {
-                Text("Aucun remote ajouté.").font(.caption).foregroundStyle(.secondary)
+                Text("No remote added yet.").font(.caption).foregroundStyle(.secondary)
             } else {
                 ForEach(entries.indices, id: \.self) { i in
                     HStack(spacing: 8) {
-                        TextField("remote:chemin", text: Binding(
+                        TextField("remote:path", text: Binding(
                             get: { entries.indices.contains(i) ? entries[i] : "" },
                             set: { if entries.indices.contains(i) { entries[i] = $0; sync() } }
                         ))
@@ -362,18 +362,18 @@ private struct UpstreamsBuilderRow: View {
                 }
             }
             Button { showPicker = true } label: {
-                Label("Ajouter un remote", systemImage: "plus.circle.fill")
+                Label("Add a remote", systemImage: "plus.circle.fill")
             }
             .buttonStyle(.bordered)
             .controlSize(.small)
             if let validationError {
-                Label(validationError.errorDescription ?? "Erreur",
+                Label(validationError.errorDescription ?? "Error",
                       systemImage: "exclamationmark.triangle.fill")
                     .font(.caption2).foregroundStyle(.red)
             } else {
                 Text(isCombine
-                     ? "Chaque entrée mappe un dossier : « nom=remote:chemin »."
-                     : "Remotes fusionnés. Ajoute « :ro » en fin d'entrée pour la lecture seule.")
+                     ? "Each entry maps a folder: "name=remote:path"."
+                     : "Merged remotes. Add ":ro" at the end of an entry to make it read-only.")
                     .font(.caption2).foregroundStyle(.secondary)
             }
         }
@@ -418,12 +418,12 @@ private struct RemoteReferenceSheet: View {
         NavigationStack {
             List {
                 if loading {
-                    HStack { ProgressView(); Text("Chargement des remotes…").foregroundStyle(.secondary) }
+                    HStack { ProgressView(); Text("Loading remotes…").foregroundStyle(.secondary) }
                 } else if let loadError {
                     Label(loadError, systemImage: "exclamationmark.triangle.fill")
                         .foregroundStyle(.red)
                 } else if remotes.isEmpty {
-                    Label("Aucun remote disponible. Crée d'abord un stockage simple (Drive, S3, SFTP…), puis reviens.",
+                    Label("No remote available. First create a simple storage (Drive, S3, SFTP…), then come back.",
                           systemImage: "externaldrive.badge.exclamationmark")
                         .font(.callout).foregroundStyle(.secondary)
                 } else {
@@ -443,13 +443,13 @@ private struct RemoteReferenceSheet: View {
                     }
                 }
             }
-            .navigationTitle("Choisir un remote")
+            .navigationTitle("Choose a remote")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Annuler") { dismiss() }
+                    Button("Cancel") { dismiss() }
                 }
             }
             .task { await load() }
@@ -489,18 +489,18 @@ private struct RemoteRefFolderLevel: View {
                 Button {
                     onPick(pickValue)
                 } label: {
-                    Label(path.isEmpty ? "Choisir la racine" : "Choisir « \(path) »",
+                    Label(path.isEmpty ? "Choose the root" : "Choisir « \(path) »",
                           systemImage: "checkmark.circle.fill")
                 }
             }
-            Section("Sous-dossiers") {
+            Section("Subfolders") {
                 if loading {
-                    HStack { ProgressView(); Text("Chargement…").foregroundStyle(.secondary) }
+                    HStack { ProgressView(); Text("Loading…").foregroundStyle(.secondary) }
                 } else if let loadError {
                     Label(loadError, systemImage: "exclamationmark.triangle.fill")
                         .font(.caption).foregroundStyle(.red)
                 } else if directories.isEmpty {
-                    Text("Aucun sous-dossier ici.").foregroundStyle(.secondary)
+                    Text("No subfolders here.").foregroundStyle(.secondary)
                 } else {
                     ForEach(directories) { dir in
                         NavigationLink {

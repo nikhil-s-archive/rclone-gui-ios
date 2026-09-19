@@ -40,7 +40,7 @@ struct GlassEngineView: View {
             liveLogSection
             guaranteesSection
         }
-        .navigationTitle("Transparence")
+        .navigationTitle("Transparency")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
@@ -61,22 +61,22 @@ struct GlassEngineView: View {
                         .font(.title3.weight(.bold))
                         .monospacedDigit()
                     Text(clean
-                         ? "Aucun appel vers un serveur maison. L'app ne parle qu'à vos remotes, à Apple et à elle-même."
-                         : "Un appel non attendu a été observé — voir le journal ci-dessous.")
+                         ? "No calls to custom servers. The app only communicates with your remotes, Apple, and itself."
+                         : "An unexpected call was observed — see log below.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
             }
             .padding(.vertical, 4)
         } footer: {
-            Text("Le Glass Engine observe passivement les appels réseau de l'app et les range par catégorie. Tout ce qui n'est ni votre remote, ni Apple, ni l'appareil compte comme « appel maison ».")
+            Text("Glass Engine passively monitors app network calls and categorizes them. Anything that is not your remote, Apple, or the local device counts as a “phone home” call.")
         }
     }
 
     // MARK: - Allowlist déclarative
 
     private var allowlistSection: some View {
-        Section("Ce que l'app est conçue pour contacter") {
+        Section("What the app is designed to contact") {
             ForEach([EgressCategory.loopback, .apple, .provider], id: \.self) { cat in
                 let items = allowlist.filter { $0.category == cat }
                 if !items.isEmpty {
@@ -110,9 +110,9 @@ struct GlassEngineView: View {
     private var remotesSection: some View {
         Section {
             if !remotesLoaded {
-                HStack { ProgressView(); Text("Lecture de la config rclone…").foregroundStyle(.secondary) }
+                HStack { ProgressView(); Text("Reading rclone configuration…").foregroundStyle(.secondary) }
             } else if remotes.isEmpty {
-                Text("Aucun remote configuré pour l'instant.")
+                Text("No remotes configured yet.")
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(remotes) { r in
@@ -128,9 +128,9 @@ struct GlassEngineView: View {
                 }
             }
         } header: {
-            Text("Vos remotes rclone")
+            Text("Your rclone remotes")
         } footer: {
-            Text("librclone ne contacte QUE les remotes que vous avez configurés ci-dessus. Son trafic sort hors d'iOS et n'est pas interceptable dans l'app — nous le déclarons ici plutôt que de le simuler.")
+            Text("librclone ONLY contacts the remotes you configured above. Its traffic exits outside iOS and cannot be intercepted in-app — we declare it here rather than simulate it.")
         }
     }
 
@@ -139,7 +139,7 @@ struct GlassEngineView: View {
     private var liveLogSection: some View {
         Section {
             if monitor.events.isEmpty {
-                Text("Aucun appel réseau observé pour l'instant.")
+                Text("No network calls observed so far.")
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(monitor.events.suffix(60).reversed()) { e in
@@ -159,7 +159,7 @@ struct GlassEngineView: View {
             }
         } header: {
             HStack {
-                Text("Journal live")
+                Text("Live log")
                 Spacer()
                 if !monitor.events.isEmpty {
                     ShareLink(item: monitor.exportText()) {
@@ -175,28 +175,28 @@ struct GlassEngineView: View {
                 }
             }
         } footer: {
-            Text("Ce que l'app émet côté URLSession (échanges de token OAuth, pont local). Le trafic natif de rclone n'y figure pas — voir « Vos remotes ».")
+            Text("What the app emits via URLSession (OAuth token exchanges, local bridge). Native rclone traffic is not included — see “Your remotes”.")
         }
     }
 
     // MARK: - Garanties
 
     private var guaranteesSection: some View {
-        Section("Garanties") {
-            guaranteeRow("Aucun SDK d'analytics, de crash-reporting ou de publicité")
-            guaranteeRow("Aucune notification push distante (pas d'APNs, pas de device token)")
-            guaranteeRow("Aucun serveur dorsal : essai, abonnement et config restent sur l'appareil / iCloud / Apple")
-            guaranteeRow("Build reproductible : le binaire natif rclone est vérifiable par un tiers")
+        Section("Guarantees") {
+            guaranteeRow("No analytics, crash-reporting, or advertising SDKs")
+            guaranteeRow("No remote push notifications (no APNs, no device token)")
+            guaranteeRow("No backend server: trial, subscription, and config stay on device / iCloud / Apple")
+            guaranteeRow("Reproducible build: the native rclone binary can be verified by third parties")
 
             Button {
                 openURL(transparencyURL)
             } label: {
-                Label("Comment vérifier vous-même", systemImage: "checkmark.seal")
+                Label("How to check for yourself", systemImage: "checkmark.seal")
             }
             Button {
                 openURL(sourceURL)
             } label: {
-                Label("Code source (GitHub)", systemImage: "chevron.left.forwardslash.chevron.right")
+                Label("Source code (GitHub)", systemImage: "chevron.left.forwardslash.chevron.right")
             }
         }
     }
@@ -229,11 +229,11 @@ struct GlassEngineView: View {
 private extension EgressCategory {
     var displayTitle: LocalizedStringKey {
         switch self {
-        case .loopback:   return "Sur l'appareil (loopback)"
-        case .provider:   return "Fournisseurs cloud (vos comptes)"
+        case .loopback:   return "On device (loopback)"
+        case .provider:   return "Cloud providers (your accounts)"
         case .apple:      return "Apple"
-        case .userRemote: return "Vos remotes"
-        case .home:       return "Appels maison"
+        case .userRemote: return "Your remotes"
+        case .home:       return "Phone-home calls"
         }
     }
 

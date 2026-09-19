@@ -58,13 +58,13 @@ struct RestoreVaultView: View {
                 }
             }
         }
-        .navigationTitle("Restaurer un vault")
+        .navigationTitle("Restore a vault")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("Annuler") { dismiss() }
+                Button("Cancel") { dismiss() }
                     .disabled(submitting)
             }
         }
@@ -89,16 +89,16 @@ struct RestoreVaultView: View {
                 }
             }
         }
-        .alert("Remplacer la configuration actuelle ?", isPresented: $showConfirmReplace) {
-            Button("Restaurer", role: .destructive) {
+        .alert("Replace current configuration?", isPresented: $showConfirmReplace) {
+            Button("Restore", role: .destructive) {
                 Task { await performRestore() }
             }
-            Button("Annuler", role: .cancel) {}
+            Button("Cancel", role: .cancel) {}
         } message: {
             if let v = selectedVault {
                 Text("Le vault « \(v.filename) » (\(v.remoteCount) remote\(v.remoteCount > 1 ? "s" : "")) remplacera la configuration actuelle. Cette action est irréversible — pense à faire un nouveau vault d'abord si tu veux garder l'ancienne.")
             } else {
-                Text("Cette action est irréversible.")
+                Text("This action cannot be undone.")
             }
         }
     }
@@ -118,11 +118,11 @@ struct RestoreVaultView: View {
                     }
                 } else {
                     if remotes.isEmpty && !loadingScan {
-                        Text("Aucun remote configuré.")
+                        Text("No remote configured.")
                             .foregroundStyle(.secondary)
                     } else {
                         Picker("Remote", selection: $selectedRemote) {
-                            Text("Choisir…").tag(RemoteSummaryDTO?.none)
+                            Text("Choose…").tag(RemoteSummaryDTO?.none)
                             ForEach(remotes) { remote in
                                 Text(remote.name).tag(RemoteSummaryDTO?.some(remote))
                             }
@@ -135,7 +135,7 @@ struct RestoreVaultView: View {
                             showFolderPicker = true
                         } label: {
                             HStack {
-                                Label("Dossier", systemImage: "folder.fill")
+                                Label("Folder", systemImage: "folder.fill")
                                 Spacer()
                                 Text(folder.isEmpty ? "/" : folder)
                                     .foregroundStyle(.secondary)
@@ -151,7 +151,7 @@ struct RestoreVaultView: View {
                         } label: {
                             HStack {
                                 if loadingScan { ProgressView() }
-                                Text(loadingScan ? "Scan en cours…" : "Scanner ce dossier")
+                                Text(loadingScan ? "Scanning…" : "Scan this folder")
                             }
                         }
                         .disabled(loadingScan)
@@ -185,12 +185,12 @@ struct RestoreVaultView: View {
                                 }
                             }
                         } header: {
-                            Text("Vaults connus sur cet appareil")
+                            Text("Known vaults on this device")
                         }
                     }
                 }
             } header: {
-                Text("Vault à restaurer")
+                Text("Vault to restore")
             }
         }
     }
@@ -205,7 +205,7 @@ struct RestoreVaultView: View {
                             .font(.caption).foregroundStyle(.secondary)
                     }
                 } header: {
-                    Text("Vault sélectionné")
+                    Text("Selected vault")
                 }
             }
             Section {
@@ -218,20 +218,20 @@ struct RestoreVaultView: View {
             } header: {
                 Text("Passphrase")
             } footer: {
-                Text("Saisis la passphrase qui a servi à sceller ce vault. Elle n'est jamais transmise.")
+                Text("Enter the passphrase used to seal this vault. It is never transmitted.")
             }
             Section {
                 Button {
                     showConfirmReplace = true
                 } label: {
-                    Text("Continuer")
+                    Text("Continue")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
                 .disabled(passphrase.isEmpty)
 
-                Button("Retour") {
+                Button("Back") {
                     step = .list
                     passphrase = ""
                 }
@@ -243,10 +243,10 @@ struct RestoreVaultView: View {
         Section {
             HStack(spacing: 12) {
                 ProgressView()
-                Text("Restauration en cours…")
+                Text("Restoring…")
             }
         } footer: {
-            Text("Face ID / Touch ID est demandé pour confirmer l'opération. Ta configuration actuelle sera écrasée.")
+            Text("Face ID / Touch ID is required to confirm this action. Your current configuration will be overwritten.")
         }
     }
 
@@ -254,17 +254,17 @@ struct RestoreVaultView: View {
         Section {
             if let bytes = restoredBytes {
                 VStack(alignment: .leading, spacing: 8) {
-                    Label("Configuration restaurée", systemImage: "checkmark.seal.fill")
+                    Label("Configuration restored", systemImage: "checkmark.seal.fill")
                         .font(.headline)
                         .foregroundStyle(.green)
                     Text("Taille : \(ByteCountFormatter.string(fromByteCount: Int64(bytes), countStyle: .file))")
                         .font(.caption).foregroundStyle(.secondary)
-                    Text("Toutes les vues (Fichiers, Transferts…) ont été rafraîchies.")
+                    Text("All views (Files, Transfers…) have been refreshed.")
                         .font(.caption).foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 4)
             }
-            Button("Terminé") { dismiss() }
+            Button("Completed") { dismiss() }
                 .frame(maxWidth: .infinity)
                 .buttonStyle(.borderedProminent)
         }
@@ -314,7 +314,7 @@ struct RestoreVaultView: View {
             } else if case .userCancelled = bio {
                 // OK
             } else {
-                submitError = "Authentification annulée."
+                submitError = "Authentication cancelled."
             }
             return
         }
@@ -362,7 +362,7 @@ private struct VaultPickerRow: View {
                 }
                 Spacer()
                 if descriptor.source == .scanned {
-                    Text("distant")
+                    Text("remote")
                         .font(.caption2)
                         .padding(.horizontal, 6).padding(.vertical, 2)
                         .background(Color.teal.opacity(0.12), in: Capsule())
@@ -394,7 +394,7 @@ private struct GhostVaultFolderPickerRestore: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("Annuler") { dismiss() }
+                        Button("Cancel") { dismiss() }
                     }
                 }
         }
@@ -421,19 +421,19 @@ private struct GhostVaultFolderLevelRestore: View {
                     onPick(path)
                 } label: {
                     Label(
-                        path.isEmpty ? "Choisir la racine" : "Choisir « \(path) »",
+                        path.isEmpty ? "Choose the root" : "Choisir « \(path) »",
                         systemImage: "checkmark.circle.fill"
                     )
                 }
             }
-            Section("Sous-dossiers") {
+            Section("Subfolders") {
                 if loading {
-                    HStack { ProgressView(); Text("Chargement…").foregroundStyle(.secondary) }
+                    HStack { ProgressView(); Text("Loading…").foregroundStyle(.secondary) }
                 } else if let error {
                     Label(error, systemImage: "exclamationmark.triangle.fill")
                         .font(.caption).foregroundStyle(.red)
                 } else if directories.isEmpty {
-                    Text("Aucun sous-dossier ici.").foregroundStyle(.secondary)
+                    Text("No subfolders here.").foregroundStyle(.secondary)
                 } else {
                     ForEach(directories) { dir in
                         NavigationLink(value: dir.pathInRemote) {

@@ -22,7 +22,7 @@ struct ThumbnailSettingsView: View {
             }
 
             Section {
-                Picker("Génération", selection: $policyRaw) {
+                Picker("Generation", selection: $policyRaw) {
                     ForEach(ThumbnailPolicy.allCases, id: \.rawValue) { policy in
                         Text(policy.label).tag(policy.rawValue)
                     }
@@ -31,13 +31,13 @@ struct ThumbnailSettingsView: View {
                 .pickerStyle(.menu)
                 #endif
             } header: {
-                Text("Vignettes")
+                Text("Thumbnails")
             } footer: {
-                Text("Générer une vignette télécharge des octets depuis le remote (rclone n'a pas de vignettes côté serveur). « Wi-Fi seulement » évite la consommation de données cellulaires ; les vignettes déjà en cache restent affichées dans tous les cas. Les vidéos n'extraient qu'une image (pas de téléchargement complet).")
+                Text("Generating a thumbnail downloads bytes from the remote (rclone has no server-side thumbnails). “Wi-Fi only” avoids using cellular data; thumbnails already cached are shown in all cases. Videos only extract a single frame (no full download).")
             }
 
-            Section("Cache des vignettes") {
-                LabeledContent("Taille") {
+            Section("Thumbnail cache") {
+                LabeledContent("Size") {
                     Text(ByteCountFormatter.string(fromByteCount: cacheBytes, countStyle: .file))
                         .foregroundStyle(.secondary)
                         .monospacedDigit()
@@ -46,7 +46,7 @@ struct ThumbnailSettingsView: View {
                     Task { await clearCache() }
                 } label: {
                     HStack {
-                        Label("Vider le cache des vignettes", systemImage: "trash")
+                        Label("Clear thumbnail cache", systemImage: "trash")
                         if isClearing {
                             Spacer()
                             ProgressView().controlSize(.small)
@@ -56,7 +56,7 @@ struct ThumbnailSettingsView: View {
                 .disabled(isClearing || cacheBytes == 0)
             }
         }
-        .navigationTitle("Vignettes")
+        .navigationTitle("Thumbnails")
         #if os(iOS)
         .rgInlineNavTitle()
         #endif
@@ -68,9 +68,9 @@ struct ThumbnailSettingsView: View {
         HStack(spacing: 14) {
             AppIconTile(systemImage: "rectangle.grid.3x2.fill", tint: .teal, size: 54, iconSize: .title2)
             VStack(alignment: .leading, spacing: 4) {
-                Text("Vignettes de la galerie")
+                Text("Gallery thumbnails")
                     .font(.headline)
-                Text("Contrôle quand les miniatures images/vidéos sont générées et la taille du cache.")
+                Text("Controls when image/video thumbnails are generated and the cache size.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .lineLimit(3)
