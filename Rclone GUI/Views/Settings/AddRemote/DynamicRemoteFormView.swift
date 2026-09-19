@@ -297,7 +297,7 @@ private struct RemoteRefPickerRow: View {
                 }
             }
             .buttonStyle(.plain)
-            TextField("or type "remote:path"", text: $value)
+            TextField("or type \"remote:path\"", text: $value)
                 .rgNoAutocap()
                 .autocorrectionDisabled()
                 .font(.caption)
@@ -372,8 +372,8 @@ private struct UpstreamsBuilderRow: View {
                     .font(.caption2).foregroundStyle(.red)
             } else {
                 Text(isCombine
-                     ? "Each entry maps a folder: "name=remote:path"."
-                     : "Merged remotes. Add ":ro" at the end of an entry to make it read-only.")
+                     ? "Each entry maps a folder: \"name=remote:path\"."
+                     : "Merged remotes. Add \":ro\" at the end of an entry to make it read-only.")
                     .font(.caption2).foregroundStyle(.secondary)
             }
         }

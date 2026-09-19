@@ -93,7 +93,7 @@ struct ImportConfigView: View {
                         }
                         .padding(12)
                         .background(Color.rgGroupedRowBackground, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        Text("Only required if your rclone.conf is encrypted ("rclone config encryption set"). Used once to decrypt on import, never stored.")
+                        Text("Only required if your rclone.conf is encrypted (\"rclone config encryption set\"). Used once to decrypt on import, never stored.")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
 
@@ -260,7 +260,7 @@ struct ImportConfigView: View {
             if ConfigStore.isRcloneEncrypted(data) {
                 if rclonePassword.isEmpty {
                     pendingEncrypted = data
-                    error = String(localized: "This configuration is encrypted by rclone. Enter your password above, then tap "Decrypt and Import".")
+                    error = String(localized: "This configuration is encrypted by rclone. Enter your password above, then tap \"Decrypt and Import\".")
                     success = nil
                     return
                 }
