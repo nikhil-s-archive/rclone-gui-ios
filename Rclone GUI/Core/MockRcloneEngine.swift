@@ -56,6 +56,9 @@ public struct MockRcloneEngine: RcloneEngine {
         case "config/dump":
             return try await renderConfigDump()
 
+        case "config/providers":
+            return #"{"providers": [{"Name": "s3", "Description": "Amazon S3 Compliant Storage Providers", "Prefix": "s3", "Options": [{"Name": "provider", "Help": "Choose your S3 provider.", "Type": "string", "DefaultStr": "AWS", "Required": true, "IsPassword": false, "Sensitive": false, "Advanced": false, "Exclusive": true, "Hide": 0, "NoPrefix": false, "Examples": [{"Value": "AWS", "Help": "Amazon Web Services (AWS) S3", "Provider": ""}]}]}]}"#
+
         case "operations/list":
             return #"{"list":[]}"#
 
