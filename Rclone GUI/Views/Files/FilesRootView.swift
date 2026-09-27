@@ -58,19 +58,11 @@ struct FilesRootView: View {
             }
     }
 
-    private var recentLocations: [SavedLocation] {
-        savedLocations
-            // Idem que les Favoris : un remote au coffre-fort verrouillé ne doit
-            // pas apparaître (ni être navigable) dans les Récents tant qu'il
-            // n'a pas été déverrouillé par Face ID.
-            .filter { $0.kind == .recent && vault.isAccessible($0.remote) }
-            .prefix(5)
-            .map { $0 }
-    }
+
 
     var body: some View {
         content
-            .navigationTitle("Files")
+            .navigationTitle("Browse")
             .navigationDestination(item: $unlockTarget) { remote in
                 FolderView(remote: remote.name, path: "")
             }
@@ -204,11 +196,6 @@ struct FilesRootView: View {
     private var loadingList: some View {
             List {
                 Section {
-                    FileManagerOverviewCard(remoteCount: max(remotes.count, 0), cryptCount: 0)
-                        .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-                        .listRowBackground(Color.clear)
-                }
-                Section {
                     SkeletonLoaderView(rowCount: 6, style: .fileRow)
                         .listRowInsets(EdgeInsets())
                 }
@@ -218,15 +205,6 @@ struct FilesRootView: View {
 
     private var filesList: some View {
         List {
-            Section {
-                FileManagerOverviewCard(
-                    remoteCount: remotes.count,
-                    cryptCount: remotes.filter(\.isCrypt).count
-                )
-                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-                .listRowBackground(Color.clear)
-            }
-
             if !runningTransfers.isEmpty {
                 Section {
                     ActiveTransfersBanner(transfers: runningTransfers)
@@ -261,28 +239,8 @@ struct FilesRootView: View {
                         }
                     }
                 } header: {
-                    AppSectionHeader(title: "Favorites", subtitle: "Pinned folders", systemImage: "pin.fill")
+                    Text("Favorites")
                 }
-            }
-
-            if !recentLocations.isEmpty {
-                Section {
-                    ForEach(recentLocations) { location in
-                        NavigationLink(value: location.destination) {
-                            AppLocationRow(
-                                title: location.displayName,
-                                subtitle: location.subtitle,
-                                systemImage: location.path.isEmpty ? "externaldrive.fill" : "folder.fill",
-                                tint: .blue,
-                                trailing: relativeDate(location.lastOpenedAt)
-                            )
-                        }
-                    }
-                } header: {
-                    AppSectionHeader(title: "Recent", subtitle: "Recently opened", systemImage: "clock")
-                }
-            }
-
             Section {
                 ForEach(remotes) { remote in
                     remoteRow(for: remote)
@@ -290,9 +248,7 @@ struct FilesRootView: View {
                         .task { loadSpaceIfNeeded(for: remote.name) }
                 }
             } header: {
-                AppSectionHeader(title: "Remotes", subtitle: "Available roots", systemImage: "externaldrive")
-            } footer: {
-                Text("Tap a remote to open its root. A vaulted remote unlocks with Face ID and stays hidden in the iOS Files app while locked.")
+                Text("Locations")
             }
         }
         .rgInsetGroupedList()
@@ -594,25 +550,6 @@ struct FilesRootView: View {
     }
 }
 
-private struct FileManagerOverviewCard: View {
-    let remoteCount: Int
-    let cryptCount: Int
-
-    var body: some View {
-        AppHeroCard(
-            title: "File library",
-            subtitle: "\(remoteCount) remote\(remoteCount > 1 ? "s" : "") configuré\(remoteCount > 1 ? "s" : "")",
-            systemImage: "folder.fill.badge.gearshape",
-            tint: .blue
-        ) {
-            HStack(spacing: 10) {
-                AppMetricPill(value: "\(remoteCount)", label: "remotes", systemImage: "externaldrive", tint: .blue)
-                AppMetricPill(value: "\(cryptCount)", label: "crypt", systemImage: "lock.shield", tint: .green)
-            }
-        }
-    }
-}
-
 /// État du coffre-fort pour une ligne de remote.
 private enum VaultRowState {
     case none      // hors coffre-fort
@@ -630,38 +567,21 @@ private struct FilesRemoteRow: View {
             BackendChip(
                 backend: RGBackend.from(rcloneType: remote.type),
                 cryptOverlay: remote.isCrypt && remote.type != "crypt",
-                size: 36
+                size: 30
             )
-            VStack(alignment: .leading, spacing: 3) {
-                HStack(spacing: 6) {
-                    Text(remote.name)
-                        .font(.system(size: 16, weight: .medium))
-                        .lineLimit(1)
-                    if remote.type == "crypt" {
-                        CryptBadge()
-                    }
-                }
-                Text(subtitleText)
-                    .font(.system(size: 13))
-                    .foregroundStyle(.secondary)
+            HStack(spacing: 6) {
+                Text(remote.name)
+                    .font(.body)
                     .lineLimit(1)
+                if remote.type == "crypt" {
+                    CryptBadge()
+                }
             }
             Spacer(minLength: 8)
             trailingAccessory
         }
         .padding(.vertical, 6)
         .accessibilityElement(children: .combine)
-    }
-
-    private var subtitleText: String {
-        switch lockState {
-        case .locked:
-            return String(localized: "Locked · Face ID required")
-        case .unlocked:
-            return spaceText ?? String(localized: "Unlocked")
-        case .none:
-            return spaceText ?? humanType
-        }
     }
 
     @ViewBuilder
@@ -676,32 +596,7 @@ private struct FilesRemoteRow: View {
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(.green)
         case .none:
-            // Un remote listé est disponible : on montre le point vert tout de
-            // suite. Le quota se charge en arrière-plan (loadSpaceIfNeeded) et
-            // met à jour le sous-titre — sans spinner bloquant.
-            Circle()
-                .fill(Color.green)
-                .frame(width: 8, height: 8)
-        }
-    }
-
-    private var humanType: String {
-        switch remote.type {
-        case "s3": return "S3 / R2 / Bunny / Wasabi"
-        case "b2": return "Backblaze B2"
-        case "sftp": return "SFTP"
-        case "ftp": return "FTP"
-        case "webdav": return "WebDAV"
-        case "drive": return "Google Drive"
-        case "dropbox": return "Dropbox"
-        case "onedrive": return "OneDrive"
-        case "box": return "Box"
-        case "crypt": return String(localized: "Crypt encrypted")
-        case "alias": return "Alias"
-        case "union": return String(localized: "Union of remotes")
-        case "combine": return "Combine"
-        case "local": return "Local"
-        default: return remote.type
+            EmptyView()
         }
     }
 }

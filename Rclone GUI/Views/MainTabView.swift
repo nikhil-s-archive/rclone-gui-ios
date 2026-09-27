@@ -32,9 +32,8 @@ struct MainTabView: View {
         let screen = DemoScreenArg.value
         switch screen {
         case "files", "folder": _selection = State(initialValue: .files)
-        case "transfers":       _selection = State(initialValue: .transfers)
         case "settings":        _selection = State(initialValue: .settings)
-        default:                _selection = State(initialValue: .home)
+        default:                _selection = State(initialValue: .files)
         }
         _filesPath = State(initialValue: screen == "folder"
             ? [.folder(remote: "iPhone", path: "Photos")]
@@ -50,32 +49,26 @@ struct MainTabView: View {
         }
         _demoCover = State(initialValue: cover)
         #else
-        _selection = State(initialValue: .home)
+        _selection = State(initialValue: .files)
         #endif
     }
 
     enum Tab: Hashable, CaseIterable, Identifiable {
-        case home
         case files
-        case transfers
         case settings
 
         var id: Self { self }
 
         var title: LocalizedStringKey {
             switch self {
-            case .home: return "Home"
-            case .files: return "Files"
-            case .transfers: return "Transfers"
+            case .files: return "Browse"
             case .settings: return "Settings"
             }
         }
 
         var systemImage: String {
             switch self {
-            case .home: return "house"
             case .files: return "folder"
-            case .transfers: return "arrow.up.arrow.down.circle"
             case .settings: return "gearshape"
             }
         }
@@ -158,9 +151,7 @@ struct MainTabView: View {
     @ViewBuilder
     private func detailView(for tab: Tab) -> some View {
         switch tab {
-        case .home: HomeView()
         case .files: FilesRootView()
-        case .transfers: TransfersView()
         case .settings: SettingsView()
         }
     }
