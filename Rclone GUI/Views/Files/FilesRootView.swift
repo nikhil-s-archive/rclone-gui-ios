@@ -241,6 +241,7 @@ struct FilesRootView: View {
                 } header: {
                     Text("Favorites")
                 }
+            }
             Section {
                 ForEach(remotes) { remote in
                     remoteRow(for: remote)
