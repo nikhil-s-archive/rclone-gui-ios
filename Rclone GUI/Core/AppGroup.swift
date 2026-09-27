@@ -22,6 +22,13 @@ public enum AppGroup {
 
     /// Keychain access group for credentials shared between app and extension.
     public nonisolated static var keychainAccessGroup: String? {
+        // If the App Group entitlement is missing (e.g. sideloaded with a free Apple ID
+        // or LiveContainer), the Keychain Access Group entitlement is also missing.
+        // Using it would trigger errSecMissingEntitlement (OSStatus -34018).
+        guard FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: identifier) != nil else {
+            return nil
+        }
+        
         guard let value = Bundle.main.object(forInfoDictionaryKey: "RcloneKeychainAccessGroup") as? String,
               !value.isEmpty,
               !value.contains("$(") else {
