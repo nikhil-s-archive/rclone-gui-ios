@@ -48,7 +48,7 @@ public actor ConfigStore {
             at: target.deletingLastPathComponent(),
             withIntermediateDirectories: true
         )
-        try envelope.write(to: target, options: [.atomic, .completeFileProtection])
+        try envelope.write(to: target, options: [.atomic])
     }
 
     /// Wipe the stored conf and the master key. After this, the next save creates a fresh key.
@@ -77,7 +77,7 @@ public actor ConfigStore {
     /// Used to feed librclone via the `RCLONE_CONFIG` environment variable
     /// since librclone cannot read the encrypted blob directly. The file
     /// is written to the user's Caches directory (excluded from iCloud
-    /// backup) and protected with `.completeFileProtection`.
+    /// backup) and protected with `.completeUntilFirstUserAuthentication`.
     ///
     /// Throws `RcloneError.engineNotAvailable` when no conf has been imported.
     public func writeDecryptedToTempFile() async throws -> URL {
@@ -100,7 +100,7 @@ public actor ConfigStore {
             create: true
         )
         let target = caches.appending(path: "rclone.conf")
-        try scrubbed.write(to: target, options: [.atomic, .completeFileProtection])
+        try scrubbed.write(to: target, options: [.atomic])
         return target
     }
 
@@ -169,7 +169,7 @@ public actor ConfigStore {
             .appending(path: "rclone-gui-export-\(UUID().uuidString)", directoryHint: .isDirectory)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         let target = directory.appending(path: "rclone.conf")
-        try plaintext.write(to: target, options: [.atomic, .completeFileProtection])
+        try plaintext.write(to: target, options: [.atomic])
         return target
     }
 

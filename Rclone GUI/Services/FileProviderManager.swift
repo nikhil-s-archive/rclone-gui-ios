@@ -137,7 +137,7 @@ public final class FileProviderManager {
             try FileManager.default.createDirectory(at: manifestDir, withIntermediateDirectories: true)
             let payload = remotes.map { ManifestEntry(name: $0.name, type: $0.type, isCrypt: $0.isCrypt) }
             let data = try JSONEncoder().encode(payload)
-            try data.write(to: manifestDir.appending(path: "remotes.json"), options: [.atomic, .completeFileProtection])
+            try data.write(to: manifestDir.appending(path: "remotes.json"), options: [.atomic])
             await LogService.shared.log(
                 .debug,
                 category: "fileprovider",

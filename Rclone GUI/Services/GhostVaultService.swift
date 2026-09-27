@@ -239,7 +239,7 @@ public actor GhostVaultService {
             .appending(path: "ghost-vault-\(UUID().uuidString)", directoryHint: .isDirectory)
         try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
         let target = tempDir.appending(path: name)
-        try contents.write(to: target, options: [.atomic, .completeFileProtection])
+        try contents.write(to: target, options: [.atomic])
         return target
     }
 

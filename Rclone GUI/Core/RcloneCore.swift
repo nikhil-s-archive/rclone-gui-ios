@@ -175,7 +175,7 @@ public actor RcloneCore {
         try FileManager.default.createDirectory(at: tmpDir, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: tmpDir) }
         let tmp = tmpDir.appending(path: "rclone.conf")
-        try data.write(to: tmp, options: [.atomic, .completeFileProtection])
+        try data.write(to: tmp, options: [.atomic])
 
         let plaintext = try await engine.decryptConfig(path: tmp.path, password: password)
         return Data(plaintext.utf8)
@@ -197,7 +197,7 @@ public actor RcloneCore {
             return
         }
         let confURL = caches.appending(path: "rclone.conf")
-        try? Data().write(to: confURL, options: [.atomic, .completeFileProtection])
+        try? Data().write(to: confURL, options: [.atomic])
         engine.setEnv(name: "RCLONE_CONFIG", value: confURL.path)
         if initialized {
             struct SetPathInput: Encodable { let path: String }
@@ -336,7 +336,7 @@ public actor RcloneCore {
         )
         let confURL = caches.appending(path: "rclone.conf")
         if !FileManager.default.fileExists(atPath: confURL.path) {
-            try Data().write(to: confURL, options: [.atomic, .completeFileProtection])
+            try Data().write(to: confURL, options: [.atomic])
         }
         return confURL.path
     }

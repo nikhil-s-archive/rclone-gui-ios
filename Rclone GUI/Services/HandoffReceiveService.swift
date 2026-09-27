@@ -244,7 +244,7 @@ public actor HandoffReceiveService {
         let stamp = ISO8601DateFormatter().string(from: Date())
         let safeStamp = stamp.replacingOccurrences(of: ":", with: "-")
         let target = snapshotsDir.appending(path: "pre-handoff-\(safeStamp).rclone.conf")
-        try plaintext.write(to: target, options: [.atomic, .completeFileProtection])
+        try plaintext.write(to: target, options: [.atomic])
         return target
     }
 }
