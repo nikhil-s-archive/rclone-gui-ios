@@ -198,7 +198,7 @@ public final class OAuthBrokerService: NSObject {
                 }
             }
             session.presentationContextProvider = self
-            session.prefersEphemeralWebBrowserSession = true
+            session.prefersEphemeralWebBrowserSession = false
             self.activeSession = session
             if !session.start() {
                 self.activeSession = nil
