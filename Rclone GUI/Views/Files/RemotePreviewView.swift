@@ -165,7 +165,7 @@ struct RemoteExternalOpenHost: View {
                     ContentUnavailableView {
                         Label("Cannot open", systemImage: "exclamationmark.triangle")
                     } description: {
-                        Text(error ?? "Le fichier n'a pas pu être préparé.")
+                        Text(error ?? "The file could not be prepared.")
                     }
                 }
             }
@@ -300,7 +300,7 @@ private struct MacFilePreparationHost: View {
                     ContentUnavailableView {
                         Label("Preview unavailable", systemImage: "exclamationmark.triangle")
                     } description: {
-                        Text(error ?? "Le fichier n'a pas pu être préparé.")
+                        Text(error ?? "The file could not be prepared.")
                     }
                 }
             }

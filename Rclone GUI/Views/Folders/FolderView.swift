@@ -489,13 +489,13 @@ struct FolderView: View {
             }
             await load()
         } catch {
-            let action = permanent ? "suppression" : "mise à la corbeille"
+            let action = permanent ? "delete" : "move to trash"
             await LogService.shared.log(
                 .error,
                 category: "transfer",
                 message: "Échec \(action) \(remote):\(target.pathInRemote) : \(error.localizedDescription)"
             )
-            loadState = .failed("Échec de la \(action) : \(error.localizedDescription)")
+            loadState = .failed("\(action) failed: \(error.localizedDescription)")
         }
     }
 
@@ -835,8 +835,8 @@ struct FolderView: View {
 
     private func stageSelected(_ operation: FilesClipboard.Operation) {
         FilesClipboard.shared.stage(entries: selectedEntries, remote: remote, operation: operation)
-        let verb = operation == .copy ? "copié" : "coupé"
-        transientMessage = "\(selectedEntries.count) élément(s) \(verb)(s) — colle-les dans un autre dossier."
+        let verb = operation == .copy ? "copied" : "cut"
+        transientMessage = "\(selectedEntries.count) item(s) \(verb)(s) — paste them in another folder."
         selectedEntryIDs.removeAll()
         selectionMode = false
         hapticImpactTrigger &+= 1
@@ -870,7 +870,7 @@ struct FolderView: View {
 
                 Button {
                     FilesClipboard.shared.stage(entries: selectedEntries, remote: remote, operation: .cut)
-                    transientMessage = "\(selectedEntries.count) élément(s) coupé(s) — collez-les dans un autre dossier."
+                    transientMessage = "\(selectedEntries.count) item(s) cut — paste them in another folder."
                     selectedEntryIDs.removeAll()
                     selectionMode = false
                     hapticImpactTrigger &+= 1
@@ -881,7 +881,7 @@ struct FolderView: View {
 
                 Button {
                     FilesClipboard.shared.stage(entries: selectedEntries, remote: remote, operation: .copy)
-                    transientMessage = "\(selectedEntries.count) élément(s) copié(s) — collez-les dans un autre dossier."
+                    transientMessage = "\(selectedEntries.count) item(s) copied — paste them in another folder."
                     selectedEntryIDs.removeAll()
                     selectionMode = false
                     hapticImpactTrigger &+= 1
@@ -1070,7 +1070,7 @@ struct FolderView: View {
             )
             await load()
         } catch {
-            transientMessage = "Impossible de créer le dossier : \(error.localizedDescription)"
+            transientMessage = "Failed to create folder: \(error.localizedDescription)"
             await LogService.shared.log(
                 .error, category: "browse",
                 message: "Échec mkdir \(remote):\(newPath) : \(error.localizedDescription)"
@@ -1096,7 +1096,7 @@ struct FolderView: View {
                 displayName: displayName,
                 in: modelContext
             )
-            transientMessage = isPinned ? "Ajouté aux favoris." : "Retiré des favoris."
+            transientMessage = isPinned ? "Added to favorites." : "Removed from favorites."
             hapticSuccessTrigger &+= 1
         } catch {
             transientMessage = "Favori impossible : \(error.localizedDescription)"
@@ -1113,11 +1113,11 @@ struct FolderView: View {
                 to: directory,
                 conflictPolicy: .keepBoth
             )
-            transientMessage = "Téléchargement ajouté à la file."
+            transientMessage = "Download added to queue."
             selectedEntryIDs.removeAll()
             selectionMode = false
         } catch {
-            transientMessage = "Échec de téléchargement : \(error.localizedDescription)"
+            transientMessage = "Download failed: \(error.localizedDescription)"
             await LogService.shared.log(.error, category: "transfer", message: "Download batch impossible : \(error.localizedDescription)")
         }
     }
@@ -1199,8 +1199,8 @@ struct FolderView: View {
     private var pasteConflictTitle: String {
         guard let names = pasteConflictNames else { return "" }
         return names.count == 1
-            ? String(localized: "« \(names[0]) » existe déjà")
-            : String(localized: "\(names.count) éléments existent déjà")
+            ? String(localized: "'\(names[0])' already exists")
+            : String(localized: "\(names.count) items already exist")
     }
 
     private var pasteConflictMessage: String {
@@ -1210,18 +1210,18 @@ struct FolderView: View {
         }
         let preview = names.prefix(3).joined(separator: ", ")
         let suffix = names.count > 3 ? String(localized: " et \(names.count - 3) autre\(names.count - 3 > 1 ? "s" : "")") : ""
-        return String(localized: "Les fichiers suivants seront écrasés sans possibilité d'annulation : \(preview)\(suffix).")
+        return String(localized: "The following files will be overwritten without possibility of undo: \(preview)\(suffix).")
     }
 
     private var pasteMenuLabel: String {
         let clip = FilesClipboard.shared
         let count = clip.count
         let suffix = count > 1
-            ? String(localized: "\(count) éléments")
+            ? String(localized: "\(count) items")
             : String(localized: "1 item")
         return clip.operation == .cut
-            ? String(localized: "Coller (\(suffix), déplacer)")
-            : String(localized: "Coller (\(suffix), copier)")
+            ? String(localized: "Paste (\(suffix), move)")
+            : String(localized: "Paste (\(suffix), copy)")
     }
 
     private func pasteFromClipboard(force: Bool = false) async {
@@ -1236,11 +1236,11 @@ struct FolderView: View {
             if case .destinationConflict(let names) = error {
                 pasteConflictNames = names
             } else {
-                transientMessage = String(localized: "Échec du collage : \(error.localizedDescription)")
+                transientMessage = String(localized: "Paste failed: \(error.localizedDescription)")
                 hapticWarningTrigger &+= 1
             }
         } catch {
-            transientMessage = String(localized: "Échec du collage : \(error.localizedDescription)")
+            transientMessage = String(localized: "Paste failed: \(error.localizedDescription)")
             hapticWarningTrigger &+= 1
             await LogService.shared.log(
                 .error,
@@ -1273,11 +1273,11 @@ struct FolderView: View {
                     trashedCount += 1
                 }
             } catch {
-                let action = permanent ? "suppression" : "mise à la corbeille"
+                let action = permanent ? "delete" : "move to trash"
                 await LogService.shared.log(
                     .error,
                     category: "transfer",
-                    message: "\(action) batch impossible : \(error.localizedDescription)"
+                    message: "\(action) batch failed : \(error.localizedDescription)"
                 )
             }
         }
@@ -1351,13 +1351,13 @@ private struct FolderOverviewCard: View {
                 FolderCountChip(
                     text: folderCount == 1
                         ? String(localized: "1 folder")
-                        : String(localized: "\(folderCount) dossiers"),
+                        : String(localized: "\(folderCount) folders"),
                     tint: .blue
                 )
                 FolderCountChip(
                     text: fileCount == 1
                         ? String(localized: "1 file")
-                        : String(localized: "\(fileCount) fichiers"),
+                        : String(localized: "\(fileCount) files"),
                     tint: .teal
                 )
                 Spacer(minLength: 0)
@@ -1394,8 +1394,8 @@ private struct FolderOverviewCard: View {
         let nounSuffix = total > 1 ? "s" : ""
         let head = total == 0
             ? String(localized: "Empty folder")
-            : String(localized: "\(total) élément\(nounSuffix)")
-        return isInsideCrypt ? String(localized: "\(head) · déchiffrés à la volée") : head
+            : String(localized: "\(total) item\(nounSuffix)")
+        return isInsideCrypt ? String(localized: "\(head) · decrypted on the fly") : head
     }
 
     private var accessibilityText: String {
@@ -1442,7 +1442,7 @@ private struct NewFolderAlert: ViewModifier {
                 .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
             Button("Cancel", role: .cancel) { name = "" }
         } message: {
-            Text("Le dossier sera créé dans \(folderTitle).")
+            Text("The folder will be created in \(folderTitle).")
         }
     }
 }

@@ -198,7 +198,7 @@ private struct TrashHeaderCard: View {
 
     var body: some View {
         AppHeroCard(
-            title: count == 1 ? "1 item" : "\(count) éléments",
+            title: count == 1 ? "1 item" : "\(count) items",
             subtitle: "Recoverable for 30 days before automatic purge.",
             systemImage: "trash",
             tint: .red

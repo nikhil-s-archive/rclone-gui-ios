@@ -97,7 +97,7 @@ struct FilesRootView: View {
                 }
                 Button("Cancel", role: .cancel) { remoteToDelete = nil }
             } message: { remote in
-                Text("Le remote « \(remote.name) » sera retiré de rclone.conf. Tes fichiers distants ne sont pas supprimés.")
+                Text("The remote '\(remote.name)' will be removed from rclone.conf. Your remote files will not be deleted.")
             }
             .toolbar {
                 ToolbarItemGroup(placement: .primaryAction) {
@@ -641,7 +641,7 @@ private struct ActiveTransfersBanner: View {
 
     private var headlineText: String {
         let n = transfers.count
-        return n == 1 ? "1 transfert en cours" : "\(n) transferts en cours"
+        return n == 1 ? "1 transfer in progress" : "\(n) transfers in progress"
     }
 
     private var subtitleText: String {

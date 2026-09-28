@@ -265,7 +265,7 @@ struct RemotePublicLinkSettingsView: View {
                 } header: {
                     Text("Custom CDN domain")
                 } footer: {
-                    Text("Ce domaine est enregistré uniquement sur cet appareil pour le remote « \(remote) ». Il doit déjà servir publiquement la racine du bucket. Pour Qiniu Kodo ou un autre backend qui renvoie le bucket dans le chemin, saisis ici le préfixe à retirer, par exemple `aab`.")
+                    Text("This domain is registered only on this device for the remote '\(remote)'. It must already publicly serve the root of the bucket. For Qiniu Kodo or another backend that returns the bucket in the path, enter the prefix to remove here, for example `aab`.")
                 }
 
                 Section("Native rclone link") {

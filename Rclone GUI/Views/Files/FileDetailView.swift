@@ -302,7 +302,7 @@ struct FileDetailView: View {
     private var kindLabel: String {
         if entry.isDirectory { return String(localized: "Folder") }
         let ext = (entry.name as NSString).pathExtension.uppercased()
-        return ext.isEmpty ? String(localized: "File") : String(localized: "Fichier \(ext)")
+        return ext.isEmpty ? String(localized: "File") : String(localized: "File \(ext)")
     }
 
     private var sizeLabel: String {

@@ -308,12 +308,12 @@ struct TransferRowView: View {
             action = "Synchronisation PhotoSync"
         } else {
             switch transfer.kind {
-            case .download: action = "Téléchargement"
+            case .download: action = "Download"
             case .upload: action = "Upload"
-            case .move: action = "Déplacement"
-            case .copy: action = "Copie"
+            case .move: action = "Move"
+            case .copy: action = "Copy"
             case .sync: action = "Synchronisation"
-            case .delete: action = "Suppression"
+            case .delete: action = "Delete"
             }
         }
         return "\(action) de \(displayTitle), \(transfer.status.rawValue)"

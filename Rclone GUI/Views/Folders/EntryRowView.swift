@@ -49,7 +49,7 @@ struct EntryRowView: View {
                             .accessibilityHidden(true)
                     }
                     Text(entry.name)
-                        .font(.body.weight(.medium))
+                        .font(.system(size: 13.6, weight: .medium))
                         .lineLimit(1)
                         .truncationMode(.middle)
                 }
@@ -143,18 +143,18 @@ struct EntryRowView: View {
     private func transferLabel(for transfer: Transfer) -> String {
         let action: String
         switch transfer.kind {
-        case .download: action = "Téléchargement"
-        case .upload:   action = "Envoi"
-        case .move:     action = "Déplacement"
-        case .copy:     action = "Copie"
+        case .download: action = "Download"
+        case .upload:   action = "Upload"
+        case .move:     action = "Move"
+        case .copy:     action = "Copy"
         case .sync:     action = "Sync"
-        case .delete:   action = "Suppression"
+        case .delete:   action = "Delete"
         }
         if transfer.bytesTotal > 0 {
             let pct = Int(progressValue(for: transfer) / progressTotal(for: transfer) * 100)
             return "\(action) — \(pct)% · \(formatBytes(clampedBytesTransferred(for: transfer))) / \(formatBytes(transfer.bytesTotal))"
         }
-        return "\(action) en cours…"
+        return "\(action) in progress..."
     }
 
     private func clampedBytesTransferred(for transfer: Transfer) -> Int64 {
@@ -251,8 +251,8 @@ struct EntryRowView: View {
 
     private var accessibilityText: String {
         if entry.isDirectory {
-            return String(localized: "Dossier \(entry.name), modifié \(formatDate(entry.modTime))")
+            return String(localized: "Folder \(entry.name), modified \(formatDate(entry.modTime))")
         }
-        return String(localized: "Fichier \(entry.name), \(formatBytes(entry.size)), modifié \(formatDate(entry.modTime))")
+        return String(localized: "File \(entry.name), \(formatBytes(entry.size)), modified \(formatDate(entry.modTime))")
     }
 }
