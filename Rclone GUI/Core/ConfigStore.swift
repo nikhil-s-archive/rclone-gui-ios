@@ -32,8 +32,15 @@ public actor ConfigStore {
         }
         let envelope = try Data(contentsOf: AppGroup.rcloneConfURL)
         let key = try loadOrCreateMasterKey()
-        let box = try ChaChaPoly.SealedBox(combined: envelope)
-        return try ChaChaPoly.open(box, using: key)
+        do {
+            let box = try ChaChaPoly.SealedBox(combined: envelope)
+            return try ChaChaPoly.open(box, using: key)
+        } catch {
+            // Unrecoverable state: The Keychain master key was lost (e.g., after a 
+            // reinstall or restore) but the old encrypted config file remained.
+            try? await wipe()
+            return nil
+        }
     }
 
     /// Encrypt and save the rclone.conf bytes.
