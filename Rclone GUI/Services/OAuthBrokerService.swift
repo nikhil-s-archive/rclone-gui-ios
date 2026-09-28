@@ -140,7 +140,13 @@ public final class OAuthBrokerService: NSObject {
         let state = randomURLSafeString(byteCount: 16)
         let codeVerifier = randomURLSafeString(byteCount: 64)
         let codeChallenge = pkceChallenge(from: codeVerifier)
-        let redirectURI = "\(scheme)://oauth"
+        
+        let redirectURI: String
+        if scheme.contains("googleusercontent.com") {
+            redirectURI = "\(scheme):/oauth2redirect"
+        } else {
+            redirectURI = "\(scheme)://oauth"
+        }
 
         guard var components = URLComponents(url: config.authURL, resolvingAgainstBaseURL: false) else {
             throw BrokerError.strategyNotConfigured("auth_url invalide")
