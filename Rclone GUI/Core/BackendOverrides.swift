@@ -493,21 +493,13 @@ enum BackendOverrides {
             defaultClientID: "",
             defaultClientSecret: nil,
             defaultScopes: [],
-            strategy: .manual,
+            strategy: .customScheme(scheme: "rclone-gui"),
             usePKCE: true,
-            setupURL: URL(string: "https://www.dropbox.com/developers/apps"),
-            setupSteps: [
-                "Open the Dropbox App Console.",
-                "“Create app” → choose “Scoped access” + “Full Dropbox”.",
-                "Give it a unique name (e.g. “rclonegui-vitalys”).",
-                "“Permissions” tab → check all the files.* and sharing.* scopes. Save.",
-                "“Settings” tab → “OAuth 2” section → “Generated access token” → “Generate”.",
-                "Copy the token (starts with “sl.”) and paste it below.",
-                "💡 The wizard automatically wraps the raw token into JSON for rclone."
-            ],
-            tokenLabel: "Dropbox generated access token",
+            setupURL: nil,
+            setupSteps: [],
+            tokenLabel: "",
             tokenFieldName: "token",
-            tokenHint: "Just paste the raw “sl.X…” token — the wizard formats it into JSON automatically."
+            tokenHint: nil
         ),
         "box": OAuthProviderConfig(
             backendName: "box",

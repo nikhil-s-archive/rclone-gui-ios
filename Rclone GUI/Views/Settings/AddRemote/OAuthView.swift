@@ -29,15 +29,23 @@ struct OAuthView: View {
     @State private var validationError: String?
     @State private var showCopiedConfirmation = false
 
+    @State private var isAuthenticating = false
+
     var body: some View {
         Form {
             if let backend = state.selectedBackend, let config = backend.oauthConfig {
-                heroSection(for: backend, config: config)
-                tutorialSection(config: config)
-                if let setupURL = config.setupURL {
-                    linkSection(url: setupURL, label: linkLabel(for: backend))
+                if config.strategy == .manual {
+                    heroSectionManual(for: backend, config: config)
+                    tutorialSection(config: config)
+                    if let setupURL = config.setupURL {
+                        linkSection(url: setupURL, label: linkLabel(for: backend))
+                    }
+                    pasteSection(config: config)
+                } else {
+                    heroSectionInteractive(for: backend, config: config)
+                    interactiveSection(config: config)
                 }
-                pasteSection(config: config)
+                
                 if let validationError {
                     Section {
                         Label(validationError, systemImage: "exclamationmark.triangle.fill")
@@ -61,16 +69,88 @@ struct OAuthView: View {
             }
         }
         .onAppear {
-            // Pre-populate from any earlier paste in this wizard session.
-            if let backend = state.selectedBackend, let config = backend.oauthConfig {
+            if let backend = state.selectedBackend, let config = backend.oauthConfig, config.strategy == .manual {
                 pastedValue = state.fieldValues[config.tokenFieldName] ?? ""
             }
         }
     }
 
-    // MARK: - Sections
+// MARK: - Sections
 
-    private func heroSection(for backend: BackendSchema, config: OAuthProviderConfig) -> some View {
+    private func heroSectionInteractive(for backend: BackendSchema, config: OAuthProviderConfig) -> some View {
+        Section {
+            VStack(spacing: 12) {
+                AppIconTile(systemImage: backend.icon, size: 64, iconSize: .largeTitle)
+                Text("Authenticate \(backend.displayName)")
+                    .font(.title3.weight(.semibold))
+                    .multilineTextAlignment(.center)
+                Text("You will be redirected to \(backend.displayName) to grant access securely.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 8)
+            .listRowBackground(Color.clear)
+        }
+    }
+
+    private func interactiveSection(config: OAuthProviderConfig) -> some View {
+        Section {
+            Button {
+                Task {
+                    await performInteractiveAuth(config: config)
+                }
+            } label: {
+                if state.oauthCompleted {
+                    Label("Authenticated successfully", systemImage: "checkmark.seal.fill")
+                        .foregroundStyle(.green)
+                        .frame(maxWidth: .infinity)
+                } else {
+                    if isAuthenticating {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                            .frame(maxWidth: .infinity)
+                    } else {
+                        Text("Sign In")
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(isAuthenticating || state.oauthCompleted)
+            
+            if state.oauthCompleted {
+                Button("Authenticate again") {
+                    state.oauthCompleted = false
+                    state.fieldValues.removeValue(forKey: config.tokenFieldName)
+                }
+                .foregroundStyle(.red)
+                .frame(maxWidth: .infinity)
+            }
+        }
+    }
+    
+    private func performInteractiveAuth(config: OAuthProviderConfig) async {
+        isAuthenticating = true
+        validationError = nil
+        do {
+            let customClientID = state.fieldValues["client_id"]
+            let customClientSecret = state.fieldValues["client_secret"]
+            let tokenJSON = try await OAuthBrokerService.shared.authenticate(
+                config: config,
+                customClientID: customClientID,
+                customClientSecret: customClientSecret
+            )
+            state.fieldValues[config.tokenFieldName] = try tokenJSON.encodeToJSON()
+            state.oauthCompleted = true
+        } catch {
+            validationError = error.localizedDescription
+        }
+        isAuthenticating = false
+    }
+
+    private func heroSectionManual(for backend: BackendSchema, config: OAuthProviderConfig) -> some View {
         Section {
             VStack(spacing: 12) {
                 AppIconTile(systemImage: backend.icon, size: 64, iconSize: .largeTitle)
