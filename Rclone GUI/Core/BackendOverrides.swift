@@ -335,7 +335,7 @@ enum BackendOverrides {
             defaultClientID: "202264815644.apps.googleusercontent.com",
             defaultClientSecret: "X4Z3ca8xfWDb1Voo-F9a7ZxMv3HCYUCY",
             defaultScopes: ["https://www.googleapis.com/auth/drive"],
-            strategy: .customScheme(scheme: "com.googleusercontent.apps.202264815644"),
+            strategy: .manual,
             usePKCE: true,
             setupURL: URL(string: "https://developers.google.com/oauthplayground/?scopes=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive"),
             setupSteps: [
